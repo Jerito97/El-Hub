@@ -76,7 +76,7 @@ export function FechasClient({ people, today }: { people: PersonView[]; today: {
         </span>
       </div>
 
-      <div className="seg2" style={{ marginTop: 14 }}>
+      <div style={{ marginTop: 14 }}>
         <SegmentedToggle options={[{ value: "lista", label: "Lista" }, { value: "calendario", label: "Calendario" }]} value={view} onChange={(v) => setView(v as "lista" | "calendario")} />
       </div>
 

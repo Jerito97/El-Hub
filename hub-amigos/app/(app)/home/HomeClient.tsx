@@ -12,7 +12,7 @@ export function HomeClient({ people }: { people: PersonView[] }) {
 
   return (
     <>
-      <div className="seg2" style={{ marginTop: 26 }}>
+      <div style={{ marginTop: 26 }}>
         <SegmentedToggle options={[{ value: "semana", label: "Esta semana" }, { value: "mes", label: "Este mes" }]} value={range} onChange={(v) => setRange(v as "semana" | "mes")} />
       </div>
       <div style={{ marginTop: 14, borderTop: "2px solid var(--color-divider)" }}>

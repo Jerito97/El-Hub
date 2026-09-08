@@ -71,7 +71,7 @@ export function GastosClient({
         </button>
       </div>
 
-      <div className="seg2" style={{ marginTop: 14 }}>
+      <div style={{ marginTop: 14 }}>
         <SegmentedToggle
           options={[{ value: "eventos", label: "Eventos" }, { value: "balance", label: "Balance" }]}
           value={view}
