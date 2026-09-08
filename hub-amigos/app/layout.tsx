@@ -10,7 +10,7 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
-  title: "El Hub",
+  title: "LinkUp",
   description: "Cumpleaños, aniversarios y gastos compartidos del grupo.",
   icons: {
     icon: [
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "El Hub",
+    title: "LinkUp",
   },
 };
 

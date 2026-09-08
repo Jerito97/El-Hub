@@ -28,7 +28,7 @@ export function Header({ meInitials, unreadCount }: { meInitials: string; unread
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
         <div style={{ width: 14, height: 14, background: "var(--color-accent)" }} />
-        <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "11.5px", letterSpacing: ".16em", textTransform: "uppercase" }}>El Hub</span>
+        <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "11.5px", letterSpacing: ".16em", textTransform: "uppercase" }}>LinkUp</span>
       </div>
 
       <button

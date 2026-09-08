@@ -10,7 +10,7 @@ export default async function PersonasPage() {
   return (
     <div style={{ padding: "22px 18px 30px" }}>
       <h1 style={{ fontSize: 32 }}>Personas</h1>
-      <div style={{ marginTop: 6, fontSize: 13, color: "var(--color-neutral-700)" }}>Usuarios registrados en el hub</div>
+      <div style={{ marginTop: 6, fontSize: 13, color: "var(--color-neutral-700)" }}>Usuarios registrados en LinkUp</div>
       <div style={{ marginTop: 16, borderTop: "2px solid var(--color-divider)" }}>
         {state.users.map((u) => {
           const person = state.people.find((p) => p.user_id === u.id);

@@ -1,4 +1,4 @@
--- El Hub -- schema
+-- LinkUp -- schema
 --
 -- All application access to these tables goes through the Next.js server
 -- using the Supabase service-role key (see lib/supabase.ts). Auth is custom

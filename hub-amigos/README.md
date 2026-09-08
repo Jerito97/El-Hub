@@ -1,4 +1,4 @@
-# El Hub
+# LinkUp
 
 A real (not-a-prototype) implementation of the "Hub de amigos" design from
 `../project/Hub Amigos.dc.html` — birthdays/anniversaries + Splitwise-style
