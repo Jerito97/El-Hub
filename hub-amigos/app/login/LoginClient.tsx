@@ -49,7 +49,7 @@ export function LoginClient() {
     setBusy(true);
     const res = await confirmLink(linkCandidate.id, pin);
     setBusy(false);
-    if (!res.ok) setError(res.error || "Algo salió mal");
+    if (!res.ok) setError([res.error, res.hint].filter(Boolean).join(": ") || "Algo salió mal");
   }
 
   function onRejectLink() {
@@ -62,7 +62,7 @@ export function LoginClient() {
     setBusy(true);
     const res = await finishSetup({ name, pin, day: +day, month: +month, year: +year, alias });
     setBusy(false);
-    if (!res.ok) setSetupError(res.error || "Algo salió mal");
+    if (!res.ok) setSetupError([res.error, res.hint].filter(Boolean).join(": ") || "Algo salió mal");
   }
 
   if (step === "link" && linkCandidate) {
