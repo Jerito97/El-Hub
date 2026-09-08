@@ -12,12 +12,12 @@ import { createClient } from "@supabase/supabase-js";
 // Supabase project exists yet). Falling back to placeholders lets the build
 // succeed; actual DB calls will fail at request time with a clear Supabase
 // error until the real env vars are set and the app is redeployed.
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+const url = process.env.SUPABASE_URL || "https://placeholder.supabase.co";
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-service-role-key";
 
-if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
   console.warn(
-    "[supabase] NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are not set -- using placeholders. " +
+    "[supabase] SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are not set -- using placeholders. " +
       "Set them in .env.local (or your Vercel project's Environment Variables) and redeploy."
   );
 }
