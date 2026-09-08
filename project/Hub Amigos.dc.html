@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/modernist-12299173-575a-46d2-92c1-73e445523b67/styles.css">
+<script src="_ds/modernist-12299173-575a-46d2-92c1-73e445523b67/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body,button,select,label{font-variant-caps:small-caps;font-feature-settings:"smcp" 1,"c2sc" 0}
+body{margin:0;background:#f3f2f2}
+input,textarea,.input{font-variant-caps:normal !important;font-feature-settings:normal !important}
+*{box-sizing:border-box}
+.hub-scroll::-webkit-scrollbar{width:0}
+@keyframes hubIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+@keyframes hubInRight{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes hubUp{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+[data-hub-theme] button,[data-hub-theme] input,[data-hub-theme] textarea,[data-hub-theme] select,[data-hub-theme] label{color:var(--color-text)}
+[data-hub-theme="oscuro"] input::placeholder{color:var(--color-neutral-600)}
+[data-hub-theme="oscuro"]{--color-bg:#1a1918;--color-text:#f4f2f0;--color-neutral-100:#232221;--color-neutral-200:#2b2a28;--color-neutral-300:#3a3835;--color-neutral-400:#4b4844;--color-neutral-600:#9d9995;--color-neutral-700:#bdb9b4;--color-neutral-800:#e8e5e2;--color-divider:#3d3a37;--color-accent-100:#3a2320;--color-accent-700:#ff8f78}
+a{color:var(--color-accent-700)}
+a:hover{color:var(--color-accent)}
+</style>
+</helmet>
+
+<div style="display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start;padding:44px;font-family:var(--font-body);color:var(--color-text)">
+
+  <aside style="flex:none;width:380px;display:flex;flex-direction:column;gap:var(--space-4)">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:22px;height:22px;background:var(--color-accent)"></div>
+      <span style="font-family:var(--font-heading);font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-variant-caps:normal">Hub de amigos</span>
+    </div>
+    <h2 style="font-size:34px;margin:0;line-height:1.05">Prototipo mobile, navegable</h2>
+    <p style="margin:0;font-size:14px;line-height:1.6;color:var(--color-neutral-700)">Todo el flujo funciona de verdad: creá un usuario nuevo con cualquier nombre, probá un PIN equivocado, agregá cumpleaños y cargá gastos. La sesión queda activa hasta que toques <strong>Salir</strong>.</p>
+    <hr class="hr" style="margin:var(--space-2) 0">
+    <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">Pantallas</div>
+    <div style="display:flex;flex-direction:column;gap:0;border-top:2px solid var(--color-divider)">
+      <sc-for list="{{ screenIndex }}" as="s" hint-placeholder-count="7">
+        <button onClick="{{ s.go }}" style="display:flex;align-items:baseline;gap:12px;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--color-neutral-300);padding:11px 4px;cursor:pointer;font-family:var(--font-body);font-size:14px;color:var(--color-text)" style-hover="background:var(--color-accent-100)">
+          <span style="font-family:var(--font-heading);font-weight:800;font-size:11px;color:var(--color-accent);min-width:16px;font-variant-caps:normal">{{ s.n }}</span>
+          <span>{{ s.label }}</span>
+        </button>
+      </sc-for>
+    </div>
+    <p style="margin:0;font-size:12.5px;line-height:1.6;color:var(--color-neutral-600);font-variant-caps:normal">Supuestos que tomé: montos en pesos, un solo grupo, cualquiera puede cargar cumpleaños y crear eventos, y los eventos son privados por participante (no hay admin global). Decime si alguno no va.</p>
+  </aside>
+
+  <div style="flex:none;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--color-neutral-600);font-variant-caps:normal">
+      <span style="font-family:var(--font-heading);font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:10.5px;font-variant-caps:normal">{{ screenTitle }}</span>
+      <span>390 × 844</span>
+    </div>
+
+    <div data-hub-theme="{{ themeMode }}" style="width:390px;height:844px;border:2px solid var(--color-text);background:var(--color-bg);color:var(--color-text);position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg)">
+
+      <div style="height:34px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:11px;font-weight:600;color:var(--color-neutral-700);border-bottom:1px solid var(--color-neutral-300);font-variant-caps:normal">
+        <span>9:41</span>
+        <span style="letter-spacing:.1em">▮▮▮ ⌁</span>
+      </div>
+
+      <sc-if value="{{ isAuthScreen }}" hint-placeholder-val="{{ true }}">
+        <div class="hub-scroll" style="flex:1;overflow-y:auto">
+
+          <sc-if value="{{ onLogin }}" hint-placeholder-val="{{ true }}">
+            <div style="padding:36px 24px 24px;display:flex;flex-direction:column;min-height:100%">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:26px;height:26px;background:var(--color-accent)"></div>
+                <span style="font-family:var(--font-heading);font-weight:800;font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-variant-caps:normal">El Hub</span>
+              </div>
+              <h1 style="font-size:52px;line-height:.95;margin:28px 0 0">Entrá<br>al grupo.</h1>
+
+              <div style="margin-top:32px;display:flex;flex-direction:column;gap:18px">
+                <div class="field">
+                  <label style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Tu nombre</label>
+                  <input class="input" value="{{ nameInput }}" onChange="{{ setName }}" placeholder="Ej: Nacho" style="width:100%;font-size:17px;padding:14px 14px;border:2px solid var(--color-text);background:var(--color-neutral-100)">
+                </div>
+                <div class="field">
+                  <label style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">PIN (4 a 6 dígitos)</label>
+                  <div style="display:flex;gap:8px;align-items:center">
+                    <input class="input" value="{{ pinInput }}" onChange="{{ setPin }}" inputMode="numeric" placeholder="••••" style="flex:1;font-size:22px;letter-spacing:.5em;padding:12px 14px;border:2px solid {{ pinBorder }};background:var(--color-neutral-100)">
+                    <div style="font-family:var(--font-heading);font-weight:800;font-size:13px;color:var(--color-neutral-600);min-width:34px;font-variant-caps:normal">{{ pinCount }}</div>
+                  </div>
+                </div>
+
+                <sc-if value="{{ loginError }}" hint-placeholder-val="{{ false }}">
+                  <div style="border:2px solid var(--color-accent);background:var(--color-accent-100);padding:14px 16px;display:flex;flex-direction:column;gap:4px;animation:hubUp .18s ease-out">
+                    <div style="font-family:var(--font-heading);font-weight:800;font-size:14px;color:var(--color-accent-700)">{{ loginError }}</div>
+                    <div style="font-size:12.5px;color:var(--color-accent-800);font-variant-caps:normal">{{ loginErrorHint }}</div>
+                  </div>
+                </sc-if>
+
+                <button class="btn btn-primary" onClick="{{ submitLogin }}" style="justify-content:flex-start;width:100%;padding:17px 18px;font-size:16px;letter-spacing:.02em;color:#fff">Entrar →</button>
+              </div>
+
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ onLink }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:36px 24px 28px;display:flex;flex-direction:column;min-height:100%">
+              <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent);font-variant-caps:normal">Encontramos tu nombre</div>
+              <h1 style="font-size:40px;line-height:1;margin:16px 0 0">¿Sos vos,<br>{{ linkName }}?</h1>
+              <p style="margin:14px 0 0;font-size:14.5px;color:var(--color-neutral-700)">Alguien ya te cargó como cumpleaños en el grupo. Enganchate a ese registro así no quedan dos {{ linkName }} dando vueltas.</p>
+
+              <div style="margin-top:26px;border:2px solid var(--color-text);background:var(--color-neutral-100)">
+                <div style="display:flex;align-items:center;gap:14px;padding:18px">
+                  <div style="width:52px;height:52px;background:var(--color-text);color:var(--color-bg);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:19px">{{ linkInitials }}</div>
+                  <div>
+                    <div style="font-family:var(--font-heading);font-weight:800;font-size:20px">{{ linkName }}</div>
+                    <div style="font-size:13px;color:var(--color-neutral-700);font-variant-caps:normal">{{ linkBirthday }} · {{ linkDaysLabel }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top:24px;display:flex;flex-direction:column;gap:10px">
+                <button class="btn btn-primary" onClick="{{ confirmLink }}" style="justify-content:flex-start;width:100%;padding:16px 18px;font-size:15px;color:#fff">Sí, soy yo — vincular mi usuario</button>
+                <button class="btn btn-secondary" onClick="{{ rejectLink }}" style="justify-content:flex-start;width:100%;padding:16px 18px;font-size:15px;border-width:2px">No, crear un usuario nuevo</button>
+              </div>
+              <div style="margin-top:auto;padding-top:24px;font-size:12px;color:var(--color-neutral-600);font-variant-caps:normal">Si te vinculás, tu cumpleaños pasa a estar “en la app” y podés participar de gastos.</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ onSetup }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:36px 24px 28px;display:flex;flex-direction:column;min-height:100%">
+              <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent);font-variant-caps:normal">Usuario nuevo</div>
+              <h1 style="font-size:40px;line-height:1;margin:16px 0 0">Bienvenido,<br>{{ setupName }}.</h1>
+
+              <div style="margin-top:30px;display:flex;flex-direction:column;gap:18px">
+                <div class="field">
+                  <label style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Tu cumpleaños</label>
+                  <div style="display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:8px;margin-top:6px">
+                    <select value="{{ setupDay }}" onChange="{{ setSetupDay }}" style="width:100%;font-family:var(--font-heading);font-weight:800;font-size:15px;padding:12px 8px;border:2px solid var(--color-text);background:var(--color-neutral-100);color:var(--color-text);border-radius:0;font-variant-caps:normal">
+                      <option value="">Día</option>
+                      <sc-for list="{{ dayOptions }}" as="o" hint-placeholder-count="31">
+                        <option value="{{ o.value }}">{{ o.label }}</option>
+                      </sc-for>
+                    </select>
+                    <select value="{{ setupMonth }}" onChange="{{ setSetupMonth }}" style="width:100%;font-family:var(--font-heading);font-weight:800;font-size:15px;padding:12px 8px;border:2px solid var(--color-text);background:var(--color-neutral-100);color:var(--color-text);border-radius:0;font-variant-caps:normal">
+                      <option value="">Mes</option>
+                      <sc-for list="{{ monthOptions }}" as="o" hint-placeholder-count="12">
+                        <option value="{{ o.value }}">{{ o.label }}</option>
+                      </sc-for>
+                    </select>
+                    <select value="{{ setupYear }}" onChange="{{ setSetupYear }}" style="width:100%;font-family:var(--font-heading);font-weight:800;font-size:15px;padding:12px 8px;border:2px solid var(--color-text);background:var(--color-neutral-100);color:var(--color-text);border-radius:0;font-variant-caps:normal">
+                      <option value="">Año</option>
+                      <sc-for list="{{ yearOptions }}" as="o" hint-placeholder-count="70">
+                        <option value="{{ o.value }}">{{ o.label }}</option>
+                      </sc-for>
+                    </select>
+                  </div>
+                </div>
+                <div class="field">
+                  <label style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Tu alias (opcional)</label>
+                  <input class="input" value="{{ setupAlias }}" onChange="{{ setSetupAlias }}" placeholder="tu.alias.banco" style="width:100%;font-size:16px;padding:14px;border:2px solid var(--color-text);background:var(--color-neutral-100)">
+                </div>
+
+                <sc-if value="{{ hasSetupError }}" hint-placeholder-val="{{ false }}">
+                  <div style="border:2px solid var(--color-accent);background:var(--color-accent-100);padding:13px 15px;font-family:var(--font-heading);font-weight:800;font-size:13.5px;color:var(--color-accent-700);animation:hubUp .18s ease-out">{{ setupError }}</div>
+                </sc-if>
+
+                <button onClick="{{ finishSetup }}" style="width:100%;background:var(--color-accent-600);color:#fff;border:0;padding:17px 18px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:15px;text-align:center;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em" style-hover="background:var(--color-accent-700)">Entrar al hub</button>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isAppScreen }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+
+          <div style="flex:none;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;padding:9px 12px;border-bottom:2px solid var(--color-divider)">
+            <button onClick="{{ openDrawer }}" title="Menú" style="width:44px;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:transparent;border:0;padding:0;cursor:pointer">
+              <span style="width:20px;height:2px;background:var(--color-text)"></span>
+              <span style="width:20px;height:2px;background:var(--color-text)"></span>
+              <span style="width:20px;height:2px;background:var(--color-text)"></span>
+            </button>
+            <div style="display:flex;align-items:center;justify-content:center;gap:8px">
+              <div style="width:14px;height:14px;background:var(--color-accent)"></div>
+              <span style="font-family:var(--font-heading);font-weight:800;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-variant-caps:normal">El Hub</span>
+            </div>
+            <button onClick="{{ openNotifs }}" title="Notificaciones" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;cursor:pointer;padding:0;position:relative">
+              <span style="width:32px;height:32px;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:13px;font-variant-caps:normal">{{ meInitials }}</span>
+              <sc-if value="{{ hasNotifs }}" hint-placeholder-val="{{ true }}">
+                <span style="position:absolute;left:29px;top:-3px;width:18px;height:18px;padding:0;background:var(--color-text);color:var(--color-bg);border:2px solid var(--color-bg);border-radius:999px;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:900;font-size:9.5px;font-variant-caps:normal;line-height:1;text-align:center">{{ notifCount }}</span>
+              </sc-if>
+            </button>
+          </div>
+
+          <div class="hub-scroll" style="flex:1;overflow-y:auto">
+
+            <sc-if value="{{ onHome }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:24px 18px 30px">
+                <h1 style="font-size:34px;line-height:1.02;margin:0">Hola, {{ meName }}.</h1>
+                <div style="margin-top:6px;font-size:13.5px;color:var(--color-neutral-700);font-variant-caps:normal">{{ todayLabel }}</div>
+
+                <sc-if value="{{ hasBirthdayToday }}" hint-placeholder-val="{{ true }}">
+                  <div style="margin-top:20px;background:var(--color-accent-600);color:#fff;padding:20px 18px;display:flex;flex-direction:column;gap:6px">
+                    <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-variant-caps:normal">Hoy cumple</div>
+                    <div style="font-family:var(--font-heading);font-weight:900;font-size:40px;line-height:1">{{ todayBirthdayName }}</div>
+                  </div>
+                </sc-if>
+
+                <div style="margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                  <button onClick="{{ goCumples }}" style="text-align:left;background:var(--color-neutral-100);border:2px solid var(--color-text);padding:16px 14px;cursor:pointer;font-family:var(--font-body);display:flex;flex-direction:column;gap:12px;min-height:158px" style-hover="background:var(--color-accent-100)">
+                    <span style="width:34px;height:34px;background:var(--color-accent-600);color:#fff;display:flex;align-items:center;justify-content:center">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </span>
+                    <span style="font-family:var(--font-heading);font-weight:800;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-700);font-variant-caps:normal">Fechas</span>
+                    <span style="font-family:var(--font-heading);font-weight:800;font-size:19px;line-height:1.1">Ver próximas fechas</span>
+                    <span style="margin-top:auto;font-family:var(--font-heading);font-weight:900;font-size:17px;color:var(--color-accent-700)">→</span>
+                  </button>
+                  <button onClick="{{ goGastos }}" style="text-align:left;background:var(--color-neutral-100);border:2px solid var(--color-text);padding:16px 14px;cursor:pointer;font-family:var(--font-body);display:flex;flex-direction:column;gap:12px;min-height:158px" style-hover="background:var(--color-accent-100)">
+                    <span style="width:34px;height:34px;background:var(--color-accent-600);color:#fff;display:flex;align-items:center;justify-content:center">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"></ellipse><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"></path><path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"></path></svg>
+                    </span>
+                    <span style="font-family:var(--font-heading);font-weight:800;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-700);font-variant-caps:normal">Gastos</span>
+                    <span style="font-family:var(--font-heading);font-weight:800;font-size:19px;line-height:1.1">Ver gastos del mes</span>
+                    <span style="margin-top:auto;font-family:var(--font-heading);font-weight:900;font-size:17px;color:var(--color-accent-700)">→</span>
+                  </button>
+                </div>
+
+                <div style="margin-top:26px;display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--color-text)">
+                  <sc-for list="{{ homeToggle }}" as="v" hint-placeholder-count="2">
+                    <button onClick="{{ v.go }}" style="background:{{ v.bg }};color:{{ v.fg }};border:0;padding:11px 12px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12.5px;letter-spacing:.04em">{{ v.label }}</button>
+                  </sc-for>
+                </div>
+                <div style="margin-top:14px;border-top:2px solid var(--color-divider)">
+                  <sc-if value="{{ homeListEmpty }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:20px 2px;font-size:13px;color:var(--color-neutral-700);font-variant-caps:normal">{{ homeEmptyLabel }}</div>
+                  </sc-if>
+                  <sc-for list="{{ homeList }}" as="p" hint-placeholder-count="2">
+                    <div style="display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--color-neutral-300)">
+                      <div style="width:34px;height:34px;background:{{ p.chipBg }};color:{{ p.chipFg }};display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:12.5px;font-variant-caps:normal"><sc-if value="{{ p.isAniv }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="14" r="6"></circle><circle cx="15" cy="9" r="6"></circle></svg></sc-if><sc-if value="{{ p.showInitials }}" hint-placeholder-val="{{ true }}">{{ p.initials }}</sc-if></div>
+                      <div style="flex:1;font-family:var(--font-heading);font-weight:700;font-size:15px">{{ p.name }}</div>
+                      <div style="font-size:12.5px;color:var(--color-accent-700);font-weight:600;font-variant-caps:normal">{{ p.daysLabel }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ onCumples }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:22px 18px 30px">
+                <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px">
+                  <h1 style="font-size:32px;line-height:1;margin:0">Fechas</h1>
+                  <button class="btn btn-primary" onClick="{{ openAddPerson }}" style="padding:10px 13px;font-size:13px;font-variant-caps:normal;color:#fff">+ Agregar</button>
+                </div>
+
+                <div style="margin-top:10px;display:flex;align-items:center;gap:16px">
+                  <span style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--color-neutral-700);font-variant-caps:normal">
+                    <span style="width:12px;height:12px;background:var(--color-accent-600)"></span>Cumpleaños
+                  </span>
+                  <span style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--color-neutral-700);font-variant-caps:normal">
+                    <span style="width:16px;height:16px;background:var(--color-text);color:var(--color-bg);display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="9" cy="14" r="6"></circle><circle cx="15" cy="9" r="6"></circle></svg></span>Aniversarios
+                  </span>
+                </div>
+
+                <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--color-text)">
+                  <sc-for list="{{ viewToggle }}" as="v" hint-placeholder-count="2">
+                    <button onClick="{{ v.go }}" style="background:{{ v.bg }};color:{{ v.fg }};border:0;padding:11px 12px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12.5px;letter-spacing:.04em">{{ v.label }}</button>
+                  </sc-for>
+                </div>
+
+                <sc-if value="{{ onCalendario }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:18px">
+                    <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--color-divider);padding-bottom:10px">
+                      <button onClick="{{ calPrev }}" style="background:transparent;border:0;cursor:pointer;font-family:var(--font-heading);font-weight:900;font-size:16px;padding:2px 6px;color:var(--color-text)">←</button>
+                      <div style="font-family:var(--font-heading);font-weight:800;font-size:17px">{{ calTitle }}</div>
+                      <button onClick="{{ calNext }}" style="background:transparent;border:0;cursor:pointer;font-family:var(--font-heading);font-weight:900;font-size:16px;padding:2px 6px;color:var(--color-text)">→</button>
+                    </div>
+                    <div style="margin-top:10px;display:grid;grid-template-columns:repeat(7,1fr);gap:1px">
+                      <sc-for list="{{ calWeekdays }}" as="w" hint-placeholder-count="7">
+                        <div style="text-align:center;font-family:var(--font-heading);font-weight:800;font-size:10px;letter-spacing:.06em;color:var(--color-neutral-600);padding-bottom:4px;font-variant-caps:normal">{{ w.label }}</div>
+                      </sc-for>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--color-neutral-300);border:1px solid var(--color-neutral-300)">
+                      <sc-for list="{{ calCells }}" as="c" hint-placeholder-count="35">
+                        <div style="min-height:46px;background:var(--color-bg);display:flex;flex-direction:column;padding:3px 4px;gap:2px">
+                          <sc-if value="{{ c.filled }}" hint-placeholder-val="{{ true }}">
+                            <div style="display:flex;flex-direction:column;gap:2px;height:100%">
+                              <sc-if value="{{ c.isToday }}" hint-placeholder-val="{{ false }}">
+                                <div style="align-self:flex-start;background:var(--color-text);color:var(--color-bg);font-family:var(--font-heading);font-weight:800;font-size:10.5px;padding:1px 4px;font-variant-caps:normal">{{ c.day }}</div>
+                              </sc-if>
+                              <sc-if value="{{ c.notToday }}" hint-placeholder-val="{{ true }}">
+                                <div style="font-family:var(--font-heading);font-weight:700;font-size:10.5px;color:var(--color-neutral-600);font-variant-caps:normal">{{ c.day }}</div>
+                              </sc-if>
+                              <sc-if value="{{ c.hasB }}" hint-placeholder-val="{{ false }}">
+                                <div style="margin-top:auto;background:{{ c.chipBg }};color:{{ c.chipFg }};font-family:var(--font-heading);font-weight:800;font-size:10px;letter-spacing:.02em;padding:2px 3px;display:flex;align-items:center;justify-content:center;font-variant-caps:normal"><sc-if value="{{ c.isAniv }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="9" cy="14" r="6"></circle><circle cx="15" cy="9" r="6"></circle></svg></sc-if><sc-if value="{{ c.showInitials }}" hint-placeholder-val="{{ true }}">{{ c.initials }}</sc-if></div>
+                              </sc-if>
+                            </div>
+                          </sc-if>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <div style="margin-top:16px;font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">Este mes</div>
+                    <div style="margin-top:8px;border-top:2px solid var(--color-divider)">
+                      <sc-for list="{{ calMonthPeople }}" as="p" hint-placeholder-count="2">
+                        <div style="display:flex;align-items:center;gap:11px;padding:12px 2px;border-bottom:1px solid var(--color-neutral-300)">
+                          <div style="width:34px;height:34px;flex:none;background:{{ p.chipBg }};color:{{ p.chipFg }};display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:12.5px;font-variant-caps:normal"><sc-if value="{{ p.isAniv }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="14" r="6"></circle><circle cx="15" cy="9" r="6"></circle></svg></sc-if><sc-if value="{{ p.showInitials }}" hint-placeholder-val="{{ true }}">{{ p.initials }}</sc-if></div>
+                          <div style="flex:1;font-family:var(--font-heading);font-weight:800;font-size:15.5px">{{ p.name }}</div>
+                          <div style="text-align:right;font-size:12.5px;color:var(--color-neutral-700);font-variant-caps:normal">{{ p.dateLabel }}<br>{{ p.ageLabel }}</div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ onLista }}" hint-placeholder-val="{{ true }}">
+                <div style="margin-top:12px;display:flex;align-items:stretch;border:2px solid var(--color-text)">
+                  <input class="input" value="{{ search }}" onChange="{{ setSearch }}" placeholder="Buscar por nombre" style="flex:1;min-width:0;font-size:14px;padding:11px 12px;border:0;background:var(--color-neutral-100)">
+                  <sc-if value="{{ hasSearch }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ clearSearch }}" style="flex:none;background:transparent;border:0;border-left:2px solid var(--color-text);padding:0 13px;cursor:pointer;font-size:15px;color:var(--color-neutral-700);font-variant-caps:normal">✕</button>
+                  </sc-if>
+                </div>
+                <div style="margin-top:12px;border-bottom:2px solid var(--color-divider)"></div>
+                <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:22px 2px;font-size:13px;color:var(--color-neutral-700);font-variant-caps:normal">Nadie con ese nombre.</div>
+                </sc-if>
+
+                <sc-for list="{{ people }}" as="p" hint-placeholder-count="6">
+                  <div style="display:flex;align-items:center;gap:13px;padding:15px 2px;border-bottom:1px solid var(--color-neutral-300)">
+                    <div style="width:44px;height:44px;flex:none;background:{{ p.chipBg }};color:{{ p.chipFg }};display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:15px"><sc-if value="{{ p.isAniv }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="14" r="6"></circle><circle cx="15" cy="9" r="6"></circle></svg></sc-if><sc-if value="{{ p.showInitials }}" hint-placeholder-val="{{ true }}">{{ p.initials }}</sc-if></div>
+                    <div style="flex:1;min-width:0">
+                      <div style="display:flex;align-items:center;gap:8px">
+                        <span style="font-family:var(--font-heading);font-weight:800;font-size:17px">{{ p.name }}</span>
+                        <sc-if value="{{ p.isMe }}" hint-placeholder-val="{{ false }}">
+                          <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">vos</span>
+                        </sc-if>
+                        <sc-if value="{{ p.isPrivate }}" hint-placeholder-val="{{ false }}">
+                          <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--color-bg);background:var(--color-neutral-700);padding:2px 5px;font-variant-caps:normal">privado</span>
+                        </sc-if>
+                      </div>
+                      <div style="font-size:12.5px;color:var(--color-neutral-700);font-variant-caps:normal">{{ p.dateLabel }} · {{ p.ageLabel }}</div>
+                    </div>
+                    <sc-if value="{{ p.canEdit }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ p.edit }}" title="Editar" style="flex:none;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;padding:0;cursor:pointer;line-height:1;color:var(--color-neutral-600)" style-hover="color:var(--color-accent-700)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+                      </button>
+                    </sc-if>
+                    <div style="text-align:right;flex:none">
+                      <sc-if value="{{ p.isToday }}" hint-placeholder-val="{{ false }}">
+                        <div style="background:var(--color-accent-600);color:#fff;font-family:var(--font-heading);font-weight:900;font-size:12px;letter-spacing:.08em;padding:6px 9px;font-variant-caps:normal">¡HOY!</div>
+                      </sc-if>
+                      <sc-if value="{{ p.notToday }}" hint-placeholder-val="{{ true }}">
+                        <div>
+                          <div style="font-family:var(--font-heading);font-weight:900;font-size:22px;line-height:1">{{ p.days }}</div>
+                          <div style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">días</div>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ onPersonas }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:22px 18px 30px">
+                <h1 style="font-size:32px;line-height:1;margin:0">Personas</h1>
+                <div style="margin-top:6px;font-size:13px;color:var(--color-neutral-700);font-variant-caps:normal">Usuarios registrados en el hub</div>
+                <div style="margin-top:16px;border-top:2px solid var(--color-divider)">
+                  <sc-for list="{{ allUsers }}" as="u" hint-placeholder-count="5">
+                    <button onClick="{{ u.open }}" style="width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--color-neutral-300);padding:14px 2px;cursor:pointer;display:flex;align-items:center;gap:12px;font-family:var(--font-body)" style-hover="background:var(--color-accent-100)">
+                      <span style="width:42px;height:42px;flex:none;background:var(--color-accent-600);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:14px;font-variant-caps:normal">{{ u.initials }}</span>
+                      <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                        <span style="display:flex;align-items:center;gap:7px">
+                          <span style="font-family:var(--font-heading);font-weight:800;font-size:17px">{{ u.name }}</span>
+                          <sc-if value="{{ u.isMe }}" hint-placeholder-val="{{ false }}">
+                            <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">vos</span>
+                          </sc-if>
+                        </span>
+                        <span style="font-size:12px;color:var(--color-neutral-700);font-variant-caps:normal">{{ u.meta }}</span>
+                      </span>
+                      <span style="font-family:var(--font-heading);font-weight:900;font-size:15px;color:var(--color-neutral-500)">→</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ onPersona }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:18px 18px 30px">
+                <button onClick="{{ goPersonas }}" style="background:transparent;border:0;padding:0;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">← Personas</button>
+                <div style="margin-top:18px;display:flex;align-items:center;gap:14px">
+                  <div style="width:60px;height:60px;flex:none;background:var(--color-accent-600);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:900;font-size:22px;font-variant-caps:normal">{{ viewUser.initials }}</div>
+                  <div>
+                    <div style="font-family:var(--font-heading);font-weight:800;font-size:26px;line-height:1.05">{{ viewUser.name }}</div>
+                    <div style="font-size:12.5px;color:var(--color-neutral-700);font-variant-caps:normal">Cumpleaños: {{ viewUser.birthday }}</div>
+                  </div>
+                </div>
+                <div style="margin-top:20px;border-top:2px solid var(--color-divider);padding-top:14px">
+                  <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">Alias</div>
+                  <sc-if value="{{ viewUser.hasAlias }}" hint-placeholder-val="{{ true }}">
+                    <div style="margin-top:9px;display:flex;align-items:stretch;border:2px solid var(--color-text)">
+                      <div style="flex:1;min-width:0;padding:11px 12px;background:var(--color-neutral-100);font-family:var(--font-heading);font-weight:800;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-caps:normal">{{ viewUser.alias }}</div>
+                      <button onClick="{{ viewUser.copy }}" style="flex:none;background:var(--color-accent-600);color:#fff;border:0;border-left:2px solid var(--color-text);padding:0 14px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12px;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.05em" style-hover="background:var(--color-accent-700)">{{ viewUser.copyLabel }}</button>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ viewUser.noAlias }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:8px;font-size:12.5px;color:var(--color-neutral-700);font-variant-caps:normal">Todavía no cargó su alias.</div>
+                  </sc-if>
+                </div>
+                <div style="margin-top:20px;border-top:2px solid var(--color-divider);padding-top:14px;display:flex;align-items:center;gap:12px">
+                  <div style="flex:1">
+                    <div style="font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">{{ viewUser.stateLabel }}</div>
+                    <div style="font-family:var(--font-heading);font-weight:900;font-size:24px;font-variant-caps:normal">{{ viewUser.amount }}</div>
+                  </div>
+                  <div style="font-size:12px;color:var(--color-neutral-700);text-align:right;font-variant-caps:normal">{{ viewUser.sharedLabel }}</div>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ onConfig }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:22px 18px 30px">
+                <h1 style="font-size:32px;line-height:1;margin:0">Configuración</h1>
+
+                <div style="margin-top:22px;border-top:2px solid var(--color-divider);padding-top:14px">
+                  <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">Notificaciones</div>
+                  <sc-for list="{{ notifRows }}" as="n" hint-placeholder-count="3">
+                    <button onClick="{{ n.toggle }}" style="width:100%;background:transparent;border:0;border-bottom:1px solid var(--color-neutral-300);padding:14px 2px;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;font-family:var(--font-body)">
+                      <span style="flex:1;font-size:14px;font-variant-caps:normal">{{ n.label }}</span>
+                      <span style="width:46px;height:26px;flex:none;background:{{ n.knobBg }};display:flex;align-items:center;justify-content:{{ n.knobPos }};padding:3px">
+                        <span style="width:20px;height:20px;background:#fff"></span>
+                      </span>
+                    </button>
+                  </sc-for>
+                </div>
+
+                <div style="margin-top:22px;border-top:2px solid var(--color-divider);padding-top:14px">
+                  <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">Tema</div>
+                  <div style="margin-top:9px;display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--color-text)">
+                    <sc-for list="{{ themeOptions }}" as="t" hint-placeholder-count="2">
+                      <button onClick="{{ t.pick }}" style="background:{{ t.bg }};color:{{ t.fg }};border:0;padding:11px 12px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12.5px;letter-spacing:.04em">{{ t.label }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <button onClick="{{ openProfile }}" style="margin-top:24px;width:100%;background:var(--color-text);color:var(--color-bg);border:0;padding:15px 16px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:13.5px;text-align:center;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em" style-hover="background:var(--color-neutral-800)">Mi perfil</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ onGastos }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:22px 18px 30px">
+                <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px">
+                  <h1 style="font-size:32px;line-height:1;margin:0">Gastos</h1>
+                  <button class="btn btn-primary" onClick="{{ openNewEvent }}" style="padding:10px 13px;font-size:13px;font-variant-caps:normal;color:#fff">+ Evento</button>
+                </div>
+
+                <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--color-text)">
+                  <sc-for list="{{ gastosToggle }}" as="v" hint-placeholder-count="2">
+                    <button onClick="{{ v.go }}" style="background:{{ v.bg }};color:{{ v.fg }};border:0;padding:11px 12px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12.5px;letter-spacing:.04em">{{ v.label }}</button>
+                  </sc-for>
+                </div>
+
+                <sc-if value="{{ onBalanceTab }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:18px;border-top:2px solid var(--color-divider)">
+                    <sc-for list="{{ consolidated }}" as="c" hint-placeholder-count="3">
+                      <div style="border-bottom:1px solid var(--color-neutral-300)">
+                        <button onClick="{{ c.toggle }}" style="width:100%;text-align:left;background:transparent;border:0;padding:14px 2px;cursor:pointer;display:flex;align-items:center;gap:12px;font-family:var(--font-body)" style-hover="background:var(--color-accent-100)">
+                          <span style="width:38px;height:38px;flex:none;background:var(--color-accent-600);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:13px;font-variant-caps:normal">{{ c.initials }}</span>
+                          <span style="flex:1;min-width:0;font-family:var(--font-heading);font-weight:800;font-size:17px">{{ c.name }}</span>
+                          <span style="text-align:right;display:flex;flex-direction:column;gap:2px">
+                            <span style="font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">{{ c.stateLabel }}</span>
+                            <span style="font-family:var(--font-heading);font-weight:900;font-size:17px;color:{{ c.amountColor }};font-variant-caps:normal">{{ c.amount }}</span>
+                          </span>
+                        </button>
+                        <sc-if value="{{ c.expanded }}" hint-placeholder-val="{{ false }}">
+                          <div style="padding:2px 2px 14px 14px;display:flex;flex-direction:column;gap:8px;animation:hubUp .16s ease-out">
+                            <sc-for list="{{ c.rows }}" as="r" hint-placeholder-count="2">
+                              <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-variant-caps:normal">
+                                <span style="flex:1;color:var(--color-neutral-700)">{{ r.event }}</span>
+                                <span style="color:var(--color-neutral-600)">{{ r.dirLabel }}</span>
+                                <strong>{{ r.amount }}</strong>
+                                <sc-if value="{{ r.canCopy }}" hint-placeholder-val="{{ false }}">
+                                  <button onClick="{{ r.copyAlias }}" title="Copiar alias" style="flex:none;width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;padding:0;cursor:pointer;color:var(--color-accent-700)">
+                                    <sc-if value="{{ r.notCopiedAlias }}" hint-placeholder-val="{{ true }}">
+                                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11"></rect><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path></svg>
+                                    </sc-if>
+                                    <sc-if value="{{ r.copiedAlias }}" hint-placeholder-val="{{ false }}">
+                                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+                                    </sc-if>
+                                  </button>
+                                </sc-if>
+                                <button onClick="{{ r.settle }}" style="flex:none;background:var(--color-text);color:var(--color-bg);border:0;min-height:44px;padding:0 12px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;font-variant-caps:normal" style-hover="background:var(--color-neutral-800)">Pagado</button>
+                              </div>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                      </div>
+                    </sc-for>
+                    <sc-if value="{{ noConsolidated }}" hint-placeholder-val="{{ false }}">
+                      <div style="padding:24px 2px;font-size:13px;color:var(--color-neutral-700);font-variant-caps:normal">No tenés cuentas pendientes con nadie.</div>
+                    </sc-if>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ onEventos }}" hint-placeholder-val="{{ true }}">
+                <div style="margin-top:12px;display:flex;align-items:stretch;border:2px solid var(--color-text)">
+                  <input class="input" value="{{ eventSearch }}" onChange="{{ setEventSearch }}" placeholder="Buscar evento" style="flex:1;min-width:0;font-size:14px;padding:11px 12px;border:0;background:var(--color-neutral-100)">
+                  <sc-if value="{{ hasEventSearch }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ clearEventSearch }}" style="flex:none;background:transparent;border:0;border-left:2px solid var(--color-text);padding:0 13px;cursor:pointer;font-size:15px;color:var(--color-neutral-700);font-variant-caps:normal">✕</button>
+                  </sc-if>
+                </div>
+                <sc-if value="{{ showHistory }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:14px;font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">{{ historyHeader }}</div>
+                </sc-if>
+                <div style="margin-top:14px;border-top:2px solid var(--color-divider)">
+                  <sc-for list="{{ myEvents }}" as="e" hint-placeholder-count="3">
+                    <button onClick="{{ e.open }}" style="width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--color-neutral-300);padding:16px 2px;cursor:pointer;font-family:var(--font-body);display:flex;gap:12px;align-items:flex-start" style-hover="background:var(--color-accent-100)">
+                      <span style="width:4px;align-self:stretch;background:var(--color-accent);flex:none"></span>
+                      <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px">
+                        <span style="font-family:var(--font-heading);font-weight:800;font-size:18px;line-height:1.15">{{ e.name }}</span>
+                        <span style="font-size:12.5px;color:var(--color-neutral-700);font-variant-caps:normal">{{ e.dateLabel }} · {{ e.participantsLabel }}</span>
+                        <span style="display:flex;gap:4px">
+                          <sc-for list="{{ e.avatars }}" as="a" hint-placeholder-count="4">
+                            <span style="width:24px;height:24px;background:var(--color-text);color:var(--color-bg);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:10px;font-variant-caps:normal">{{ a.initials }}</span>
+                          </sc-for>
+                        </span>
+                      </span>
+                      <span style="text-align:right;flex:none;display:flex;flex-direction:column;gap:3px">
+                        <span style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">{{ e.balanceKind }}</span>
+                        <span style="font-family:var(--font-heading);font-weight:900;font-size:17px;color:{{ e.balanceColor }}">{{ e.balanceAmount }}</span>
+                        <span style="font-size:11px;color:var(--color-neutral-600);font-variant-caps:normal">{{ e.totalLabel }}</span>
+                      </span>
+                    </button>
+                  </sc-for>
+                  <sc-if value="{{ noEventResults }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:24px 2px;font-size:13px;color:var(--color-neutral-700);font-variant-caps:normal">{{ noEventResultsLabel }}</div>
+                  </sc-if>
+                </div>
+                <button onClick="{{ toggleHistory }}" style="margin-top:18px;width:100%;background:transparent;border:2px solid var(--color-text);color:var(--color-text);padding:13px 16px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:13px;text-align:center;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em" style-hover="background:var(--color-neutral-200)">{{ historyLabel }}</button>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ onDetail }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:18px 18px 30px">
+                <button onClick="{{ goGastos }}" style="background:transparent;border:0;padding:0;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">← Gastos</button>
+                <h1 style="font-size:32px;line-height:1.02;margin:14px 0 0">{{ eventName }}</h1>
+                <div style="margin-top:6px;font-size:13px;color:var(--color-neutral-700);font-variant-caps:normal">{{ eventDateLabel }} · {{ eventParticipantsLabel }}</div>
+                <div style="margin-top:3px;font-size:11.5px;color:var(--color-neutral-600);font-variant-caps:normal">{{ eventCreatorLabel }}</div>
+
+                <sc-if value="{{ eventIsClosed }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;border:2px solid var(--color-text);padding:8px 12px">
+                    <span style="width:10px;height:10px;background:var(--color-text)"></span>
+                    <span style="font-family:var(--font-heading);font-weight:800;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-variant-caps:normal">Evento cerrado</span>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ eventOpen }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ openPay }}" style="margin-top:16px;width:100%;background:var(--color-accent-600);color:#fff;border:0;padding:16px 18px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:15px;letter-spacing:.03em;text-align:center;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em" style-hover="background:var(--color-accent-700)">{{ payButtonLabel }}</button>
+                <button onClick="{{ openBalance }}" style="margin-top:8px;width:100%;background:var(--color-text);color:var(--color-bg);border:0;padding:16px 18px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:15px;letter-spacing:.03em;text-align:center;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em" style-hover="background:var(--color-neutral-800)">Ver balance final</button>
+                <button class="btn btn-secondary" onClick="{{ openAddExpense }}" style="margin-top:8px;width:100%;justify-content:center;padding:14px 16px;border-width:2px;font-size:14px;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em">Cargar gasto</button>
+                <sc-if value="{{ canCloseEvent }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ closeEvent }}" style="margin-top:8px;width:100%;background:transparent;border:2px solid var(--color-text);color:var(--color-text);padding:14px 16px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:14px;text-align:center;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em" style-hover="background:var(--color-neutral-200)">Cerrar evento</button>
+                </sc-if>
+                <sc-if value="{{ closeBlocked }}" hint-placeholder-val="{{ false }}">
+                  <div>
+                    <button disabled="{{ true }}" style="margin-top:8px;width:100%;background:transparent;border:2px solid var(--color-neutral-400);color:var(--color-neutral-500);padding:14px 16px;cursor:not-allowed;font-family:var(--font-heading);font-weight:800;font-size:14px;text-align:center;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em">Cerrar evento</button>
+                    <div style="margin-top:6px;font-size:12px;color:var(--color-neutral-600);font-variant-caps:normal">No se puede cerrar con deudas sin saldar.</div>
+                  </div>
+                </sc-if>
+                </sc-if>
+
+                <div style="margin-top:22px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--color-divider);padding-bottom:10px">
+                  <span style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">Gastos</span>
+                  <span style="font-family:var(--font-heading);font-weight:900;font-size:17px">{{ eventTotal }}</span>
+                </div>
+
+                <sc-for list="{{ eventExpenses }}" as="x" hint-placeholder-count="4">
+                  <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 2px;border-bottom:1px solid var(--color-neutral-300)">
+                    <div style="width:38px;height:38px;flex:none;background:var(--color-neutral-200);border:1px solid var(--color-neutral-400);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:12px;font-variant-caps:normal">{{ x.payerInitials }}</div>
+                    <div style="flex:1;min-width:0">
+                      <div style="font-family:var(--font-heading);font-weight:800;font-size:15.5px">{{ x.desc }}</div>
+                      <div style="font-size:12px;color:var(--color-neutral-700);font-variant-caps:normal">Pagó {{ x.payer }} · {{ x.sharesLabel }}</div>
+                    </div>
+                    <div style="font-family:var(--font-heading);font-weight:800;font-size:15px;flex:none">{{ x.amount }}</div>
+                  </div>
+                </sc-for>
+
+              </div>
+            </sc-if>
+
+          </div>
+
+          <sc-if value="{{ showTabBar }}" hint-placeholder-val="{{ true }}">
+          <div style="flex:none;display:grid;grid-template-columns:1fr 1fr 1fr;border-top:2px solid var(--color-text);background:var(--color-neutral-100)">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+              <button onClick="{{ t.go }}" style="background:{{ t.bg }};color:{{ t.fg }};border:0;border-right:1px solid var(--color-neutral-300);padding:14px 12px;cursor:pointer;text-align:center;font-family:var(--font-heading);font-weight:800;font-size:12.5px;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.07em;font-variant-caps:normal">{{ t.label }}</button>
+            </sc-for>
+          </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;background:color-mix(in srgb, #201e1d 55%, transparent);display:flex;z-index:6">
+          <div style="width:266px;background:var(--color-bg);border-right:2px solid var(--color-text);display:flex;flex-direction:column;animation:hubIn .18s ease-out">
+            <div style="padding:20px 18px;border-bottom:2px solid var(--color-divider);display:flex;align-items:center;gap:12px">
+              <div style="width:44px;height:44px;flex:none;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:16px;font-variant-caps:normal">{{ meInitials }}</div>
+              <div>
+                <div style="font-family:var(--font-heading);font-weight:800;font-size:18px">{{ meName }}</div>
+                <div style="font-size:11.5px;color:var(--color-neutral-600);font-variant-caps:normal">{{ meBirthday }}</div>
+              </div>
+            </div>
+            <sc-for list="{{ drawerItems }}" as="d" hint-placeholder-count="4">
+              <button onClick="{{ d.go }}" style="width:100%;text-align:left;background:{{ d.bg }};color:{{ d.fg }};border:0;border-bottom:1px solid var(--color-neutral-300);padding:16px 18px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.06em;font-variant-caps:normal">{{ d.label }}</button>
+            </sc-for>
+            <button onClick="{{ goConfig }}" style="width:100%;text-align:left;background:{{ configBg }};color:{{ configFg }};border:0;border-bottom:1px solid var(--color-neutral-300);padding:16px 18px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.06em;font-variant-caps:normal">Configuración</button>
+            <button onClick="{{ logout }}" style="margin-top:auto;width:100%;text-align:left;background:transparent;border:0;border-top:2px solid var(--color-divider);padding:18px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:13px;color:var(--color-accent-700);text-transform:uppercase;letter-spacing:.06em;font-variant-caps:normal">Salir de la sesión</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ notifsOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeNotifs }}" style="position:absolute;inset:0;background:color-mix(in srgb, #201e1d 55%, transparent);display:flex;justify-content:flex-end;z-index:6">
+          <div onClick="{{ stopClick }}" style="width:292px;max-width:88%;background:var(--color-bg);border-left:2px solid var(--color-text);display:flex;flex-direction:column;animation:hubInRight .18s ease-out">
+            <div style="flex:none;padding:18px;border-bottom:2px solid var(--color-divider);display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <div>
+                <div style="font-family:var(--font-heading);font-weight:900;font-size:20px;line-height:1">Notificaciones</div>
+                <div style="margin-top:4px;font-size:11.5px;color:var(--color-neutral-600);font-variant-caps:normal">{{ notifSummary }}</div>
+              </div>
+              <button onClick="{{ closeNotifs }}" style="width:30px;height:30px;flex:none;background:transparent;border:2px solid var(--color-text);cursor:pointer;font-family:var(--font-heading);font-weight:900;font-size:13px;line-height:1;color:var(--color-text)">✕</button>
+            </div>
+            <div class="hub-scroll" style="flex:1;overflow-y:auto">
+              <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="3">
+                <button onClick="{{ n.go }}" style="width:100%;text-align:left;background:{{ n.bg }};border:0;border-bottom:1px solid var(--color-neutral-300);padding:15px 16px;cursor:pointer;display:flex;gap:12px;align-items:flex-start;font-family:var(--font-body)" style-hover="background:var(--color-neutral-200)">
+                  <span style="width:30px;height:30px;flex:none;background:{{ n.dotBg }};color:{{ n.dotFg }};display:flex;align-items:center;justify-content:center;line-height:1;font-family:var(--font-heading);font-weight:900;font-size:13px;font-variant-caps:normal">{{ n.icon }}</span>
+                  <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+                    <span style="font-family:var(--font-heading);font-weight:800;font-size:14.5px;line-height:1.2;font-variant-caps:normal">{{ n.title }}</span>
+                    <span style="font-size:12px;color:var(--color-neutral-700);font-variant-caps:normal;line-height:1.35">{{ n.body }}</span>
+                  </span>
+                  <sc-if value="{{ n.unread }}" hint-placeholder-val="{{ true }}">
+                    <span style="width:8px;height:8px;flex:none;margin-top:6px;background:var(--color-text);border-radius:999px"></span>
+                  </sc-if>
+                </button>
+              </sc-for>
+              <sc-if value="{{ noNotifs }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:34px 20px;text-align:center;font-size:13px;color:var(--color-neutral-600);font-variant-caps:normal">Estás al día. No hay nada nuevo.</div>
+              </sc-if>
+            </div>
+            <button onClick="{{ markAllRead }}" style="flex:none;background:transparent;border:0;border-top:2px solid var(--color-divider);padding:16px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12px;color:var(--color-accent-700);text-transform:uppercase;letter-spacing:.06em;font-variant-caps:normal">Marcar todo como leído</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:color-mix(in srgb, #201e1d 55%, transparent);display:flex;align-items:flex-end;z-index:5">
+          <div style="width:100%;background:{{ sheetBg }};color:{{ sheetFg }};border-top:2px solid var(--color-text);padding:22px 20px 26px;animation:hubUp .2s ease-out;max-height:88%;overflow-y:auto">
+
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+              <h2 style="font-size:25px;line-height:1.05;margin:0">{{ modalTitle }}</h2>
+              <button onClick="{{ closeModal }}" style="background:transparent;border:0;font-size:20px;cursor:pointer;line-height:1;padding:2px 4px;color:{{ sheetFg }}">✕</button>
+            </div>
+
+            <sc-if value="{{ modalIsPerson }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:20px;display:flex;flex-direction:column;gap:16px">
+                <div>
+                  <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Tipo de fecha</div>
+                  <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--color-text)">
+                    <sc-for list="{{ kindOptions }}" as="k" hint-placeholder-count="2">
+                      <button onClick="{{ k.pick }}" style="background:{{ k.bg }};color:{{ k.fg }};border:0;padding:11px 12px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12.5px;letter-spacing:.04em">{{ k.label }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+                <div class="field">
+                  <label style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Nombre</label>
+                  <input class="input" value="{{ formName }}" onChange="{{ setFormName }}" placeholder="Ej: Juli" style="width:100%;font-size:16px;padding:13px;border:2px solid var(--color-text)">
+                </div>
+                <div class="field">
+                  <label style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">{{ dateFieldLabel }}</label>
+                  <div style="display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:8px;margin-top:6px">
+                    <select value="{{ formDay }}" onChange="{{ setFormDay }}" style="width:100%;font-family:var(--font-heading);font-weight:800;font-size:15px;padding:12px 8px;border:2px solid var(--color-text);background:var(--color-neutral-100);color:var(--color-text);border-radius:0;font-variant-caps:normal">
+                      <option value="">Día</option>
+                      <sc-for list="{{ dayOptions }}" as="o" hint-placeholder-count="31">
+                        <option value="{{ o.value }}">{{ o.label }}</option>
+                      </sc-for>
+                    </select>
+                    <select value="{{ formMonth }}" onChange="{{ setFormMonth }}" style="width:100%;font-family:var(--font-heading);font-weight:800;font-size:15px;padding:12px 8px;border:2px solid var(--color-text);background:var(--color-neutral-100);color:var(--color-text);border-radius:0;font-variant-caps:normal">
+                      <option value="">Mes</option>
+                      <sc-for list="{{ monthOptions }}" as="o" hint-placeholder-count="12">
+                        <option value="{{ o.value }}">{{ o.label }}</option>
+                      </sc-for>
+                    </select>
+                    <select value="{{ formYear }}" onChange="{{ setFormYear }}" style="width:100%;font-family:var(--font-heading);font-weight:800;font-size:15px;padding:12px 8px;border:2px solid var(--color-text);background:var(--color-neutral-100);color:var(--color-text);border-radius:0;font-variant-caps:normal">
+                      <option value="">Año</option>
+                      <sc-for list="{{ yearOptions }}" as="o" hint-placeholder-count="70">
+                        <option value="{{ o.value }}">{{ o.label }}</option>
+                      </sc-for>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Visibilidad</div>
+                  <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--color-text)">
+                    <sc-for list="{{ visibilityOptions }}" as="v" hint-placeholder-count="2">
+                      <button onClick="{{ v.pick }}" style="background:{{ v.bg }};color:{{ v.fg }};border:0;padding:11px 12px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12.5px;letter-spacing:.04em">{{ v.label }}</button>
+                    </sc-for>
+                  </div>
+                  <div style="margin-top:7px;font-size:12px;color:var(--color-neutral-700);font-variant-caps:normal">{{ visibilityNote }}</div>
+                </div>
+                <div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                    <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Recordatorio</div>
+                    <button onClick="{{ toggleRemind }}" style="width:46px;height:26px;flex:none;background:{{ remindTrackBg }};border:2px solid var(--color-text);padding:2px;cursor:pointer;display:flex;justify-content:{{ remindKnobSide }}">
+                      <span style="width:18px;height:18px;background:{{ remindKnobBg }};display:block"></span>
+                    </button>
+                  </div>
+                  <div style="margin-top:8px;font-size:12px;color:var(--color-neutral-700);font-variant-caps:normal">{{ remindNote }}</div>
+                </div>
+                <sc-if value="{{ hasPersonError }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12.5px;color:var(--color-accent-700);font-variant-caps:normal">{{ personError }}</div>
+                </sc-if>
+                <sc-if value="{{ isEditingPerson }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-direction:column;gap:10px">
+                    <button class="btn btn-primary" onClick="{{ savePersonEdit }}" style="justify-content:center;width:100%;padding:15px 17px;font-size:15px;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em;color:#fff">Guardar cambios</button>
+                    <sc-if value="{{ notConfirmingDelete }}" hint-placeholder-val="{{ true }}">
+                      <button onClick="{{ askDelete }}" style="width:100%;background:transparent;border:2px solid var(--color-accent-600);color:var(--color-accent-700);padding:13px 16px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:13.5px;text-align:center;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em" style-hover="background:var(--color-accent-100)">{{ deleteLabel }}</button>
+                    </sc-if>
+                    <sc-if value="{{ confirmDelete }}" hint-placeholder-val="{{ false }}">
+                      <div style="border:2px solid var(--color-accent-600);padding:13px 14px;display:flex;flex-direction:column;gap:10px;animation:hubUp .18s ease-out">
+                        <div style="font-size:12.5px;color:var(--color-accent-800);font-variant-caps:normal">¿Seguro que lo borrás? No se puede recuperar.</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                          <button onClick="{{ cancelDelete }}" style="background:transparent;border:2px solid var(--color-text);color:var(--color-text);padding:11px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12.5px;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.05em">No</button>
+                          <button onClick="{{ deletePerson }}" style="background:var(--color-accent-600);border:0;color:#fff;padding:11px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12.5px;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.05em">Sí, borrar</button>
+                        </div>
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ notEditingPerson }}" hint-placeholder-val="{{ true }}">
+                  <button class="btn btn-primary" onClick="{{ savePerson }}" style="justify-content:center;width:100%;padding:15px 17px;font-size:15px;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em;color:#fff">Guardar persona</button>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ modalIsEvent }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:20px;display:flex;flex-direction:column;gap:16px">
+                <div class="field">
+                  <label style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Nombre del evento</label>
+                  <input class="input" value="{{ formName }}" onChange="{{ setFormName }}" placeholder="Ej: Finde en Córdoba" style="width:100%;font-size:16px;padding:13px;border:2px solid var(--color-text)">
+                </div>
+                <div>
+                  <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Participantes</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:9px">
+                    <sc-for list="{{ selectableUsers }}" as="u" hint-placeholder-count="5">
+                      <button onClick="{{ u.toggle }}" style="display:flex;align-items:center;gap:8px;background:{{ u.bg }};color:{{ u.fg }};border:2px solid var(--color-text);padding:9px 12px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:13px;font-variant-caps:normal">
+                        <span style="width:10px;height:10px;background:{{ u.dot }}"></span>{{ u.name }}
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+                <button class="btn btn-primary" onClick="{{ saveEvent }}" style="justify-content:center;width:100%;padding:15px 17px;font-size:15px;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em;color:#fff">Crear evento</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ modalIsExpense }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:20px;display:flex;flex-direction:column;gap:16px">
+                <div class="field">
+                  <label style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Descripción</label>
+                  <input class="input" value="{{ formName }}" onChange="{{ setFormName }}" placeholder="Ej: Nafta" style="width:100%;font-size:16px;padding:13px;border:2px solid var(--color-text)">
+                </div>
+                <div class="field">
+                  <label style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Monto</label>
+                  <input class="input" value="{{ formAmount }}" onChange="{{ setFormAmount }}" inputMode="numeric" placeholder="0" style="width:100%;font-size:20px;padding:13px;border:2px solid var(--color-text)">
+                </div>
+                <div>
+                  <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">¿Quién pagó?</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:9px">
+                    <sc-for list="{{ payerOptions }}" as="u" hint-placeholder-count="4">
+                      <button onClick="{{ u.pick }}" style="background:{{ u.bg }};color:{{ u.fg }};border:2px solid var(--color-text);padding:9px 12px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:13px;font-variant-caps:normal">{{ u.name }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">¿Entre quiénes se divide?</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:9px">
+                    <sc-for list="{{ shareOptions }}" as="u" hint-placeholder-count="4">
+                      <button onClick="{{ u.toggle }}" style="display:flex;align-items:center;gap:8px;background:{{ u.bg }};color:{{ u.fg }};border:2px solid var(--color-text);padding:9px 12px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:13px;font-variant-caps:normal">
+                        <span style="width:10px;height:10px;background:{{ u.dot }}"></span>{{ u.name }}
+                      </button>
+                    </sc-for>
+                  </div>
+                  <div style="margin-top:10px;font-size:12.5px;color:var(--color-neutral-700);font-variant-caps:normal">{{ splitNote }}</div>
+                </div>
+                <button class="btn btn-primary" onClick="{{ saveExpense }}" style="justify-content:center;width:100%;padding:15px 17px;font-size:15px;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em;color:#fff">Guardar gasto</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ modalIsBalance }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:6px">
+                  <div style="margin-top:10px;display:flex;flex-direction:column;gap:0">
+                    <sc-for list="{{ settlements }}" as="b" hint-placeholder-count="3">
+                      <div style="padding:12px 0;border-top:1px solid var(--color-neutral-700);display:flex;flex-direction:column;gap:8px">
+                        <div style="display:flex;align-items:center;gap:10px">
+                          <span style="font-family:var(--font-heading);font-weight:800;font-size:14.5px;font-variant-caps:normal">{{ b.from }}</span>
+                          <span style="color:var(--color-accent-400);font-size:15px">→</span>
+                          <span style="font-family:var(--font-heading);font-weight:800;font-size:14.5px;flex:1;font-variant-caps:normal">{{ b.to }}</span>
+                          <span style="font-family:var(--font-heading);font-weight:900;font-size:15px;color:var(--color-accent-400);font-variant-caps:normal">{{ b.amount }}</span>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <sc-if value="{{ hasPayments }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:18px;border-top:2px solid var(--color-neutral-700);padding-top:12px">
+                      <div style="font-family:var(--font-heading);font-weight:800;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-neutral-400);font-variant-caps:normal">Pagos registrados</div>
+                      <sc-for list="{{ evPayments }}" as="p" hint-placeholder-count="1">
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--color-neutral-700)">
+                          <span style="flex:1;font-family:var(--font-heading);font-weight:800;font-size:13.5px;font-variant-caps:normal">{{ p.label }}</span>
+                          <span style="font-family:var(--font-heading);font-weight:900;font-size:13.5px;font-variant-caps:normal">{{ p.amount }}</span>
+                          <button onClick="{{ p.undo }}" style="background:transparent;border:1px solid var(--color-neutral-600);color:var(--color-bg);padding:5px 9px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:10.5px;font-variant-caps:normal" style-hover="border-color:var(--color-accent-400);color:var(--color-accent-400)">Deshacer</button>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+            </sc-if>
+
+            <sc-if value="{{ modalIsPay }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:18px">
+                <sc-if value="{{ justPaid }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-bottom:16px;border:2px solid var(--color-text);background:var(--color-neutral-100);padding:13px 14px;display:flex;align-items:center;gap:12px;animation:hubUp .18s ease-out">
+                    <span style="flex:1;font-family:var(--font-heading);font-weight:800;font-size:13.5px;font-variant-caps:normal">{{ justPaidLabel }}</span>
+                    <button onClick="{{ undoPaid }}" style="flex:none;background:transparent;border:0;padding:0;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12.5px;color:var(--color-accent-700);text-decoration:underline;text-underline-offset:3px;font-variant-caps:normal">Deshacer</button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ hasDebts }}" hint-placeholder-val="{{ true }}">
+                  <div>
+                    <div style="font-family:var(--font-heading);font-weight:900;font-size:30px;line-height:1">{{ payTotal }}</div>
+                    <div style="font-size:12.5px;color:var(--color-neutral-700);margin-top:2px;font-variant-caps:normal">{{ payTotalNote }}</div>
+                    <div style="margin-top:16px;border-top:2px solid var(--color-divider)">
+                      <sc-for list="{{ myDebts }}" as="d" hint-placeholder-count="2">
+                        <div style="padding:14px 0;border-bottom:1px solid var(--color-neutral-300);display:flex;flex-direction:column;gap:9px">
+                          <div style="display:flex;align-items:center;gap:12px">
+                            <div style="width:38px;height:38px;flex:none;background:var(--color-accent-600);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:13px;font-variant-caps:normal">{{ d.initials }}</div>
+                            <div style="flex:1;font-family:var(--font-heading);font-weight:800;font-size:16.5px">{{ d.to }}</div>
+                            <div style="font-family:var(--font-heading);font-weight:900;font-size:17px">{{ d.amount }}</div>
+                          </div>
+                          <sc-if value="{{ d.hasAlias }}" hint-placeholder-val="{{ true }}">
+                            <div style="display:flex;align-items:stretch;border:2px solid var(--color-text)">
+                              <div style="flex:1;min-width:0;padding:10px 12px;background:var(--color-neutral-100);font-family:var(--font-heading);font-weight:800;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-caps:normal">{{ d.alias }}</div>
+                              <button onClick="{{ d.copy }}" style="flex:none;background:var(--color-accent-600);color:#fff;border:0;border-left:2px solid var(--color-text);padding:0 14px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12px;font-variant-caps:normal" style-hover="background:var(--color-accent-700)">{{ d.copyLabel }}</button>
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{ d.noAlias }}" hint-placeholder-val="{{ false }}">
+                            <div style="font-size:12px;color:var(--color-neutral-700);border-left:3px solid var(--color-accent-600);padding-left:10px;font-variant-caps:normal">{{ d.to }} todavía no cargó su alias.</div>
+                          </sc-if>
+                          <button onClick="{{ d.markPaid }}" style="width:100%;background:var(--color-text);color:var(--color-bg);border:0;padding:12px 14px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:13px;letter-spacing:.03em;text-align:center;font-variant-caps:normal" style-hover="background:var(--color-neutral-800)">Ya se lo pagué</button>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ hasOwedToMe }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:20px;border-top:2px solid var(--color-divider);padding-top:14px">
+                    <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-neutral-600);font-variant-caps:normal">Te deben</div>
+                    <sc-for list="{{ owedToMe }}" as="o" hint-placeholder-count="2">
+                      <div style="padding:12px 0;border-bottom:1px solid var(--color-neutral-300);display:flex;align-items:center;gap:12px">
+                        <div style="width:34px;height:34px;flex:none;background:var(--color-text);color:var(--color-bg);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:12px;font-variant-caps:normal">{{ o.initials }}</div>
+                        <div style="flex:1;font-family:var(--font-heading);font-weight:800;font-size:15px">{{ o.from }}</div>
+                        <div style="font-family:var(--font-heading);font-weight:900;font-size:15px;font-variant-caps:normal">{{ o.amount }}</div>
+                        <button onClick="{{ o.markReceived }}" style="flex:none;background:var(--color-text);color:var(--color-bg);border:0;padding:9px 11px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:11px;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.05em" style-hover="background:var(--color-neutral-800)">Ya me pagó</button>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ noDebts }}" hint-placeholder-val="{{ false }}">
+                  <div>
+                    <div style="font-family:var(--font-heading);font-weight:900;font-size:26px;line-height:1.05">Estás al día</div>
+                    <div style="font-size:13px;color:var(--color-neutral-700);margin-top:6px;font-variant-caps:normal">{{ settlementNote }}</div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ modalIsProfile }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:20px;display:flex;flex-direction:column;gap:18px">
+                <div style="display:flex;align-items:center;gap:14px">
+                  <div style="width:60px;height:60px;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:900;font-size:22px">{{ meInitials }}</div>
+                  <div>
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <span style="font-family:var(--font-heading);font-weight:800;font-size:22px">{{ meName }}</span>
+                      <sc-if value="{{ nameNotEditing }}" hint-placeholder-val="{{ true }}">
+                        <button onClick="{{ editName }}" title="Editar nombre" style="width:44px;height:44px;margin:-14px -14px -14px -8px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;padding:0;cursor:pointer;line-height:1;color:var(--color-accent-700)">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+                        </button>
+                      </sc-if>
+                    </div>
+                    <sc-if value="{{ bdNotEditing }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex;align-items:center;gap:8px">
+                        <span style="font-size:12.5px;color:var(--color-neutral-700);font-variant-caps:normal">Cumpleaños: {{ meBirthday }}</span>
+                        <button onClick="{{ editBirthday }}" title="Editar cumpleaños" style="width:44px;height:44px;margin:-14px -14px -14px -8px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;padding:0;cursor:pointer;line-height:1;color:var(--color-accent-700)">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+                        </button>
+                      </div>
+                    </sc-if>
+                  </div>
+                </div>
+                <sc-if value="{{ nameEditing }}" hint-placeholder-val="{{ false }}">
+                  <div style="border-top:2px solid var(--color-divider);padding-top:16px">
+                    <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Cambiar tu nombre</div>
+                    <div style="margin-top:9px;display:flex;gap:8px;align-items:stretch">
+                      <input class="input" value="{{ nameDraft }}" onChange="{{ setNameDraft }}" placeholder="Tu nombre" style="flex:1;min-width:0;font-size:16px;padding:12px 13px;border:2px solid var(--color-text)">
+                      <button class="btn btn-primary" onClick="{{ saveName }}" style="flex:none;padding:12px 15px;font-size:13px;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.05em;color:#fff">Guardar</button>
+                    </div>
+                    <sc-if value="{{ hasNameError }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:8px;font-size:12px;color:var(--color-accent-700);font-variant-caps:normal">{{ nameError }}</div>
+                    </sc-if>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ bdEditing }}" hint-placeholder-val="{{ false }}">
+                  <div style="border-top:2px solid var(--color-divider);padding-top:16px">
+                    <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Corregir tu cumpleaños</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:8px;margin-top:8px">
+                      <select value="{{ bdDay }}" onChange="{{ setBdDay }}" style="width:100%;font-family:var(--font-heading);font-weight:800;font-size:15px;padding:12px 8px;border:2px solid var(--color-text);background:var(--color-neutral-100);color:var(--color-text);border-radius:0;font-variant-caps:normal">
+                        <option value="">Día</option>
+                        <sc-for list="{{ dayOptions }}" as="o" hint-placeholder-count="31"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+                      </select>
+                      <select value="{{ bdMonth }}" onChange="{{ setBdMonth }}" style="width:100%;font-family:var(--font-heading);font-weight:800;font-size:15px;padding:12px 8px;border:2px solid var(--color-text);background:var(--color-neutral-100);color:var(--color-text);border-radius:0;font-variant-caps:normal">
+                        <option value="">Mes</option>
+                        <sc-for list="{{ monthOptions }}" as="o" hint-placeholder-count="12"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+                      </select>
+                      <select value="{{ bdYear }}" onChange="{{ setBdYear }}" style="width:100%;font-family:var(--font-heading);font-weight:800;font-size:15px;padding:12px 8px;border:2px solid var(--color-text);background:var(--color-neutral-100);color:var(--color-text);border-radius:0;font-variant-caps:normal">
+                        <option value="">Año</option>
+                        <sc-for list="{{ yearOptions }}" as="o" hint-placeholder-count="70"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+                      </select>
+                    </div>
+                    <sc-if value="{{ hasBdError }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:8px;font-size:12px;color:var(--color-accent-700);font-variant-caps:normal">{{ bdError }}</div>
+                    </sc-if>
+                    <button class="btn btn-primary" onClick="{{ saveBirthday }}" style="margin-top:10px;justify-content:center;width:100%;padding:13px 16px;font-size:14px;font-variant-caps:normal;text-transform:uppercase;letter-spacing:.06em;color:#fff">Guardar cumpleaños</button>
+                  </div>
+                </sc-if>
+
+                <div style="border-top:2px solid var(--color-divider);padding-top:16px">
+                  <div style="font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-variant-caps:normal">Alias para que te transfieran</div>
+                  <sc-if value="{{ meHasAlias }}" hint-placeholder-val="{{ true }}">
+                    <div style="margin-top:10px;display:flex;align-items:stretch;border:2px solid var(--color-text)">
+                      <div style="flex:1;min-width:0;padding:12px 13px;background:var(--color-neutral-100);font-family:var(--font-heading);font-weight:800;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ meAlias }}</div>
+                      <button onClick="{{ copyMyAlias }}" style="flex:none;background:var(--color-accent);color:#fff;border:0;border-left:2px solid var(--color-text);padding:0 15px;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:12.5px;letter-spacing:.04em;font-variant-caps:normal" style-hover="background:var(--color-accent-600)">{{ copyMyAliasLabel }}</button>
+                    </div>
+                    <button onClick="{{ editAlias }}" style="margin-top:8px;background:transparent;border:0;padding:0;cursor:pointer;font-size:12px;color:var(--color-accent-700);text-decoration:underline;text-underline-offset:3px;font-variant-caps:normal">Editar alias</button>
+                  </sc-if>
+                  <sc-if value="{{ meAliasEditing }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:10px;display:flex;align-items:stretch;gap:8px">
+                      <input class="input" value="{{ aliasDraft }}" onChange="{{ setAliasDraft }}" placeholder="tu.alias.banco" style="flex:1;min-width:0;font-size:15px;padding:12px 13px;border:2px solid var(--color-text)">
+                      <button class="btn btn-primary" onClick="{{ saveAlias }}" style="flex:none;padding:12px 15px;font-size:13px;font-variant-caps:normal;color:#fff">Guardar</button>
+                    </div>
+                  </sc-if>
+                </div>
+                <button class="btn btn-secondary" onClick="{{ logout }}" style="justify-content:flex-start;width:100%;padding:14px 16px;border-width:2px;font-size:14px">Salir de la sesión</button>
+              </div>
+            </sc-if>
+
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+
+    <div style="width:390px;font-size:12px;color:var(--color-neutral-600);line-height:1.6;font-variant-caps:normal">Próximos pasos si te sirve: recordatorios push del cumple del día, “saldar deuda” con alias/CBU, y foto de comprobante en cada gasto.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:1000}}">
+const TODAY = new Date(2026, 8, 7);
+const MONTHS = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const money = n => "$" + Math.round(n).toLocaleString("es-AR");
+const pad = n => String(n).padStart(2, "0");
+const initialsOf = n => n.trim().split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+const norm = s => s.trim().toLowerCase();
+
+function daysUntil(m, d) {
+  let t = new Date(TODAY.getFullYear(), m - 1, d);
+  if (t < TODAY) t = new Date(TODAY.getFullYear() + 1, m - 1, d);
+  return Math.round((t - TODAY) / 86400000);
+}
+
+class Component extends DCLogic {
+  state = {
+    screen: "login",
+    tab: "home",
+    modal: null,
+    eventId: "mdp",
+    nameInput: "",
+    pinInput: "",
+    loginError: null,
+    linkCandidate: null,
+    meId: null,
+    formName: "",
+    formDay: "", formMonth: "", formYear: "", formPrivate: false, formKind: "cumple", formRemind: [0],
+    setupDay: "", setupMonth: "", setupYear: "",
+    formAmount: "",
+    formPayer: null,
+    formShares: [],
+    formParticipants: [],
+    cumplesView: "lista",
+    gastosView: "eventos",
+    homeRange: "semana",
+    viewUserId: null,
+    configOpen: false,
+    notifsPanel: false,
+    readNotifs: [],
+    prefs: { notifCumple: true, notifGasto: true, notifResumen: false, theme: "claro", currency: "ARS", weekStart: "lunes" },
+    showHistory: false,
+    eventSearch: "",
+    expandedPerson: null,
+    search: "",
+    calMonth: 8,
+    aliasDraft: null,
+    copied: null,
+    users: [
+      { id: "u_nacho", name: "Nacho", pin: "1234", alias: "nacho.mp.hub" },
+      { id: "u_sofi", name: "Sofi", pin: "1234", alias: "sofi.transfiere" },
+      { id: "u_mica", name: "Mica", pin: "2580", alias: "mica.ahorro.uala" },
+      { id: "u_facu", name: "Facu", pin: "4321", alias: "" },
+      { id: "u_caro", name: "Caro", pin: "9999", alias: "caro.brubank" }
+    ],
+    people: [
+      { id: "p1", name: "Sofi", m: 9, d: 7, userId: "u_sofi", addedBy: "Nacho", year: 1996 },
+      { id: "p_an1", name: "Sofi y Tomi", m: 9, d: 14, userId: null, addedBy: "Nacho", addedById: "u_nacho", year: 2019, kind: "aniversario" },
+      { id: "p2", name: "Tomi", m: 9, d: 11, userId: null, addedBy: "Mica", year: 1995 },
+      { id: "p3", name: "Mica", m: 9, d: 19, userId: "u_mica", addedBy: "Sofi", year: 1994 },
+      { id: "p4", name: "Facu", m: 10, d: 2, userId: "u_facu", addedBy: "Facu", year: 1995 },
+      { id: "p5", name: "Juli", m: 10, d: 14, userId: null, addedBy: "Nacho", year: 1997 },
+      { id: "p6", name: "Nacho", m: 11, d: 3, userId: "u_nacho", addedBy: "Nacho", year: 1995 },
+      { id: "p7", name: "Caro", m: 11, d: 28, userId: "u_caro", addedBy: "Caro", year: 1996 },
+      { id: "p8", name: "Lu", m: 12, d: 24, userId: null, addedBy: "Sofi", year: 1998 }
+    ],
+    events: [
+      { id: "mdp", name: "Finde en Mar del Plata", createdBy: "u_nacho", closed: false, m: 8, d: 22, participants: ["u_nacho", "u_sofi", "u_mica", "u_facu"], expenses: [
+        { id: "x1", desc: "Alquiler de la casa", amount: 96000, payer: "u_nacho", shares: ["u_nacho", "u_sofi", "u_mica", "u_facu"] },
+        { id: "x2", desc: "Nafta ida y vuelta", amount: 42000, payer: "u_facu", shares: ["u_nacho", "u_sofi", "u_mica", "u_facu"] },
+        { id: "x3", desc: "Súper del viernes", amount: 38500, payer: "u_sofi", shares: ["u_nacho", "u_sofi", "u_mica", "u_facu"] },
+        { id: "x4", desc: "Bar del sábado", amount: 24000, payer: "u_mica", shares: ["u_nacho", "u_sofi", "u_mica"] }
+      ] },
+      { id: "cena", name: "Cena cumple Sofi", createdBy: "u_caro", closed: false, m: 9, d: 7, participants: ["u_nacho", "u_sofi", "u_caro"], expenses: [
+        { id: "y1", desc: "Restaurante", amount: 84000, payer: "u_caro", shares: ["u_nacho", "u_sofi", "u_caro"] },
+        { id: "y2", desc: "Torta", amount: 18000, payer: "u_nacho", shares: ["u_nacho", "u_caro"] }
+      ] },
+      { id: "asado", name: "Asado en casa de Facu", createdBy: "u_facu", closed: false, m: 8, d: 30, participants: ["u_nacho", "u_facu", "u_mica"], expenses: [
+        { id: "z1", desc: "Carne y carbón", amount: 61000, payer: "u_facu", shares: ["u_nacho", "u_facu", "u_mica"] },
+        { id: "z2", desc: "Bebidas", amount: 22500, payer: "u_mica", shares: ["u_nacho", "u_facu", "u_mica"] }
+      ] },
+      { id: "previa", name: "Previa de año nuevo", createdBy: "u_nacho", closed: false, m: 8, d: 5, participants: ["u_nacho", "u_sofi"], payments: [{ id: "pp1", from: "u_sofi", to: "u_nacho", amount: 12000 }], expenses: [
+        { id: "w1", desc: "Fernet y hielo", amount: 24000, payer: "u_nacho", shares: ["u_nacho", "u_sofi"] }
+      ] },
+      { id: "h1", name: "Torneo de padel", m: 9, d: 1, participants: ["u_sofi", "u_mica", "u_caro"], expenses: [] },
+      { id: "h2", name: "Regalo para Mica", m: 9, d: 14, participants: ["u_sofi", "u_facu", "u_caro"], expenses: [] },
+      { id: "h3", name: "Bariloche invierno", m: 7, d: 12, participants: ["u_facu", "u_caro"], expenses: [] },
+      { id: "h4", name: "Cumple sorpresa Nacho", m: 10, d: 28, participants: ["u_sofi", "u_mica", "u_facu", "u_caro"], expenses: [] }
+    ]
+  };
+
+  user(id) { return this.state.users.find(u => u.id === id); }
+  uname(id) { const u = this.user(id); return u ? u.name : "?"; }
+
+  set(k) { return e => this.setState({ [k]: e.target.value }); }
+
+  go(screen, tab) { this.setState({ screen, tab: tab || this.state.tab, modal: null }); }
+
+  submitLogin = () => {
+    const name = this.state.nameInput.trim();
+    const pin = this.state.pinInput.trim();
+    if (!name) return this.setState({ loginError: "Falta tu nombre", loginErrorHint: "Escribí el nombre con el que te conocen en el grupo." });
+    if (!/^\d{4,6}$/.test(pin)) return this.setState({ loginError: "PIN inválido", loginErrorHint: "Tiene que ser de 4 a 6 números." });
+    const existing = this.state.users.find(u => norm(u.name) === norm(name));
+    if (existing) {
+      if (existing.pin !== pin) return this.setState({ loginError: "PIN incorrecto", loginErrorHint: "El nombre " + existing.name + " ya existe. Probá de nuevo o pedile a alguien que te resetee el PIN." });
+      return this.setState({ meId: existing.id, screen: "app", tab: "home", loginError: null, pinInput: "" });
+    }
+    const person = this.state.people.find(p => norm(p.name) === norm(name) && !p.userId);
+    if (person) return this.setState({ screen: "link", linkCandidate: person.id, loginError: null });
+    this.setState({ screen: "setup", setupName: name, setupPin: pin, setupAlias: "", setupError: null, loginError: null });
+  };
+
+  finishSetup = () => {
+    const d = +this.state.setupDay, mo = +this.state.setupMonth, y = +this.state.setupYear;
+    if (!d || !mo || !y) return this.setState({ setupError: "Elegí día, mes y año" });
+    if (d > new Date(y, mo, 0).getDate()) return this.setState({ setupError: "Esa fecha no existe" });
+    const id = "u_" + Date.now();
+    const name = this.state.setupName;
+    this.setState(st => ({
+      users: st.users.concat([{ id, name, pin: st.setupPin, alias: (st.setupAlias || "").trim() }]),
+      people: st.people.concat([{ id: "p_" + Date.now(), name, m: mo, d, userId: id, addedBy: name, year: y }]),
+      meId: id, screen: "app", tab: "home", pinInput: "", setupError: null
+    }));
+  };
+
+  confirmLink = () => {
+    const p = this.state.people.find(x => x.id === this.state.linkCandidate);
+    const id = "u_" + Date.now();
+    this.setState(s => ({
+      users: s.users.concat([{ id, name: p.name, pin: s.pinInput.trim() }]),
+      people: s.people.map(x => x.id === p.id ? Object.assign({}, x, { userId: id }) : x),
+      meId: id, screen: "app", tab: "home", pinInput: "", linkCandidate: null
+    }));
+  };
+
+  rejectLink = () => {
+    this.setState(s => ({ screen: "setup", setupName: s.nameInput.trim(), setupPin: s.pinInput.trim(), setupAlias: "", setupError: null, linkCandidate: null }));
+  };
+
+  copy(text, key) {
+    if (!text) return;
+    try {
+      if (navigator.clipboard) navigator.clipboard.writeText(text);
+      else {
+        const ta = document.createElement("textarea");
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand("copy"); document.body.removeChild(ta);
+      }
+    } catch (e) { /* preview sandbox */ }
+    this.setState({ copied: key });
+    clearTimeout(this._ct);
+    this._ct = setTimeout(() => this.setState({ copied: null }), 1600);
+  }
+
+  markReceived(fromId, amount) {
+    const pid = "pay_" + Date.now();
+    this.setState(s => ({
+      events: s.events.map(e => e.id === s.eventId
+        ? Object.assign({}, e, { payments: (e.payments || []).concat([{ id: pid, from: fromId, to: s.meId, amount }]) })
+        : e),
+      copied: null, justPaid: { id: pid, to: this.uname(fromId), amount, received: true }
+    }));
+  }
+
+  settleWith(eventId, fromId, toId, amount) {
+    this.setState(s => ({
+      events: s.events.map(e => e.id === eventId
+        ? Object.assign({}, e, { payments: (e.payments || []).concat([{ id: "pay_" + Date.now(), from: fromId, to: toId, amount }]) })
+        : e)
+    }));
+  }
+
+  closeEvent = () => {
+    this.setState(s => ({ events: s.events.map(e => e.id === s.eventId ? Object.assign({}, e, { closed: true }) : e), tab: "gastos", modal: null, showHistory: false, eventSearch: "" }));
+  };
+
+  markPaid(toId, amount) {
+    const pid = "pay_" + Date.now();
+    this.setState(s => ({
+      events: s.events.map(e => e.id === s.eventId
+        ? Object.assign({}, e, { payments: (e.payments || []).concat([{ id: pid, from: s.meId, to: toId, amount }]) })
+        : e),
+      copied: null, justPaid: { id: pid, to: this.uname(toId), amount }
+    }));
+  }
+
+  undoPaid(id) {
+    this.setState(s => ({
+      events: s.events.map(e => e.id === s.eventId
+        ? Object.assign({}, e, { payments: (e.payments || []).filter(p => p.id !== id) })
+        : e),
+      justPaid: null
+    }));
+  }
+
+  savePersonEdit = () => {
+    const s = this.state;
+    const n = (s.formName || "").trim();
+    const d = +s.formDay, mo = +s.formMonth, y = +s.formYear;
+    if (!n || !d || !mo || !y) return this.setState({ personError: "Completá nombre y fecha" });
+    if (d > new Date(y, mo, 0).getDate()) return this.setState({ personError: "Esa fecha no existe" });
+    this.setState(st => ({
+      people: st.people.map(p => p.id === st.editPersonId ? Object.assign({}, p, { name: n, d, m: mo, year: y, priv: st.formPrivate, kind: st.formKind === "aniversario" ? "aniversario" : "cumple", remind: (st.formRemind || []).slice() }) : p),
+      modal: null, editPersonId: null, personError: null
+    }));
+  };
+
+  deletePerson = () => {
+    this.setState(s => ({ people: s.people.filter(p => p.id !== s.editPersonId), modal: null, editPersonId: null, confirmDelete: false }));
+  };
+
+  saveName = () => {
+    const n = (this.state.nameDraft || "").trim();
+    if (!n) return this.setState({ nameError: "Poné un nombre" });
+    const taken = this.state.users.some(u => u.id !== this.state.meId && norm(u.name) === norm(n));
+    if (taken) return this.setState({ nameError: "Ya hay alguien con ese nombre" });
+    this.setState(s => {
+      const old = this.uname(s.meId);
+      return {
+        users: s.users.map(u => u.id === s.meId ? Object.assign({}, u, { name: n }) : u),
+        people: s.people.map(p => p.userId === s.meId ? Object.assign({}, p, { name: n }) : (p.addedBy === old ? Object.assign({}, p, { addedBy: n }) : p)),
+        nameEditing: false, nameError: null
+      };
+    });
+  };
+
+  saveBirthday = () => {
+    const d = +this.state.bdDay, mo = +this.state.bdMonth, y = +this.state.bdYear;
+    if (!d || !mo || !y) return this.setState({ bdError: "Elegí día, mes y año" });
+    if (d > new Date(y, mo, 0).getDate()) return this.setState({ bdError: "Esa fecha no existe" });
+    this.setState(s => ({
+      people: s.people.map(p => p.userId === s.meId ? Object.assign({}, p, { d, m: mo, year: y }) : p),
+      bdEditing: false, bdError: null
+    }));
+  };
+
+  saveAlias = () => {
+    const a = (this.state.aliasDraft || "").trim();
+    this.setState(s => ({ users: s.users.map(u => u.id === s.meId ? Object.assign({}, u, { alias: a }) : u), aliasDraft: null }));
+  };
+
+  logout = () => this.setState({ screen: "login", drawer: false, modal: null, meId: null, nameInput: "", pinInput: "", loginError: null });
+
+  balancesFor(ev) {
+    const net = {};
+    ev.participants.forEach(p => { net[p] = 0; });
+    (ev.payments || []).forEach(p => {
+      net[p.from] = (net[p.from] || 0) + p.amount;
+      net[p.to] = (net[p.to] || 0) - p.amount;
+    });
+    ev.expenses.forEach(x => {
+      net[x.payer] = (net[x.payer] || 0) + x.amount;
+      const each = x.amount / x.shares.length;
+      x.shares.forEach(s => { net[s] = (net[s] || 0) - each; });
+    });
+    return net;
+  }
+
+  settleFor(ev) {
+    const net = this.balancesFor(ev);
+    const debt = Object.keys(net).filter(k => net[k] < -1).map(k => ({ id: k, v: -net[k] })).sort((a, b) => b.v - a.v);
+    const cred = Object.keys(net).filter(k => net[k] > 1).map(k => ({ id: k, v: net[k] })).sort((a, b) => b.v - a.v);
+    const out = [];
+    let i = 0, j = 0;
+    while (i < debt.length && j < cred.length) {
+      const amt = Math.min(debt[i].v, cred[j].v);
+      out.push({ from: this.uname(debt[i].id), to: this.uname(cred[j].id), toId: cred[j].id, amount: money(amt) });
+      debt[i].v -= amt; cred[j].v -= amt;
+      if (debt[i].v < 1) i++;
+      if (cred[j].v < 1) j++;
+    }
+    return out;
+  }
+
+  savePerson = () => {
+    const n = this.state.formName.trim();
+    const d = +this.state.formDay, mo = +this.state.formMonth, y = +this.state.formYear;
+    if (!n || !d || !mo || !y) return;
+    this.setState(s => ({
+      people: s.people.concat([{ id: "p_" + Date.now(), name: n, m: mo, d, userId: null, addedBy: this.uname(s.meId), addedById: s.meId, year: y, priv: s.formPrivate, kind: s.formKind === "aniversario" ? "aniversario" : "cumple", remind: (s.formRemind || []).slice() }]),
+      modal: null, formName: "", formDay: "", formMonth: "", formYear: "", formKind: "cumple", formRemind: [0]
+    }));
+  };
+
+  saveEvent = () => {
+    const n = this.state.formName.trim();
+    if (!n) return;
+    const id = "e_" + Date.now();
+    const parts = Array.from(new Set([this.state.meId].concat(this.state.formParticipants)));
+    this.setState(s => ({
+      events: s.events.concat([{ id, name: n, createdBy: s.meId, closed: false, m: 9, d: 7, participants: parts, expenses: [], payments: [] }]),
+      modal: null, formName: "", formParticipants: [], screen: "app", tab: "detail", eventId: id
+    }));
+  };
+
+  saveExpense = () => {
+    const n = this.state.formName.trim();
+    const amt = parseFloat(String(this.state.formAmount).replace(/[^\d.]/g, ""));
+    if (!n || !amt || !this.state.formShares.length) return;
+    const payer = this.state.formPayer || this.state.meId;
+    this.setState(s => ({
+      events: s.events.map(e => e.id === s.eventId ? Object.assign({}, e, { expenses: e.expenses.concat([{ id: "x_" + Date.now(), desc: n, amount: amt, payer, shares: s.formShares }]) }) : e),
+      modal: null, formName: "", formAmount: ""
+    }));
+  };
+
+  renderVals() {
+    const s = this.state;
+    const me = this.user(s.meId);
+    const meName = me ? me.name : "—";
+    const A = "var(--color-accent)", INK = "var(--color-text)", BG = "var(--color-neutral-100)";
+
+    const people = s.people.filter(p => !p.priv || p.addedById === s.meId).map(p => {
+      const days = daysUntil(p.m, p.d);
+      return {
+        id: p.id, name: p.name, initials: initialsOf(p.name), days,
+        linked: !!p.userId, notLinked: !p.userId,
+        isMe: !!(me && p.userId === me.id),
+        isToday: days === 0, notToday: days !== 0,
+        dateLabel: pad(p.d) + "/" + pad(p.m) + "/" + p.year,
+        daysLabel: days === 0 ? "¡hoy!" : days === 1 ? "mañana" : "faltan " + days + " días",
+          canEdit: !!(me && (p.addedBy === me.name || p.userId === me.id)),
+        isPrivate: !!p.priv,
+        isAniv: p.kind === "aniversario",
+        showInitials: p.kind !== "aniversario",
+        chipBg: p.kind === "aniversario" ? "var(--color-text)" : "var(--color-accent-600)",
+        chipFg: p.kind === "aniversario" ? "var(--color-bg)" : "#fff",
+        kindLabel: p.kind === "aniversario" ? "aniversario" : "cumpleaños",
+        edit: () => this.setState({
+          modal: "person", editPersonId: p.id, formName: p.name,
+          formDay: String(p.d), formMonth: String(p.m), formYear: String(p.year), formPrivate: !!p.priv,
+          formKind: p.kind === "aniversario" ? "aniversario" : "cumple",
+          formRemind: Array.isArray(p.remind) ? p.remind.slice() : [0],
+          personError: null, confirmDelete: false
+        }),
+        age: (TODAY.getFullYear() - p.year),
+        ageLabel: (p.kind === "aniversario" ? "" : "cumple ") + ((days === 0 ? TODAY.getFullYear() : new Date(TODAY.getFullYear(), p.m - 1, p.d) < TODAY ? TODAY.getFullYear() + 1 : TODAY.getFullYear()) - p.year) + (p.kind === "aniversario" ? " años" : "")
+      };
+    }).sort((a, b) => a.days - b.days);
+
+    const today = people.filter(p => p.isToday);
+    const byDateDesc = (a, b) => (b.m * 100 + b.d) - (a.m * 100 + a.d);
+    const evSearch = s.eventSearch.trim().toLowerCase();
+    const matches = e => !evSearch || e.name.toLowerCase().indexOf(evSearch) >= 0;
+    const myEvents = s.events.filter(e => e.participants.indexOf(s.meId) >= 0 && !e.closed).sort(byDateDesc);
+    const myClosed = s.events.filter(e => e.participants.indexOf(s.meId) >= 0 && e.closed).sort(byDateDesc);
+    const ev = s.events.find(e => e.id === s.eventId) || myEvents[0] || s.events[0];
+
+    const evList = (s.showHistory ? myClosed : myEvents).filter(matches).map(e => {
+      const net = this.balancesFor(e)[s.meId] || 0;
+      const total = e.expenses.reduce((a, x) => a + x.amount, 0);
+      return {
+        name: e.name, dateLabel: e.d + " " + MONTHS[e.m - 1],
+        participantsLabel: e.participants.length + " personas",
+        avatars: e.participants.map(p => ({ initials: initialsOf(this.uname(p)) })),
+        balanceKind: net > 1 ? "te deben" : net < -1 ? "debés" : "al día",
+        balanceAmount: Math.abs(net) < 1 ? "—" : money(Math.abs(net)),
+        balanceColor: net < -1 ? "var(--color-accent)" : "var(--color-text)",
+        totalLabel: "total " + money(total),
+        open: () => this.setState({ eventId: e.id, tab: "detail", screen: "app" })
+      };
+    });
+
+    const evNet = ev ? this.balancesFor(ev) : {};
+    const settlements = (ev ? this.settleFor(ev) : []).map((b, i) => {
+      const u = this.user(b.toId);
+      const alias = u && u.alias ? u.alias : "";
+      const key = "s" + i;
+      return Object.assign({}, b, {
+        hasAlias: !!alias, noAlias: !alias, alias,
+        copyLabel: s.copied === key ? "¡Copiado!" : "Copiar alias",
+        copy: () => this.copy(alias, key)
+      });
+    });
+    const myNet = evNet[s.meId] || 0;
+    const myDebts = settlements.filter(b => b.from === meName).map(b => Object.assign({}, b, {
+      initials: initialsOf(b.to),
+      raw: parseFloat(String(b.amount).replace(/[^0-9]/g, "")) || 0
+    })).map(d => Object.assign({}, d, { markPaid: () => this.markPaid(d.toId, d.raw) }));
+
+    const consolidated = (() => {
+      const agg = {};
+      myEvents.forEach(e => {
+        this.settleFor(e).forEach(b => {
+          const amt = parseFloat(String(b.amount).replace(/[^0-9]/g, "")) || 0;
+          const other = b.from === meName ? b.to : (b.to === meName ? b.from : null);
+          if (!other) return;
+          const dir = b.from === meName ? -1 : 1;
+          if (!agg[other]) agg[other] = { net: 0, rows: [] };
+          agg[other].net += dir * amt;
+          const otherId = e.participants.find(p => this.uname(p) === other);
+          const otherUser = this.user(otherId);
+          const alias = dir < 0 && otherUser && otherUser.alias ? otherUser.alias : "";
+          const ckey = "cb_" + e.id + "_" + other;
+          agg[other].rows.push({
+            event: e.name, amount: money(amt), dirLabel: dir > 0 ? "te debe" : "le debés",
+            canCopy: !!alias, copiedAlias: s.copied === ckey,
+            notCopiedAlias: s.copied !== ckey,
+            copyAlias: () => this.copy(alias, ckey),
+            settle: () => this.settleWith(e.id, dir > 0 ? otherId : s.meId, dir > 0 ? s.meId : otherId, amt)
+          });
+        });
+      });
+      return Object.keys(agg).sort((a, b) => Math.abs(agg[b].net) - Math.abs(agg[a].net)).map(name => {
+        const n = agg[name].net;
+        return {
+          name, initials: initialsOf(name),
+          stateLabel: n > 1 ? "te debe" : (n < -1 ? "le debés" : "estás a mano"),
+          amount: Math.abs(n) < 1 ? "" : money(Math.abs(n)),
+          amountColor: n < -1 ? "var(--color-accent-700)" : INK,
+          expanded: s.expandedPerson === name,
+          rows: agg[name].rows,
+          toggle: () => this.setState({ expandedPerson: s.expandedPerson === name ? null : name })
+        };
+      });
+    })();
+
+    const linkP = s.people.find(p => p.id === s.linkCandidate);
+    const tabDef = [["home", "Inicio"], ["cumples", "Fechas"], ["gastos", "Gastos"]];
+    const activeTab = s.tab === "detail" ? "gastos" : s.tab;
+
+    const screens = [
+      ["Login (normal)", () => this.setState({ screen: "login", loginError: null, nameInput: "", pinInput: "", meId: null, modal: null })],
+      ["Login con PIN incorrecto", () => this.setState({ screen: "login", nameInput: "Sofi", pinInput: "9081", loginError: "PIN incorrecto", loginErrorHint: "El nombre Sofi ya existe. Probá de nuevo o pedile a alguien que te resetee el PIN.", meId: null, modal: null })],
+      ["Sugerencia de vinculación", () => this.setState({ screen: "link", nameInput: "Tomi", pinInput: "4820", linkCandidate: "p2", modal: null })],
+      ["Alta de nuevo usuario", () => this.setState({ screen: "setup", setupName: "Tomi", setupPin: "4820", setupDay: "", setupMonth: "", setupYear: "", setupAlias: "", setupError: null, modal: null })],
+      ["Inicio (las dos secciones)", () => this.setState({ screen: "app", tab: "home", meId: s.meId || "u_nacho", modal: null })],
+      ["Fechas (lista y calendario)", () => this.setState({ screen: "app", tab: "cumples", meId: s.meId || "u_nacho", modal: null })],
+      ["Gastos — Eventos", () => this.setState({ screen: "app", tab: "gastos", meId: s.meId || "u_nacho", modal: null })],
+      ["Detalle de evento", () => this.setState({ screen: "app", tab: "detail", eventId: "mdp", meId: s.meId || "u_nacho", modal: null })],
+      ["Personas del grupo", () => this.setState({ screen: "app", tab: "personas", meId: s.meId || "u_nacho", modal: null, drawer: false })],
+      ["Configuración", () => this.setState({ screen: "app", tab: "config", meId: s.meId || "u_nacho", modal: null, drawer: false })],
+      ["Gastos — tab Balance", () => this.setState({ screen: "app", tab: "gastos", gastosView: "balance", meId: s.meId || "u_nacho", modal: null, expandedPerson: null })],
+      ["Detalle: Cerrar evento (creador)", () => this.setState({ screen: "app", tab: "detail", eventId: "previa", meId: s.meId || "u_nacho", modal: null })],
+      ["Detalle: Cerrar deshabilitado", () => this.setState({ screen: "app", tab: "detail", eventId: "mdp", meId: s.meId || "u_nacho", modal: null })]
+    ];
+
+    const notifRaw = [];
+    s.people
+      .filter(p => (!p.priv || p.addedById === s.meId) && !(me && p.userId === me.id))
+      .map(p => ({ p, days: daysUntil(p.m, p.d) }))
+      .filter(x => x.days === 0 && (Array.isArray(x.p.remind) ? x.p.remind : [0]).indexOf(0) >= 0)
+      .sort((a, b) => a.days - b.days)
+      .forEach(x => notifRaw.push({
+        id: "b_" + x.p.id, icon: x.p.kind === "aniversario" ? "◈" : "★", kind: x.p.kind === "aniversario" ? "aniversario" : "cumple",
+        title: x.p.kind === "aniversario"
+          ? (x.days === 0 ? "Aniversario de " + x.p.name + ", hoy" : "Aniversario de " + x.p.name + " en " + x.days + (x.days === 1 ? " día" : " días"))
+          : (x.days === 0 ? x.p.name + " cumple hoy" : x.p.name + " cumple en " + x.days + (x.days === 1 ? " día" : " días")),
+        body: pad(x.p.d) + "/" + pad(x.p.m) + " · tocá para ver el detalle",
+        go: () => this.setState({ notifsPanel: false, screen: "app", tab: "cumples" })
+      }));
+    consolidated.filter(c => c.amount).forEach(c => notifRaw.push({
+      id: "d_" + c.name, icon: "$", kind: "gasto",
+      title: c.stateLabel === "le debés" ? "Le debés " + c.amount + " a " + c.name : c.name + " te debe " + c.amount,
+      body: "Saldo consolidado de los eventos abiertos",
+      go: () => this.setState({ notifsPanel: false, screen: "app", tab: "gastos", gastosView: "balance", expandedPerson: c.name })
+    }));
+    myEvents.slice(0, 2).forEach(e => notifRaw.push({
+      id: "e_" + e.id, icon: "◇", kind: "evento",
+      title: "Evento abierto: " + e.name,
+      body: e.expenses.length + " gastos cargados · " + e.participants.length + " personas",
+      go: () => this.setState({ notifsPanel: false, screen: "app", tab: "detail", eventId: e.id })
+    }));
+    const notifs = notifRaw.map(n => {
+      const unread = s.readNotifs.indexOf(n.id) < 0;
+      const rawGo = n.go;
+      return Object.assign({}, n, {
+        go: () => { this.setState(st => ({ readNotifs: st.readNotifs.indexOf(n.id) < 0 ? st.readNotifs.concat([n.id]) : st.readNotifs })); rawGo(); },
+        unread, bg: unread ? "var(--color-neutral-100)" : "transparent",
+        dotBg: n.kind === "cumple" ? "var(--color-accent-600)" : "var(--color-text)",
+        dotFg: n.kind === "cumple" ? "#fff" : "var(--color-bg)"
+      });
+    });
+    const unreadCount = notifs.filter(n => n.unread).length;
+
+    const titles = { login: "Login", link: "Vinculación", setup: "Alta de usuario", personas: "Personas", persona: "Perfil de persona", config: "Configuración", home: "Inicio", cumples: "Fechas", gastos: "Gastos", detail: "Detalle de evento" };
+    const modalTitles = { person: "Agregar fecha", event: "Nuevo evento", expense: "Cargar gasto", profile: "Tu perfil", pay: "Pagar tu parte", balance: "Balance del evento" };
+    const modalHints = {
+      person: "No necesita usuario ni PIN — es un dato del grupo.",
+      event: "",
+      expense: ev ? ev.name : "",
+      pay: ev ? ev.name : "",
+      balance: ev ? ev.name : "",
+      profile: ""
+    };
+
+    const selectableUsers = s.users.map(u => {
+      const on = u.id === s.meId || s.formParticipants.indexOf(u.id) >= 0;
+      return {
+        name: u.id === s.meId ? u.name + " (vos)" : u.name,
+        bg: on ? INK : "transparent", fg: on ? "var(--color-bg)" : INK, dot: on ? A : "var(--color-neutral-400)",
+        toggle: () => { if (u.id === s.meId) return; this.setState(st => ({ formParticipants: st.formParticipants.indexOf(u.id) >= 0 ? st.formParticipants.filter(x => x !== u.id) : st.formParticipants.concat([u.id]) })); }
+      };
+    });
+
+    const payerOptions = (ev ? ev.participants : []).map(p => {
+      const on = (s.formPayer || s.meId) === p;
+      return { name: this.uname(p) + (p === s.meId ? " (vos)" : ""), bg: on ? A : "transparent", fg: on ? "#fff" : INK, pick: () => this.setState({ formPayer: p }) };
+    });
+
+    const shareOptions = (ev ? ev.participants : []).map(p => {
+      const on = s.formShares.indexOf(p) >= 0;
+      return {
+        name: this.uname(p), bg: on ? INK : "transparent", fg: on ? "var(--color-bg)" : INK, dot: on ? A : "var(--color-neutral-400)",
+        toggle: () => this.setState(st => ({ formShares: st.formShares.indexOf(p) >= 0 ? st.formShares.filter(x => x !== p) : st.formShares.concat([p]) }))
+      };
+    });
+
+    const amt = parseFloat(String(s.formAmount).replace(/[^\d.]/g, "")) || 0;
+
+    return {
+      screenIndex: screens.map((x, i) => ({ n: String(i + 1).padStart(2, "0"), label: x[0], go: x[1] })),
+      screenTitle: titles[s.screen === "app" ? s.tab : s.screen] || "Pantalla",
+
+      isAuthScreen: s.screen === "login" || s.screen === "link" || s.screen === "setup",
+      onSetup: s.screen === "setup",
+      setupName: s.setupName,
+      setupDate: s.setupDate,
+      setupAlias: s.setupAlias,
+      setupError: s.setupError,
+      hasSetupError: !!s.setupError,
+      setupDay: s.setupDay, setupMonth: s.setupMonth, setupYear: s.setupYear,
+      setSetupDay: e => this.setState({ setupDay: e.target.value, setupError: null }),
+      setSetupMonth: e => this.setState({ setupMonth: e.target.value, setupError: null }),
+      setSetupYear: e => this.setState({ setupYear: e.target.value, setupError: null }),
+      dayOptions: Array.from({ length: 31 }, (_, i) => ({ value: String(i + 1), label: pad(i + 1) })),
+      monthOptions: Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: pad(i + 1) })),
+      yearOptions: Array.from({ length: 70 }, (_, i) => ({ value: String(2026 - i), label: String(2026 - i) })),
+      formDay: s.formDay, formMonth: s.formMonth, formYear: s.formYear,
+      kindOptions: [["cumple", "Cumpleaños"], ["aniversario", "Aniversario"]].map(t => ({
+        label: t[1],
+        bg: s.formKind === t[0] ? (t[0] === "aniversario" ? INK : "var(--color-accent-600)") : "transparent",
+        fg: s.formKind === t[0] ? "#fff" : "var(--color-neutral-700)",
+        pick: () => this.setState({ formKind: t[0] })
+      })),
+      kindIsAniv: s.formKind === "aniversario",
+      dateFieldLabel: s.formKind === "aniversario" ? "Fecha del aniversario" : "Fecha de cumpleaños",
+      deleteLabel: s.formKind === "aniversario" ? "Borrar aniversario" : "Borrar cumpleaños",
+      visibilityOptions: [[false, "Público"], [true, "Privado"]].map(v => ({
+        label: v[1],
+        bg: s.formPrivate === v[0] ? INK : "transparent",
+        fg: s.formPrivate === v[0] ? "var(--color-bg)" : "var(--color-neutral-700)",
+        pick: () => this.setState({ formPrivate: v[0] })
+      })),
+      visibilityNote: s.formPrivate ? "Solo vos vas a ver esta fecha." : "Todo el grupo la va a ver.",
+      remindOn: (s.formRemind || []).length > 0,
+      remindTrackBg: (s.formRemind || []).length ? INK : "transparent",
+      remindKnobBg: (s.formRemind || []).length ? "var(--color-bg)" : "var(--color-text)",
+      remindKnobSide: (s.formRemind || []).length ? "flex-end" : "flex-start",
+      remindNote: (s.formRemind || []).length === 0
+        ? "Sin recordatorio para esta fecha."
+        : "Te avisamos el mismo día a las 9:00.",
+      toggleRemind: () => this.setState(st => ({ formRemind: (st.formRemind || []).length ? [] : [0] })),
+      setFormDay: this.set("formDay"), setFormMonth: this.set("formMonth"), setFormYear: this.set("formYear"),
+      setSetupAlias: this.set("setupAlias"),
+      finishSetup: this.finishSetup,
+      isAppScreen: s.screen === "app",
+      onLogin: s.screen === "login", onLink: s.screen === "link",
+      onHome: s.tab === "home", onCumples: s.tab === "cumples", onGastos: s.tab === "gastos", onDetail: s.tab === "detail",
+
+      nameInput: s.nameInput, pinInput: s.pinInput,
+      setName: this.set("nameInput"), setPin: this.set("pinInput"),
+      pinCount: s.pinInput.length + "/6",
+      pinBorder: s.loginError ? A : INK,
+      loginError: s.loginError, loginErrorHint: s.loginErrorHint,
+      submitLogin: this.submitLogin,
+
+      linkName: linkP ? linkP.name : "", linkInitials: linkP ? initialsOf(linkP.name) : "",
+      linkBirthday: linkP ? pad(linkP.d) + "/" + pad(linkP.m) + "/" + linkP.year : "",
+      linkDaysLabel: linkP ? (daysUntil(linkP.m, linkP.d) === 0 ? "es hoy" : "faltan " + daysUntil(linkP.m, linkP.d) + " días") : "",
+      linkAddedBy: linkP ? linkP.addedBy : "",
+      confirmLink: this.confirmLink, rejectLink: this.rejectLink,
+
+      meName, meInitials: initialsOf(meName),
+      meMeta: (me ? "Usuario activo · PIN de " + me.pin.length + " dígitos" : ""),
+      meBirthday: (() => { const p = s.people.find(x => me && x.userId === me.id); return p ? pad(p.d) + "/" + pad(p.m) + "/" + p.year : "sin cargar"; })(),
+      onPersonas: s.tab === "personas",
+      onPersona: s.tab === "persona",
+      onConfig: s.tab === "config",
+      allUsers: s.users.map(u => {
+        const p = s.people.find(x => x.userId === u.id);
+        return {
+          name: u.name, initials: initialsOf(u.name),
+          isMe: u.id === s.meId,
+          meta: (p ? pad(p.d) + "/" + pad(p.m) + "/" + p.year : "sin cumpleaños cargado") + (u.alias ? " · " + u.alias : ""),
+          open: () => this.setState({ tab: "persona", viewUserId: u.id })
+        };
+      }),
+      viewUser: (() => {
+        const u = this.user(s.viewUserId) || {};
+        const p = s.people.find(x => x.userId === s.viewUserId);
+        const shared = s.events.filter(e => !e.closed && e.participants.indexOf(s.viewUserId) >= 0 && e.participants.indexOf(s.meId) >= 0);
+        let net = 0;
+        shared.forEach(e => { const n = this.balancesFor(e); net += 0; });
+        const row = consolidated.find(c => c.name === u.name);
+        return {
+          name: u.name || "", initials: initialsOf(u.name || "?"),
+          birthday: p ? pad(p.d) + "/" + pad(p.m) + "/" + p.year : "sin cargar",
+          alias: u.alias || "", hasAlias: !!u.alias, noAlias: !u.alias,
+          copyLabel: s.copied === "vu" ? "¡Copiado!" : "Copiar",
+          copy: () => this.copy(u.alias || "", "vu"),
+          stateLabel: row ? row.stateLabel : "estás a mano",
+          amount: row ? row.amount : "",
+          sharedLabel: shared.length === 1 ? "1 evento activo en común" : shared.length + " eventos activos en común"
+        };
+      })(),
+      configItems: [
+        ["Notificaciones", "notif"], ["Tema claro/oscuro", "tema"], ["Mi perfil", "perfil"]
+      ].map(c => ({
+        label: c[1] === "perfil" ? "Mi perfil" : c[0],
+        go: () => c[1] === "perfil"
+          ? this.setState({ drawer: false, modal: "profile", aliasDraft: null, bdEditing: false, nameEditing: false, nameDraft: null })
+          : this.setState({ drawer: false, tab: "config", configFocus: c[1] })
+      })),
+      goConfig: () => this.setState({ tab: "config", drawer: false }),
+      configBg: s.tab === "config" ? INK : "transparent",
+      configFg: s.tab === "config" ? "var(--color-bg)" : INK,
+      toggleConfig: () => this.setState({ configOpen: !s.configOpen }),
+      notifRows: [
+        ["notifCumple", "Avisos de cumpleaños y aniversarios"],
+        ["notifGasto", "Nuevos gastos en mis eventos"],
+        ["notifResumen", "Resumen semanal de deudas"]
+      ].map(n => ({
+        label: n[1],
+        on: !!s.prefs[n[0]],
+        knobBg: s.prefs[n[0]] ? "var(--color-accent-600)" : "var(--color-neutral-400)",
+        knobPos: s.prefs[n[0]] ? "flex-end" : "flex-start",
+        toggle: () => this.setState({ prefs: Object.assign({}, s.prefs, { [n[0]]: !s.prefs[n[0]] }) })
+      })),
+      themeOptions: [["claro", "Claro"], ["oscuro", "Oscuro"]].map(t => ({
+        label: t[1],
+        bg: s.prefs.theme === t[0] ? INK : "transparent",
+        fg: s.prefs.theme === t[0] ? "var(--color-bg)" : "var(--color-neutral-700)",
+        pick: () => this.setState({ prefs: Object.assign({}, s.prefs, { theme: t[0] }) })
+      })),
+      currencyOptions: [["ARS", "Pesos"], ["USD", "Dólares"]].map(t => ({
+        label: t[1],
+        bg: s.prefs.currency === t[0] ? INK : "transparent",
+        fg: s.prefs.currency === t[0] ? "var(--color-bg)" : "var(--color-neutral-700)",
+        pick: () => this.setState({ prefs: Object.assign({}, s.prefs, { currency: t[0] }) })
+      })),
+      weekOptions: [["lunes", "Lunes"], ["domingo", "Domingo"]].map(t => ({
+        label: t[1],
+        bg: s.prefs.weekStart === t[0] ? INK : "transparent",
+        fg: s.prefs.weekStart === t[0] ? "var(--color-bg)" : "var(--color-neutral-700)",
+        pick: () => this.setState({ prefs: Object.assign({}, s.prefs, { weekStart: t[0] }) })
+      })),
+      notifs, noNotifs: notifs.length === 0,
+      hasNotifs: unreadCount > 0, notifCount: unreadCount,
+      notifSummary: unreadCount ? unreadCount + (unreadCount === 1 ? " sin leer" : " sin leer") : "Todo leído",
+      notifsOpen: !!s.notifsPanel,
+      openNotifs: () => this.setState({ notifsPanel: true }),
+      stopClick: e => e.stopPropagation(),
+      closeNotifs: () => this.setState({ notifsPanel: false }),
+      markAllRead: () => this.setState({ readNotifs: notifs.map(n => n.id) }),
+
+      themeMode: s.prefs.theme,
+      drawerOpen: !!s.drawer,
+      openDrawer: () => this.setState({ drawer: true }),
+      closeDrawer: () => this.setState({ drawer: false }),
+      drawerItems: [["home", "Inicio"], ["cumples", "Fechas"], ["gastos", "Gastos"]].map(t => ({
+        label: t[1],
+        bg: (s.tab === t[0] || (t[0] === "gastos" && s.tab === "detail")) ? INK : "transparent",
+        fg: (s.tab === t[0] || (t[0] === "gastos" && s.tab === "detail")) ? "var(--color-bg)" : INK,
+        go: () => this.setState({ tab: t[0], drawer: false })
+      })).concat([{
+        label: "Personas", bg: (s.tab === "personas" || s.tab === "persona") ? INK : "transparent",
+        fg: (s.tab === "personas" || s.tab === "persona") ? "var(--color-bg)" : INK,
+        go: () => this.setState({ tab: "personas", drawer: false })
+      }]),
+      openProfile: () => this.setState({ modal: "profile", aliasDraft: null, bdEditing: false, bdError: null, nameEditing: false, nameError: null, nameDraft: null }),
+      nameEditing: !!s.nameEditing,
+      nameNotEditing: !s.nameEditing,
+      nameDraft: s.nameDraft === undefined || s.nameDraft === null ? meName : s.nameDraft,
+      setNameDraft: e => this.setState({ nameDraft: e.target.value, nameError: null }),
+      nameError: s.nameError, hasNameError: !!s.nameError,
+      saveName: this.saveName,
+      editName: () => this.setState({ nameEditing: true, nameDraft: meName, nameError: null }),
+      bdEditing: !!s.bdEditing,
+      bdNotEditing: !s.bdEditing,
+      bdDay: s.bdDay, bdMonth: s.bdMonth, bdYear: s.bdYear,
+      setBdDay: this.set("bdDay"), setBdMonth: this.set("bdMonth"), setBdYear: this.set("bdYear"),
+      bdError: s.bdError, hasBdError: !!s.bdError,
+      saveBirthday: this.saveBirthday,
+      editBirthday: () => {
+        const p = s.people.find(x => x.userId === s.meId);
+        this.setState({ bdEditing: true, bdError: null, bdDay: p ? String(p.d) : "", bdMonth: p ? String(p.m) : "", bdYear: p ? String(p.year) : "" });
+      },
+      meAlias: me && me.alias ? me.alias : "",
+      meHasAlias: !!(me && me.alias) && s.aliasDraft === null,
+      meAliasEditing: s.aliasDraft !== null || !(me && me.alias),
+      aliasDraft: s.aliasDraft === null ? (me && me.alias ? me.alias : "") : s.aliasDraft,
+      setAliasDraft: e => this.setState({ aliasDraft: e.target.value }),
+      editAlias: () => this.setState({ aliasDraft: me && me.alias ? me.alias : "" }),
+      saveAlias: this.saveAlias,
+      copyMyAlias: () => this.copy(me && me.alias ? me.alias : "", "me"),
+      copyMyAliasLabel: s.copied === "me" ? "¡Copiado!" : "Copiar",
+      logout: this.logout,
+
+      todayLabel: "Lunes 7 de septiembre",
+      hasBirthdayToday: today.length > 0,
+      todayBirthdayName: today.length ? today[0].name : "",
+      todayBirthdayAge: today.length ? "cumple " + today[0].age : "",
+      nextBirthdayLine: people.length ? people[0].name + ", " + people[0].daysLabel : "—",
+      peopleCount: people.length,
+      homeToggle: [["semana", "Esta semana"], ["mes", "Este mes"]].map(v => ({
+        label: v[1], go: () => this.setState({ homeRange: v[0] }),
+        bg: s.homeRange === v[0] ? INK : "transparent",
+        fg: s.homeRange === v[0] ? "var(--color-bg)" : "var(--color-neutral-700)"
+      })),
+      homeList: people.filter(p => p.days > 0 && p.days <= (s.homeRange === "semana" ? 7 : 31)),
+      homeListEmpty: people.filter(p => p.days > 0 && p.days <= (s.homeRange === "semana" ? 7 : 31)).length === 0,
+      homeEmptyLabel: s.homeRange === "semana" ? "Ninguna fecha esta semana." : "Ninguna fecha en los próximos 31 días.",
+      people: s.search.trim() ? people.filter(p => p.name.toLowerCase().indexOf(s.search.trim().toLowerCase()) >= 0) : people,
+      search: s.search,
+      setSearch: e => this.setState({ search: e.target.value }),
+      hasSearch: !!s.search.trim(),
+      noResults: !!s.search.trim() && people.filter(p => p.name.toLowerCase().indexOf(s.search.trim().toLowerCase()) >= 0).length === 0,
+      clearSearch: () => this.setState({ search: "" }),
+
+      onLista: s.cumplesView === "lista",
+      onCalendario: s.cumplesView === "calendario",
+      viewToggle: [["lista", "Lista"], ["calendario", "Calendario"]].map(v => ({
+        label: v[1], go: () => this.setState({ cumplesView: v[0] }),
+        bg: s.cumplesView === v[0] ? INK : "transparent",
+        fg: s.cumplesView === v[0] ? "var(--color-bg)" : "var(--color-neutral-700)"
+      })),
+      calTitle: ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"][s.calMonth] + " 2026",
+      calPrev: () => this.setState({ calMonth: (s.calMonth + 11) % 12 }),
+      calNext: () => this.setState({ calMonth: (s.calMonth + 1) % 12 }),
+      calWeekdays: ["L","M","M","J","V","S","D"].map((d, i) => ({ label: d, key: i })),
+      calCells: (() => {
+        const first = new Date(2026, s.calMonth, 1);
+        const lead = (first.getDay() + 6) % 7;
+        const total = new Date(2026, s.calMonth + 1, 0).getDate();
+        const cells = [];
+        for (let i = 0; i < lead; i++) cells.push({ empty: true, filled: false, day: "", initials: "", name: "", hasB: false, noB: true, isToday: false, notToday: true, chipBg: "transparent", chipFg: "transparent" });
+        for (let d = 1; d <= total; d++) {
+          const bs = s.people.filter(p => (!p.priv || p.addedById === s.meId) && p.m === s.calMonth + 1 && p.d === d);
+          const isToday = s.calMonth === 8 && d === 7;
+          cells.push({
+            empty: false, filled: true, day: d,
+            hasB: bs.length > 0, noB: bs.length === 0,
+            isToday, notToday: !isToday,
+            initials: bs.length ? (bs.length > 1 ? bs.length + "×" : initialsOf(bs[0].name)) : "",
+            chipBg: bs.length && bs.every(p => p.kind === "aniversario") ? "var(--color-text)" : "var(--color-accent-600)",
+            chipFg: bs.length && bs.every(p => p.kind === "aniversario") ? "var(--color-bg)" : "#fff",
+            isAniv: !!(bs.length === 1 && bs[0].kind === "aniversario"),
+            showInitials: !(bs.length === 1 && bs[0].kind === "aniversario"),
+            name: bs.map(p => p.name).join(", ")
+          });
+        }
+        return cells;
+      })(),
+      calMonthPeople: people.filter(p => s.people.find(x => x.id === p.id).m === s.calMonth + 1)
+        .sort((a, b) => s.people.find(x => x.id === a.id).d - s.people.find(x => x.id === b.id).d),
+      calEmptyNote: "Sin fechas este mes.",
+
+      goCumples: () => this.setState({ tab: "cumples" }),
+      goPersonas: () => this.setState({ tab: "personas" }),
+      goGastos: () => this.setState({ tab: "gastos" }),
+      showTabBar: ["home", "personas", "persona", "config"].indexOf(s.tab) < 0,
+      tabs: tabDef.map(t => ({
+        label: t[1], go: () => this.setState({ tab: t[0] }),
+        bg: activeTab === t[0] ? INK : BG, fg: activeTab === t[0] ? "var(--color-bg)" : "var(--color-neutral-700)"
+      })),
+
+      onEventos: s.gastosView === "eventos",
+      onBalanceTab: s.gastosView === "balance",
+      gastosToggle: [["eventos", "Eventos"], ["balance", "Balance"]].map(v => ({
+        label: v[1], go: () => this.setState({ gastosView: v[0], expandedPerson: null }),
+        bg: s.gastosView === v[0] ? INK : "transparent",
+        fg: s.gastosView === v[0] ? "var(--color-bg)" : "var(--color-neutral-700)"
+      })),
+      consolidated,
+      noConsolidated: consolidated.length === 0,
+      canCloseEvent: !!(ev && ev.createdBy === s.meId && settlements.length === 0),
+      closeBlocked: !!(ev && ev.createdBy === s.meId && settlements.length > 0),
+      closeEvent: this.closeEvent,
+      owedToMe: (ev ? settlements.filter(b => b.to === meName) : []).map(b => ({
+        from: b.from, initials: initialsOf(b.from), amount: b.amount,
+        markReceived: () => this.markReceived(ev.participants.find(p => this.uname(p) === b.from), parseFloat(String(b.amount).replace(/[^0-9]/g, "")) || 0)
+      })),
+      hasOwedToMe: !!(ev && settlements.filter(b => b.to === meName).length),
+      myEvents: evList, myEventsCount: myEvents.length,
+      eventSearch: s.eventSearch,
+      setEventSearch: e => this.setState({ eventSearch: e.target.value }),
+      hasEventSearch: !!s.eventSearch.trim(),
+      clearEventSearch: () => this.setState({ eventSearch: "" }),
+      noEventResults: evList.length === 0,
+      noEventResultsLabel: s.showHistory ? "Todavía no cerraste ningún evento." : (s.eventSearch.trim() ? "Ningún evento con ese nombre." : "No tenés eventos activos."),
+      showHistory: s.showHistory,
+      historyLabel: s.showHistory ? "Volver a eventos activos" : "Historial de eventos cerrados",
+      toggleHistory: () => this.setState({ showHistory: !s.showHistory, eventSearch: "" }),
+      historyHeader: s.showHistory ? "Eventos cerrados" : "",
+      eventOpen: !!(ev && !ev.closed),
+      eventIsClosed: !!(ev && ev.closed),
+      hiddenEventsCount: s.events.length - myEvents.length,
+      myBalanceLine: (() => {
+        const tot = myEvents.reduce((a, e) => a + (this.balancesFor(e)[s.meId] || 0), 0);
+        return tot > 1 ? "te deben " + money(tot) : tot < -1 ? "debés " + money(-tot) : "estás al día";
+      })(),
+
+      eventName: ev ? ev.name : "", eventDateLabel: ev ? ev.d + " " + MONTHS[ev.m - 1] : "",
+      eventParticipantsLabel: ev ? ev.participants.map(p => this.uname(p)).join(", ") : "",
+      eventCreatorLabel: ev ? "Creado por " + (ev.createdBy === s.meId ? "vos" : this.uname(ev.createdBy)) : "",
+      eventTotal: ev ? money(ev.expenses.reduce((a, x) => a + x.amount, 0)) : "$0",
+      eventExpenses: ev ? ev.expenses.map(x => ({
+        desc: x.desc, amount: money(x.amount), payer: this.uname(x.payer), payerInitials: initialsOf(this.uname(x.payer)),
+        sharesLabel: x.shares.length === ev.participants.length ? "entre los " + x.shares.length : "entre " + x.shares.map(p => this.uname(p)).join(", ")
+      })) : [],
+      settlements,
+      settlementNote: settlements.length
+        ? (myNet < -1 ? "Vos quedás debiendo " + money(-myNet) + "." : myNet > 1 ? "A vos te deben " + money(myNet) + " en total." : "Vos estás al día.")
+        : "Todavía no hay gastos cargados.",
+
+      modalOpen: !!s.modal,
+      modalTitle: s.modal === "person" && s.editPersonId
+        ? "Editar fecha"
+        : (s.modal === "pay" ? (myDebts.length ? "Pagar tu parte" : "Cuentas del evento") : (s.modal ? modalTitles[s.modal] : "")),
+      modalHint: s.modal ? modalHints[s.modal] : "",
+      modalIsPerson: s.modal === "person", modalIsEvent: s.modal === "event",
+      modalIsExpense: s.modal === "expense", modalIsProfile: s.modal === "profile", modalIsPay: s.modal === "pay", modalIsBalance: s.modal === "balance",
+      sheetBg: s.modal === "balance" ? INK : "var(--color-bg)",
+      sheetFg: s.modal === "balance" ? "var(--color-bg)" : INK,
+      closeModal: () => this.setState({ modal: null }),
+      openAddPerson: () => this.setState({ modal: "person", editPersonId: null, formName: "", formDay: "", formMonth: "", formYear: "", formPrivate: false, formKind: "cumple", formRemind: [0], personError: null, confirmDelete: false }),
+      isEditingPerson: !!s.editPersonId,
+      notEditingPerson: !s.editPersonId,
+      personError: s.personError, hasPersonError: !!s.personError,
+      savePersonEdit: this.savePersonEdit,
+      askDelete: () => this.setState({ confirmDelete: true }),
+      cancelDelete: () => this.setState({ confirmDelete: false }),
+      confirmDelete: !!s.confirmDelete,
+      notConfirmingDelete: !s.confirmDelete,
+      deletePerson: this.deletePerson,
+      openNewEvent: () => this.setState({ modal: "event", formName: "", formParticipants: [] }),
+      openBalance: () => this.setState({ modal: "balance" }),
+      openPay: () => this.setState({ modal: "pay", justPaid: null }),
+      justPaid: !!s.justPaid,
+      justPaidLabel: s.justPaid
+        ? (s.justPaid.received ? "Cobro registrado: " + money(s.justPaid.amount) + " de " + s.justPaid.to
+                               : "Pago registrado: " + money(s.justPaid.amount) + " a " + s.justPaid.to)
+        : "",
+      undoPaid: () => s.justPaid && this.undoPaid(s.justPaid.id),
+      evPayments: ((ev && ev.payments) || []).map(p => ({
+        label: this.uname(p.from) + " → " + this.uname(p.to),
+        amount: money(p.amount),
+        undo: () => this.undoPaid(p.id)
+      })),
+      hasPayments: !!(ev && ev.payments && ev.payments.length),
+      payButtonLabel: myNet < -1 ? "Pagar " + money(-myNet) : "Pagar",
+      myDebts,
+      hasDebts: myDebts.length > 0,
+      noDebts: myDebts.length === 0 && !(ev && settlements.filter(b => b.to === meName).length),
+      payTotal: money(myDebts.reduce((a, d) => a + d.raw, 0)),
+      payTotalNote: myDebts.length === 1 ? "a una persona de este evento" : "repartido entre " + myDebts.length + " personas",
+      openAddExpense: () => this.setState({ modal: "expense", formName: "", formAmount: "", formPayer: s.meId, formShares: ev ? ev.participants.slice() : [] }),
+
+      formName: s.formName, formAmount: s.formAmount,
+      setFormName: this.set("formName"), setFormAmount: this.set("formAmount"),
+      savePerson: this.savePerson, saveEvent: this.saveEvent, saveExpense: this.saveExpense,
+      selectableUsers, payerOptions, shareOptions,
+      splitNote: s.formShares.length && amt ? money(amt / s.formShares.length) + " cada uno · " + s.formShares.length + " personas" : "Elegí al menos una persona y un monto."
+    };
+  }
+}
+</script>
+</body>
+</html>
