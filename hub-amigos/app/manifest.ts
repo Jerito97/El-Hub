@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "El Hub",
-    short_name: "El Hub",
+    name: "LinkUp",
+    short_name: "LinkUp",
     description: "Cumpleaños, aniversarios y gastos compartidos del grupo.",
     start_url: "/",
     display: "standalone",
