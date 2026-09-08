@@ -5,12 +5,20 @@ import { createClient } from "@supabase/supabase-js";
 // custom name+PIN scheme (not Supabase Auth), so access control lives in
 // our server code (see lib/auth.ts), not in Postgres RLS -- this client is
 // never sent to the browser.
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+//
+// Deliberately does NOT throw when the env vars are missing: Next.js
+// evaluates this module while collecting page data at build time, before
+// any env vars are necessarily set (e.g. a first Vercel deploy before the
+// Supabase project exists yet). Falling back to placeholders lets the build
+// succeed; actual DB calls will fail at request time with a clear Supabase
+// error until the real env vars are set and the app is redeployed.
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-service-role-key";
 
-if (!url || !serviceKey) {
-  throw new Error(
-    "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY. Copy .env.example to .env.local and fill them in."
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  console.warn(
+    "[supabase] NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are not set -- using placeholders. " +
+      "Set them in .env.local (or your Vercel project's Environment Variables) and redeploy."
   );
 }
 
