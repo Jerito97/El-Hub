@@ -27,9 +27,15 @@ export function BalanceModal({ settlements, payments, onClose }: { settlements: 
         {settlements.map((b, i) => (
           <div key={i} style={{ padding: "12px 0", borderTop: "1px solid var(--color-neutral-700)", display: "flex", flexDirection: "column", gap: 8 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "14.5px" }}>{b.from}</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "14.5px" }}>
+                {b.from}
+                {b.fromIsGuest && <span className="tag tag-muted">Invitado</span>}
+              </span>
               <span style={{ color: "var(--color-accent-400)", fontSize: 15 }}>→</span>
-              <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "14.5px", flex: 1 }}>{b.to}</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "14.5px", flex: 1 }}>
+                {b.to}
+                {b.toIsGuest && <span className="tag tag-muted">Invitado</span>}
+              </span>
               <span style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 15, color: "var(--color-accent-400)" }}>{money(b.amount)}</span>
             </div>
           </div>

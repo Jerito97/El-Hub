@@ -13,7 +13,7 @@ export const getFullState = cache(async function getFullState(meId: string): Pro
     db.from("users").select("*").order("name"),
     db.from("people").select("*"),
     db.from("events").select("*").order("created_at", { ascending: false }),
-    db.from("event_participants").select("event_id,user_id"),
+    db.from("event_participants").select("event_id,user_id,shares"),
     db.from("expenses").select("*").order("created_at"),
     db.from("expense_shares").select("expense_id,user_id"),
     db.from("payments").select("*"),
@@ -49,15 +49,21 @@ export const getFullState = cache(async function getFullState(meId: string): Pro
   });
 
   const participantsByEvent = new Map<string, string[]>();
+  const sharesByEventParticipant = new Map<string, Record<string, number>>();
   (participantsQ.data || []).forEach((pp) => {
     const arr = participantsByEvent.get(pp.event_id) || [];
     arr.push(pp.user_id);
     participantsByEvent.set(pp.event_id, arr);
+
+    const shares = sharesByEventParticipant.get(pp.event_id) || {};
+    shares[pp.user_id] = pp.shares;
+    sharesByEventParticipant.set(pp.event_id, shares);
   });
 
   const events: EventRow[] = (eventsQ.data || []).map((e) => ({
     ...e,
     participants: participantsByEvent.get(e.id) || [],
+    participantShares: sharesByEventParticipant.get(e.id) || {},
     expenses: expensesByEvent.get(e.id) || [],
     payments: paymentsByEvent.get(e.id) || [],
   }));

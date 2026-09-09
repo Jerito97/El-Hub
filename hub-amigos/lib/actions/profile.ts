@@ -10,7 +10,7 @@ export async function saveName(name: string): Promise<{ ok: boolean; error?: str
   const trimmed = name.trim();
   if (!trimmed) return { ok: false, error: "Poné un nombre" };
 
-  const { data: taken } = await db.from("users").select("id").neq("id", me.id).eq("name_key", normName(trimmed)).maybeSingle();
+  const { data: taken } = await db.from("users").select("id").neq("id", me.id).eq("name_key", normName(trimmed)).eq("is_guest", false).maybeSingle();
   if (taken) return { ok: false, error: "Ya hay alguien con ese nombre" };
 
   await db.from("users").update({ name: trimmed }).eq("id", me.id);

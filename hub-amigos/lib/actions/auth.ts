@@ -20,7 +20,12 @@ export async function submitLogin(name: string, pin: string): Promise<LoginResul
   if (!trimmedName) return { ok: false, error: "Falta tu nombre", hint: "Escribí el nombre con el que te conocen en el grupo." };
   if (!/^\d{4,6}$/.test(trimmedPin)) return { ok: false, error: "PIN inválido", hint: "Tiene que ser de 4 a 6 números." };
 
-  const { data: existing, error: existingErr } = await db.from("users").select("*").eq("name_key", normName(trimmedName)).maybeSingle();
+  const { data: existing, error: existingErr } = await db
+    .from("users")
+    .select("*")
+    .eq("name_key", normName(trimmedName))
+    .eq("is_guest", false)
+    .maybeSingle();
   if (existingErr) {
     console.error("[submitLogin] users lookup failed:", existingErr);
     return { ok: false, error: "Error de conexión con la base", hint: existingErr.message };
@@ -86,7 +91,7 @@ export async function finishSetup(input: SetupInput): Promise<LoginResult> {
   if (err) return { ok: false, error: err };
 
   const name = input.name.trim();
-  const { data: taken } = await db.from("users").select("id").eq("name_key", normName(name)).maybeSingle();
+  const { data: taken } = await db.from("users").select("id").eq("name_key", normName(name)).eq("is_guest", false).maybeSingle();
   if (taken) return { ok: false, error: "Ese nombre ya está en uso", hint: "Volvé atrás e ingresá con tu PIN." };
 
   const pin_hash = await hashPin(input.pin.trim());

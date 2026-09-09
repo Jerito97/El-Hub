@@ -21,9 +21,10 @@ export function balancesFor(ev: EventRow): Record<string, number> {
   });
   ev.expenses.forEach((x) => {
     net[x.payer_id] = (net[x.payer_id] || 0) + x.amount;
-    const each = x.amount / x.shares.length;
+    const totalShares = x.shares.reduce((sum, s) => sum + (ev.participantShares[s] ?? 1), 0) || x.shares.length;
+    const perShare = x.amount / totalShares;
     x.shares.forEach((s) => {
-      net[s] = (net[s] || 0) - each;
+      net[s] = (net[s] || 0) - perShare * (ev.participantShares[s] ?? 1);
     });
   });
   return net;
@@ -32,9 +33,15 @@ export function balancesFor(ev: EventRow): Record<string, number> {
 export interface Settlement {
   fromId: string;
   from: string;
+  fromIsGuest: boolean;
   toId: string;
   to: string;
+  toIsGuest: boolean;
   amount: number;
+}
+
+function isGuestId(users: UserRow[], id: string) {
+  return !!users.find((u) => u.id === id)?.is_guest;
 }
 
 /** Greedy debt-simplification: who should pay whom to settle an event. */
@@ -53,7 +60,15 @@ export function settleFor(ev: EventRow, users: UserRow[]): Settlement[] {
     j = 0;
   while (i < debt.length && j < cred.length) {
     const amt = Math.min(debt[i].v, cred[j].v);
-    out.push({ fromId: debt[i].id, from: uname(users, debt[i].id), toId: cred[j].id, to: uname(users, cred[j].id), amount: amt });
+    out.push({
+      fromId: debt[i].id,
+      from: uname(users, debt[i].id),
+      fromIsGuest: isGuestId(users, debt[i].id),
+      toId: cred[j].id,
+      to: uname(users, cred[j].id),
+      toIsGuest: isGuestId(users, cred[j].id),
+      amount: amt,
+    });
     debt[i].v -= amt;
     cred[j].v -= amt;
     if (debt[i].v < 1) i++;
@@ -133,6 +148,7 @@ export interface ConsolidatedRow {
   name: string;
   otherId: string;
   initials: string;
+  isGuest: boolean;
   net: number;
   stateLabel: string;
   amountLabel: string;
@@ -164,6 +180,7 @@ export function computeConsolidated(myEvents: EventRow[], users: UserRow[], meId
       name,
       otherId: v.otherId,
       initials: initialsOf(name),
+      isGuest: !!users.find((u) => u.id === v.otherId)?.is_guest,
       net: v.net,
       stateLabel: v.net > 1 ? "te debe" : v.net < -1 ? "le debés" : "estás a mano",
       amountLabel: Math.abs(v.net) < 1 ? "" : money(Math.abs(v.net)),

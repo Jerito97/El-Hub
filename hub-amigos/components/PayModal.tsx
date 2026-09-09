@@ -9,6 +9,7 @@ import { money } from "@/lib/format";
 export interface DebtRow {
   toId: string;
   to: string;
+  isGuest: boolean;
   initials: string;
   amount: number;
   alias: string;
@@ -16,6 +17,7 @@ export interface DebtRow {
 export interface OwedRow {
   fromId: string;
   from: string;
+  isGuest: boolean;
   initials: string;
   amount: number;
 }
@@ -94,7 +96,10 @@ export function PayModal({
               <div key={d.toId} style={{ padding: "14px 0", borderBottom: "1px solid var(--color-neutral-300)", display: "flex", flexDirection: "column", gap: 9 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <div style={{ width: 38, height: 38, flex: "none", background: "var(--color-accent-600)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 13 }}>{d.initials}</div>
-                  <div style={{ flex: 1, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "16.5px" }}>{d.to}</div>
+                  <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 7, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "16.5px" }}>
+                    {d.to}
+                    {d.isGuest && <span className="tag tag-muted">Invitado</span>}
+                  </div>
                   <div style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 17 }}>{money(d.amount)}</div>
                 </div>
                 {d.alias ? (
@@ -122,7 +127,10 @@ export function PayModal({
           {owedToMe.map((o) => (
             <div key={o.fromId} style={{ padding: "12px 0", borderBottom: "1px solid var(--color-neutral-300)", display: "flex", alignItems: "center", gap: 12 }}>
               <div style={{ width: 34, height: 34, flex: "none", background: "var(--color-text)", color: "var(--color-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 12 }}>{o.initials}</div>
-              <div style={{ flex: 1, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 15 }}>{o.from}</div>
+              <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 7, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 15 }}>
+                {o.from}
+                {o.isGuest && <span className="tag tag-muted">Invitado</span>}
+              </div>
               <div style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 15 }}>{money(o.amount)}</div>
               <button type="button" disabled={busy} onClick={() => receive(o)} style={{ flex: "none", background: "var(--color-text)", color: "var(--color-bg)", border: 0, padding: "9px 11px", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 11, textTransform: "uppercase", letterSpacing: ".05em" }}>
                 Ya me pagó
