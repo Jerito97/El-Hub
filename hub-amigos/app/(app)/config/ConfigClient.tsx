@@ -41,7 +41,7 @@ export function ConfigClient({ prefs, profileInitial, vapidPublicKey }: { prefs:
 
       <div style={{ marginTop: 22 }}>
         <div style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--color-neutral-600)", marginBottom: 8 }}>Notificaciones</div>
-        <div style={{ background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", overflow: "hidden" }}>
+        <div style={{ background: "var(--color-surface)", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", overflow: "hidden" }}>
           {NOTIF_ROWS.map((row, i) => (
             <button
               key={row.key}

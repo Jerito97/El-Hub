@@ -80,7 +80,7 @@ export function LoginClient() {
           Alguien ya te cargó como cumpleaños en el grupo. Enganchate a ese registro así no quedan dos {linkCandidate.name} dando vueltas.
         </p>
 
-        <div style={{ marginTop: 26, background: "#fff", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-card)" }}>
+        <div style={{ marginTop: 26, background: "var(--color-surface)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-card)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14, padding: 18 }}>
             <div style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--color-accent)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 19 }}>
               {initialsOf(linkCandidate.name)}

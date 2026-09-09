@@ -119,7 +119,7 @@ export function EventModal({
                   key={u.id}
                   type="button"
                   onClick={() => toggle(u.id)}
-                  style={{ display: "flex", alignItems: "center", gap: 8, background: on ? "var(--color-text)" : "#fff", color: on ? "#fff" : "var(--color-text)", border: 0, borderRadius: "var(--radius-pill)", boxShadow: on ? "none" : "var(--shadow-card)", padding: "9px 14px 9px 10px", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 13 }}
+                  style={{ display: "flex", alignItems: "center", gap: 8, background: on ? "var(--color-text)" : "var(--color-surface)", color: on ? "var(--color-bg)" : "var(--color-text)", border: 0, borderRadius: "var(--radius-pill)", boxShadow: on ? "none" : "var(--shadow-card)", padding: "9px 14px 9px 10px", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 13 }}
                 >
                   <span style={{ width: 18, height: 18, borderRadius: "50%", flex: "none", background: on ? "var(--color-accent)" : "var(--color-neutral-300)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     {on && (

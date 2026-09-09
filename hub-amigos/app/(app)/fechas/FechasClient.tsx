@@ -160,7 +160,7 @@ export function FechasClient({ people, today }: { people: PersonView[]; today: {
         </div>
       ) : (
         <div>
-          <div style={{ marginTop: 12, display: "flex", alignItems: "stretch", background: "#fff", borderRadius: "var(--radius-pill)", boxShadow: "var(--shadow-card)" }}>
+          <div style={{ marginTop: 12, display: "flex", alignItems: "stretch", background: "var(--color-surface)", borderRadius: "var(--radius-pill)", boxShadow: "var(--shadow-card)" }}>
             <input className="input" style={{ boxShadow: "none", borderRadius: "var(--radius-pill)" }} value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar por nombre" />
             {search && (
               <button type="button" onClick={() => setSearch("")} style={{ flex: "none", background: "transparent", border: 0, padding: "0 16px", cursor: "pointer", fontSize: 15, color: "var(--color-neutral-600)" }}>
@@ -172,7 +172,7 @@ export function FechasClient({ people, today }: { people: PersonView[]; today: {
 
           <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
             {filtered.map((p) => (
-              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 13, background: "#fff", borderRadius: "var(--radius-md)", padding: "12px 14px", boxShadow: "var(--shadow-card)" }}>
+              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 13, background: "var(--color-surface)", borderRadius: "var(--radius-md)", padding: "12px 14px", boxShadow: "var(--shadow-card)" }}>
                 <Chip initials={p.initials} isAniv={p.isAniv} size="lg" bg={p.chipBg} fg={p.chipFg} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

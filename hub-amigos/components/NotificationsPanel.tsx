@@ -58,7 +58,7 @@ export function NotificationsPanel({ notifs }: { notifs: NotifWithHref[] }) {
 
         <div className="hub-scroll" style={{ flex: 1, overflowY: "auto", padding: "0 14px", display: "flex", flexDirection: "column", gap: 8 }}>
           {visible.map((n) => (
-            <div key={n.id} style={{ display: "flex", alignItems: "flex-start", gap: 4, background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)" }}>
+            <div key={n.id} style={{ display: "flex", alignItems: "flex-start", gap: 4, background: "var(--color-surface)", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)" }}>
               <button type="button" onClick={() => open(n)} style={{ flex: 1, minWidth: 0, textAlign: "left", background: "transparent", border: 0, padding: "14px 4px 14px 14px", cursor: "pointer", display: "flex", gap: 12, alignItems: "flex-start" }}>
                 <span
                   style={{

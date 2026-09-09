@@ -17,7 +17,7 @@ export default async function PersonasPage() {
           const meta = (person ? dateLabel(person.day, person.month, person.year) : "sin cumpleaños cargado") + (u.alias ? ` · ${u.alias}` : "");
           const c = avatarColor(u.id);
           return (
-            <Link key={u.id} href={`/personas/${u.id}`} style={{ display: "flex", alignItems: "center", gap: 12, background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", padding: "13px 14px" }}>
+            <Link key={u.id} href={`/personas/${u.id}`} style={{ display: "flex", alignItems: "center", gap: 12, background: "var(--color-surface)", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", padding: "13px 14px" }}>
               <span style={{ width: 42, height: 42, borderRadius: "50%", flex: "none", background: c.bg, color: c.fg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 14 }}>{initialsOf(u.name)}</span>
               <span style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
                 <span style={{ display: "flex", alignItems: "center", gap: 7 }}>

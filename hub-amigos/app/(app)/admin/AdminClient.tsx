@@ -43,7 +43,7 @@ function userName(users: UserRow[], id: string | null) {
 }
 
 function Row({ children }: { children: React.ReactNode }) {
-  return <div style={{ padding: "14px", background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", display: "flex", flexDirection: "column", gap: 10 }}>{children}</div>;
+  return <div style={{ padding: "14px", background: "var(--color-surface)", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", display: "flex", flexDirection: "column", gap: 10 }}>{children}</div>;
 }
 
 /* ————— Usuarios ————— */

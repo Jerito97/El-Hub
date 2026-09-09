@@ -22,7 +22,7 @@ export function HomeClient({ people }: { people: PersonView[] }) {
           </div>
         )}
         {list.map((p) => (
-          <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 12, background: "#fff", borderRadius: "var(--radius-md)", padding: "10px 12px", boxShadow: "var(--shadow-card)" }}>
+          <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 12, background: "var(--color-surface)", borderRadius: "var(--radius-md)", padding: "10px 12px", boxShadow: "var(--shadow-card)" }}>
             <Chip initials={p.initials} isAniv={p.isAniv} size="sm" bg={p.chipBg} fg={p.chipFg} />
             <div style={{ flex: 1, fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 15 }}>{p.name}</div>
             <div style={{ flex: "none", background: "var(--color-peach-bg)", borderRadius: "var(--radius-sm)", padding: "5px 10px", textAlign: "center" }}>
