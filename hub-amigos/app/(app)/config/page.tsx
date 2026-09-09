@@ -10,6 +10,7 @@ export default async function ConfigPage() {
   return (
     <ConfigClient
       prefs={state.prefs}
+      vapidPublicKey={process.env.VAPID_PUBLIC_KEY || null}
       profileInitial={{
         name: me.name,
         alias: me.alias,
