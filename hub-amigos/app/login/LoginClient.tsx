@@ -152,7 +152,7 @@ export function LoginClient() {
   return (
     <div className="hub-auth" style={{ padding: "36px 24px 24px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <div style={{ width: 26, height: 26, background: "var(--color-accent)" }} />
+        <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: 7 }} />
         <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase" }}>LinkUp</span>
       </div>
       <h1 style={{ fontSize: 52, lineHeight: 0.95, margin: "28px 0 0" }}>
