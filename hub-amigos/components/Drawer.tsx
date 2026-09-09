@@ -29,11 +29,22 @@ const navStyle = (active: boolean): React.CSSProperties => ({
   letterSpacing: ".06em",
 });
 
-export function Drawer({ meName, meInitials, meBirthdayLabel }: { meName: string; meInitials: string; meBirthdayLabel: string }) {
+export function Drawer({
+  meName,
+  meInitials,
+  meBirthdayLabel,
+  isAdmin,
+}: {
+  meName: string;
+  meInitials: string;
+  meBirthdayLabel: string;
+  isAdmin: boolean;
+}) {
   const { drawerOpen, setDrawerOpen } = useAppShell();
   const pathname = usePathname();
   if (!drawerOpen) return null;
   const configActive = pathname.startsWith("/config");
+  const adminActive = pathname.startsWith("/admin");
 
   return (
     <div className="overlay" style={{ display: "flex" }} onClick={() => setDrawerOpen(false)}>
@@ -56,6 +67,11 @@ export function Drawer({ meName, meInitials, meBirthdayLabel }: { meName: string
         <Link href="/config" onClick={() => setDrawerOpen(false)} style={navStyle(configActive)}>
           Configuración
         </Link>
+        {isAdmin && (
+          <Link href="/admin" onClick={() => setDrawerOpen(false)} style={navStyle(adminActive)}>
+            Admin
+          </Link>
+        )}
 
         <form action={logoutAction} style={{ marginTop: "auto" }}>
           <button

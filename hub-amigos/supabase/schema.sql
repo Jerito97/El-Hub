@@ -15,6 +15,7 @@ create table if not exists users (
   name_key text generated always as (lower(trim(name))) stored,
   pin_hash text not null,
   alias text not null default '',
+  is_admin boolean not null default false,
   created_at timestamptz not null default now()
 );
 create unique index if not exists users_name_key_uidx on users (name_key);

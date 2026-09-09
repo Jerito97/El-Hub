@@ -7,6 +7,7 @@ import { DateSelect } from "@/components/ui/DateSelect";
 import { SegmentedToggle } from "@/components/ui/SegmentedToggle";
 import { Switch } from "@/components/ui/Switch";
 import { deletePerson, savePerson, savePersonEdit, type PersonInput } from "@/lib/actions/people";
+import { adminDeletePerson, adminSavePersonEdit } from "@/lib/actions/admin";
 import type { PersonKind } from "@/lib/types";
 
 export interface PersonModalInitial {
@@ -20,7 +21,8 @@ export interface PersonModalInitial {
   remind: boolean;
 }
 
-export function PersonModal({ initial, onClose }: { initial: PersonModalInitial; onClose: () => void }) {
+/** asAdmin=true edits/deletes regardless of who added the entry (see lib/actions/admin.ts). */
+export function PersonModal({ initial, onClose, asAdmin = false }: { initial: PersonModalInitial; onClose: () => void; asAdmin?: boolean }) {
   const router = useRouter();
   const isEditing = !!initial.id;
   const [name, setName] = useState(initial.name);
@@ -38,7 +40,7 @@ export function PersonModal({ initial, onClose }: { initial: PersonModalInitial;
     setBusy(true);
     setError(null);
     const input: PersonInput = { name, kind, day: +day, month: +month, year: +year, isPrivate, remind };
-    const res = isEditing ? await savePersonEdit(initial.id!, input) : await savePerson(input);
+    const res = isEditing ? await (asAdmin ? adminSavePersonEdit : savePersonEdit)(initial.id!, input) : await savePerson(input);
     setBusy(false);
     if (!res.ok) return setError(res.error || "Algo salió mal");
     router.refresh();
@@ -47,7 +49,7 @@ export function PersonModal({ initial, onClose }: { initial: PersonModalInitial;
 
   async function remove() {
     setBusy(true);
-    const res = await deletePerson(initial.id!);
+    const res = await (asAdmin ? adminDeletePerson : deletePerson)(initial.id!);
     setBusy(false);
     if (!res.ok) return setError(res.error || "No se pudo borrar.");
     router.refresh();
