@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/Switch";
 import { SegmentedToggle } from "@/components/ui/SegmentedToggle";
 import { ProfileModal, type ProfileInitial } from "@/components/ProfileModal";
+import { PushToggle } from "@/components/PushToggle";
 import { updatePrefs } from "@/lib/actions/prefs";
 import { applyThemeOptimistically } from "@/lib/client/ThemeSync";
 import type { PrefsRow } from "@/lib/types";
@@ -15,7 +16,7 @@ const NOTIF_ROWS: Array<{ key: keyof Pick<PrefsRow, "notif_cumple" | "notif_gast
   { key: "notif_resumen", label: "Resumen semanal de deudas" },
 ];
 
-export function ConfigClient({ prefs, profileInitial }: { prefs: PrefsRow; profileInitial: ProfileInitial }) {
+export function ConfigClient({ prefs, profileInitial, vapidPublicKey }: { prefs: PrefsRow; profileInitial: ProfileInitial; vapidPublicKey: string | null }) {
   const router = useRouter();
   const [local, setLocal] = useState(prefs);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -51,6 +52,7 @@ export function ConfigClient({ prefs, profileInitial }: { prefs: PrefsRow; profi
             <Switch on={!!local[row.key]} onToggle={() => toggleNotif(row.key)} />
           </button>
         ))}
+        {vapidPublicKey && <PushToggle vapidPublicKey={vapidPublicKey} />}
       </div>
 
       <div style={{ marginTop: 22, borderTop: "2px solid var(--color-divider)", paddingTop: 14 }}>

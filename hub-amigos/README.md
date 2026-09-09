@@ -18,7 +18,8 @@ server-side; there is no client-side use of Supabase at all.
 
 Copy `.env.example` to `.env.local` and fill in:
 
-- `NEXT_PUBLIC_SUPABASE_URL` — your project URL.
+- `SUPABASE_URL` — your project URL (just `https://xxxxx.supabase.co`, no
+  trailing path).
 - `SUPABASE_SERVICE_ROLE_KEY` — the service-role key. **Server-only, never
   exposed to the browser.** All DB access goes through Next.js server code
   (Server Components / Server Actions) using this key — Postgres Row Level
@@ -26,6 +27,17 @@ Copy `.env.example` to `.env.local` and fill in:
   the app's own session checks, not by the DB.
 - `SESSION_SECRET` — random secret for signing session cookies. Generate
   with `openssl rand -base64 32`.
+- `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` — web push keypair, used to send
+  browser push notifications (birthday-today alerts, new-expense alerts).
+  Generate with `npx web-push generate-vapid-keys`. The public key is read
+  server-side and handed to the client only when a Config page is rendered
+  (no `NEXT_PUBLIC_` prefix needed).
+- `VAPID_SUBJECT` — a `mailto:` address or URL identifying the sender, e.g.
+  `mailto:you@example.com`. Required by the Web Push protocol.
+- `CRON_SECRET` — random secret Vercel Cron sends back to
+  `/api/cron/birthdays` (as `Authorization: Bearer $CRON_SECRET`) so that
+  endpoint can't be triggered by anyone else. Generate the same way as
+  `SESSION_SECRET`.
 
 ## 3. Install, seed, run
 

@@ -5,6 +5,8 @@ import { db } from "@/lib/supabase";
 import { getCurrentUser } from "@/lib/auth";
 import { getFullState } from "@/lib/data";
 import { settleFor } from "@/lib/domain";
+import { money } from "@/lib/format";
+import { sendPushToUsers } from "@/lib/push";
 
 export async function saveEvent(name: string, participantIds: string[]): Promise<{ ok: boolean; error?: string; eventId?: string }> {
   const me = await getCurrentUser();
@@ -42,6 +44,20 @@ export async function saveExpense(
 
   await db.from("expense_shares").insert(shareIds.map((user_id) => ({ expense_id: expense.id, user_id })));
   revalidatePath("/", "layout");
+
+  const [{ data: ev }, { data: participantRows }] = await Promise.all([
+    db.from("events").select("name").eq("id", eventId).maybeSingle(),
+    db.from("event_participants").select("user_id").eq("event_id", eventId),
+  ]);
+  const others = (participantRows || []).map((p) => p.user_id).filter((id) => id !== me.id);
+  if (ev && others.length > 0) {
+    const { data: prefsRows } = await db.from("prefs").select("user_id").in("user_id", others).eq("notif_gasto", true);
+    const targets = (prefsRows || []).map((p) => p.user_id);
+    if (targets.length > 0) {
+      await sendPushToUsers(targets, { title: `Nuevo gasto en ${ev.name}`, body: `${trimmed} · ${money(amount)}`, url: `/gastos/${eventId}` });
+    }
+  }
+
   return { ok: true };
 }
 
