@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SegmentedToggle } from "@/components/ui/SegmentedToggle";
 import { PersonModal, type PersonModalInitial } from "@/components/PersonModal";
-import { dateLabel, initialsOf, money } from "@/lib/format";
+import { dateLabel, initialsOf, money, avatarColor } from "@/lib/format";
 import { settleFor } from "@/lib/domain";
 import { adminCloseEvent, adminDeleteEvent, adminDeleteExpense, adminDeleteUser, adminReopenEvent, adminResetPin } from "@/lib/actions/admin";
 import type { EventRow, PersonRow, UserRow } from "@/lib/types";
@@ -43,7 +43,7 @@ function userName(users: UserRow[], id: string | null) {
 }
 
 function Row({ children }: { children: React.ReactNode }) {
-  return <div style={{ padding: "14px 2px", borderBottom: "1px solid var(--color-neutral-300)", display: "flex", flexDirection: "column", gap: 10 }}>{children}</div>;
+  return <div style={{ padding: "14px", background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", display: "flex", flexDirection: "column", gap: 10 }}>{children}</div>;
 }
 
 /* ————— Usuarios ————— */
@@ -88,11 +88,13 @@ function UsersTab({ meId, users }: { meId: string; users: UserRow[] }) {
   }
 
   return (
-    <div style={{ marginTop: 18, borderTop: "2px solid var(--color-divider)" }}>
-      {users.map((u) => (
+    <div style={{ marginTop: 18, display: "flex", flexDirection: "column", gap: 8 }}>
+      {users.map((u) => {
+        const c = avatarColor(u.id);
+        return (
         <Row key={u.id}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ width: 38, height: 38, flex: "none", background: "var(--color-accent-600)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 13 }}>
+            <span style={{ width: 38, height: 38, borderRadius: "50%", flex: "none", background: c.bg, color: c.fg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 13 }}>
               {initialsOf(u.name)}
             </span>
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -107,7 +109,7 @@ function UsersTab({ meId, users }: { meId: string; users: UserRow[] }) {
 
           {openFor === u.id ? (
             mode === "pin" ? (
-              <div style={{ border: "2px solid var(--color-text)", padding: "12px 13px", display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ background: "var(--color-neutral-100)", borderRadius: "var(--radius-md)", padding: "13px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
                 <div className="field-label">Nuevo PIN para {u.name}</div>
                 <input
                   className="input"
@@ -128,7 +130,7 @@ function UsersTab({ meId, users }: { meId: string; users: UserRow[] }) {
                 </div>
               </div>
             ) : (
-              <div style={{ border: "2px solid var(--color-accent-600)", padding: "12px 13px", display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ background: "var(--color-accent-100)", borderRadius: "var(--radius-md)", padding: "13px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
                 <div style={{ fontSize: "12.5px", color: "var(--color-accent-800)" }}>
                   Se borra la cuenta de {u.name}, sus eventos y todos los cumpleaños/aniversarios que haya cargado para otras personas. No se puede deshacer.
                 </div>
@@ -156,7 +158,8 @@ function UsersTab({ meId, users }: { meId: string; users: UserRow[] }) {
             </div>
           )}
         </Row>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -173,7 +176,7 @@ function FechasTab({ people, users }: { people: PersonRow[]; users: UserRow[] })
   const sorted = [...people].sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div style={{ marginTop: 18, borderTop: "2px solid var(--color-divider)" }}>
+    <div style={{ marginTop: 18, display: "flex", flexDirection: "column", gap: 8 }}>
       {sorted.length === 0 && <div style={{ padding: "24px 2px", fontSize: 13, color: "var(--color-neutral-700)" }}>No hay fechas cargadas.</div>}
       {sorted.map((p) => (
         <Row key={p.id}>
@@ -222,9 +225,9 @@ function EventosTab({ events, users }: { events: EventRow[]; users: UserRow[] })
   const sorted = [...events].sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
 
   return (
-    <div style={{ marginTop: 18, borderTop: "2px solid var(--color-divider)" }}>
+    <div style={{ marginTop: 18, display: "flex", flexDirection: "column", gap: 8 }}>
       {error && (
-        <div className="status-error" style={{ margin: "12px 0" }}>
+        <div className="status-error" style={{ margin: "0 0 4px" }}>
           <div style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 13, color: "var(--color-accent-700)" }}>{error}</div>
         </div>
       )}
@@ -246,7 +249,7 @@ function EventosTab({ events, users }: { events: EventRow[]; users: UserRow[] })
             </div>
 
             {e.expenses.length > 0 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 6, paddingLeft: 4, borderLeft: "2px solid var(--color-divider)" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "8px 10px", background: "var(--color-neutral-100)", borderRadius: "var(--radius-sm)" }}>
                 {e.expenses.map((x) => (
                   <div key={x.id} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "12.5px" }}>
                     <span style={{ flex: 1, color: "var(--color-neutral-700)" }}>
@@ -268,7 +271,7 @@ function EventosTab({ events, users }: { events: EventRow[]; users: UserRow[] })
             )}
 
             {confirmDelete === e.id ? (
-              <div style={{ border: "2px solid var(--color-accent-600)", padding: "12px 13px", display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ background: "var(--color-accent-100)", borderRadius: "var(--radius-md)", padding: "13px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
                 <div style={{ fontSize: "12.5px", color: "var(--color-accent-800)" }}>Se borra el evento entero con todos sus gastos y pagos. No se puede deshacer.</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   <button type="button" className="btn btn-outline" onClick={() => setConfirmDelete(null)}>

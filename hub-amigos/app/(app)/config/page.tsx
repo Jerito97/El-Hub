@@ -12,6 +12,7 @@ export default async function ConfigPage() {
       prefs={state.prefs}
       vapidPublicKey={process.env.VAPID_PUBLIC_KEY || null}
       profileInitial={{
+        id: me.id,
         name: me.name,
         alias: me.alias,
         day: person ? String(person.day) : "",

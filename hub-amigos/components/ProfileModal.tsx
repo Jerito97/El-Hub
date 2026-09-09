@@ -6,9 +6,10 @@ import { Sheet } from "@/components/ui/Sheet";
 import { DateSelect } from "@/components/ui/DateSelect";
 import { logoutAction } from "@/lib/actions/auth";
 import { saveAlias, saveBirthday, saveName } from "@/lib/actions/profile";
-import { dateLabel, initialsOf } from "@/lib/format";
+import { dateLabel, initialsOf, avatarColor } from "@/lib/format";
 
 export interface ProfileInitial {
+  id: string;
   name: string;
   alias: string;
   day: string;
@@ -18,6 +19,7 @@ export interface ProfileInitial {
 
 export function ProfileModal({ initial, onClose }: { initial: ProfileInitial; onClose: () => void }) {
   const router = useRouter();
+  const c = avatarColor(initial.id);
 
   const [name, setName] = useState(initial.name);
   const [nameEditing, setNameEditing] = useState(false);
@@ -88,7 +90,7 @@ export function ProfileModal({ initial, onClose }: { initial: ProfileInitial; on
     <Sheet title="Tu perfil" onClose={onClose}>
       <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ width: 60, height: 60, background: "var(--color-accent)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 22 }}>{initialsOf(name)}</div>
+          <div style={{ width: 60, height: 60, borderRadius: "50%", background: c.bg, color: c.fg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 22 }}>{initialsOf(name)}</div>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 22 }}>{name}</span>
@@ -127,7 +129,7 @@ export function ProfileModal({ initial, onClose }: { initial: ProfileInitial; on
         </div>
 
         {nameEditing && (
-          <div style={{ borderTop: "2px solid var(--color-divider)", paddingTop: 16 }}>
+          <div style={{ paddingTop: 4 }}>
             <div className="field-label">Cambiar tu nombre</div>
             <div style={{ marginTop: 9, display: "flex", gap: 8, alignItems: "stretch" }}>
               <input className="input" style={{ flex: 1, minWidth: 0 }} value={nameDraft} onChange={(e) => setNameDraft(e.target.value)} placeholder="Tu nombre" />
@@ -140,7 +142,7 @@ export function ProfileModal({ initial, onClose }: { initial: ProfileInitial; on
         )}
 
         {bdEditing && (
-          <div style={{ borderTop: "2px solid var(--color-divider)", paddingTop: 16 }}>
+          <div style={{ paddingTop: 4 }}>
             <div className="field-label">Corregir tu cumpleaños</div>
             <div style={{ marginTop: 8 }}>
               <DateSelect day={bdDay} month={bdMonth} year={bdYear} onDay={setBdDay} onMonth={setBdMonth} onYear={setBdYear} />
@@ -152,13 +154,13 @@ export function ProfileModal({ initial, onClose }: { initial: ProfileInitial; on
           </div>
         )}
 
-        <div style={{ borderTop: "2px solid var(--color-divider)", paddingTop: 16 }}>
+        <div style={{ paddingTop: 4 }}>
           <div className="field-label">Alias para que te transfieran</div>
           {!aliasEditing ? (
             <>
-              <div style={{ marginTop: 10, display: "flex", alignItems: "stretch", border: "2px solid var(--color-text)" }}>
-                <div style={{ flex: 1, minWidth: 0, padding: "12px 13px", background: "var(--color-neutral-100)", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 15, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{alias}</div>
-                <button type="button" onClick={copyAlias} style={{ flex: "none", background: "var(--color-accent)", color: "#fff", border: 0, borderLeft: "2px solid var(--color-text)", padding: "0 15px", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "12.5px" }}>
+              <div style={{ marginTop: 10, display: "flex", alignItems: "stretch", background: "var(--color-neutral-100)", borderRadius: "var(--radius-md)", overflow: "hidden" }}>
+                <div style={{ flex: 1, minWidth: 0, padding: "12px 13px", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 15, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{alias}</div>
+                <button type="button" onClick={copyAlias} style={{ flex: "none", background: "var(--color-accent)", color: "#fff", border: 0, padding: "0 15px", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "12.5px" }}>
                   {copied ? "¡Copiado!" : "Copiar"}
                 </button>
               </div>

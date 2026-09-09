@@ -42,7 +42,7 @@ export function NotificationsPanel({ notifs }: { notifs: NotifWithHref[] }) {
   return (
     <div className="overlay" style={{ display: "flex", justifyContent: "flex-end" }} onClick={() => setNotifsOpen(false)}>
       <div className="side-panel-right" onClick={(e) => e.stopPropagation()}>
-        <div style={{ flex: "none", padding: 18, borderBottom: "2px solid var(--color-divider)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+        <div style={{ flex: "none", padding: 18, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div>
             <div style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 20, lineHeight: 1 }}>Notificaciones</div>
             <div style={{ marginTop: 4, fontSize: "11.5px", color: "var(--color-neutral-600)" }}>{visible.length ? `${visible.length} sin leer` : "Todo leído"}</div>
@@ -50,29 +50,30 @@ export function NotificationsPanel({ notifs }: { notifs: NotifWithHref[] }) {
           <button
             type="button"
             onClick={() => setNotifsOpen(false)}
-            style={{ width: 30, height: 30, flex: "none", background: "transparent", border: "2px solid var(--color-text)", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 13, lineHeight: 1, color: "var(--color-text)" }}
+            style={{ width: 32, height: 32, borderRadius: "50%", flex: "none", background: "var(--color-neutral-200)", border: 0, cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 13, lineHeight: 1, color: "var(--color-text)" }}
           >
             ✕
           </button>
         </div>
 
-        <div className="hub-scroll" style={{ flex: 1, overflowY: "auto" }}>
+        <div className="hub-scroll" style={{ flex: 1, overflowY: "auto", padding: "0 14px", display: "flex", flexDirection: "column", gap: 8 }}>
           {visible.map((n) => (
-            <div key={n.id} style={{ display: "flex", alignItems: "flex-start", gap: 8, background: "var(--color-neutral-100)", borderBottom: "1px solid var(--color-neutral-300)" }}>
-              <button type="button" onClick={() => open(n)} style={{ flex: 1, minWidth: 0, textAlign: "left", background: "transparent", border: 0, padding: "15px 4px 15px 16px", cursor: "pointer", display: "flex", gap: 12, alignItems: "flex-start" }}>
+            <div key={n.id} style={{ display: "flex", alignItems: "flex-start", gap: 4, background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)" }}>
+              <button type="button" onClick={() => open(n)} style={{ flex: 1, minWidth: 0, textAlign: "left", background: "transparent", border: 0, padding: "14px 4px 14px 14px", cursor: "pointer", display: "flex", gap: 12, alignItems: "flex-start" }}>
                 <span
                   style={{
-                    width: 30,
-                    height: 30,
+                    width: 32,
+                    height: 32,
+                    borderRadius: "50%",
                     flex: "none",
-                    background: n.kind === "cumple" ? "var(--color-accent-600)" : "var(--color-text)",
-                    color: n.kind === "cumple" ? "#fff" : "var(--color-bg)",
+                    background: n.kind === "cumple" ? "var(--color-peach-bg)" : "var(--color-lavender-bg)",
+                    color: n.kind === "cumple" ? "var(--color-peach-ink)" : "var(--color-lavender-ink)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     lineHeight: 1,
                     fontFamily: "var(--font-heading)",
-                    fontWeight: 900,
+                    fontWeight: 800,
                     fontSize: 13,
                   }}
                 >
@@ -87,7 +88,7 @@ export function NotificationsPanel({ notifs }: { notifs: NotifWithHref[] }) {
                 type="button"
                 title="Descartar"
                 onClick={() => dismiss(n)}
-                style={{ flex: "none", width: 44, height: 44, marginTop: 4, background: "transparent", border: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-neutral-600)" }}
+                style={{ flex: "none", width: 40, height: 40, marginTop: 4, background: "transparent", border: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-neutral-600)" }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 6 6 18M6 6l12 12"></path>
@@ -104,7 +105,7 @@ export function NotificationsPanel({ notifs }: { notifs: NotifWithHref[] }) {
           <button
             type="button"
             onClick={dismissAll}
-            style={{ flex: "none", background: "transparent", border: 0, borderTop: "2px solid var(--color-divider)", padding: 16, cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 12, color: "var(--color-accent-700)", textTransform: "uppercase", letterSpacing: ".06em" }}
+            style={{ flex: "none", margin: 14, background: "var(--color-neutral-200)", border: 0, borderRadius: "var(--radius-pill)", padding: 14, cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 12, color: "var(--color-accent-700)", textTransform: "uppercase", letterSpacing: ".06em" }}
           >
             Marcar todo como leído
           </button>

@@ -23,9 +23,9 @@ export function BalanceModal({ settlements, payments, onClose }: { settlements: 
 
   return (
     <Sheet title="Balance del evento" dark onClose={onClose}>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {settlements.map((b, i) => (
-          <div key={i} style={{ padding: "12px 0", borderTop: "1px solid var(--color-neutral-700)", display: "flex", flexDirection: "column", gap: 8 }}>
+          <div key={i} style={{ padding: "13px 14px", background: "rgba(255,255,255,.06)", borderRadius: "var(--radius-md)", display: "flex", flexDirection: "column", gap: 8 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <span style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "14.5px" }}>
                 {b.from}
@@ -44,19 +44,21 @@ export function BalanceModal({ settlements, payments, onClose }: { settlements: 
       </div>
 
       {payments.length > 0 && (
-        <div style={{ marginTop: 18, borderTop: "2px solid var(--color-neutral-700)", paddingTop: 12 }}>
-          <div style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "10.5px", letterSpacing: ".14em", textTransform: "uppercase", color: "var(--color-neutral-400)" }}>Pagos registrados</div>
-          {payments.map((p) => (
-            <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: "1px solid var(--color-neutral-700)" }}>
-              <span style={{ flex: 1, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "13.5px" }}>
-                {p.from} → {p.to}
-              </span>
-              <span style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: "13.5px" }}>{money(p.amount)}</span>
-              <button type="button" onClick={() => undo(p.id)} style={{ background: "transparent", border: "1px solid var(--color-neutral-600)", color: "var(--color-bg)", padding: "5px 9px", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "10.5px" }}>
-                Deshacer
-              </button>
-            </div>
-          ))}
+        <div style={{ marginTop: 18 }}>
+          <div style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "10.5px", letterSpacing: ".14em", textTransform: "uppercase", color: "var(--color-neutral-400)", marginBottom: 8 }}>Pagos registrados</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {payments.map((p) => (
+              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "rgba(255,255,255,.06)", borderRadius: "var(--radius-md)" }}>
+                <span style={{ flex: 1, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "13.5px" }}>
+                  {p.from} → {p.to}
+                </span>
+                <span style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: "13.5px" }}>{money(p.amount)}</span>
+                <button type="button" onClick={() => undo(p.id)} style={{ background: "rgba(255,255,255,.12)", border: 0, borderRadius: "var(--radius-pill)", color: "var(--color-bg)", padding: "6px 11px", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "10.5px" }}>
+                  Deshacer
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </Sheet>
