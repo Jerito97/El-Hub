@@ -3,25 +3,36 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sheet } from "@/components/ui/Sheet";
-import { saveExpense } from "@/lib/actions/events";
+import { editExpense, saveExpense } from "@/lib/actions/events";
 import { money } from "@/lib/format";
+
+export interface ExpenseModalInitial {
+  id: string;
+  desc: string;
+  amount: number;
+  payerId: string;
+  shareIds: string[];
+}
 
 export function ExpenseModal({
   eventId,
   meId,
   participants,
+  initial,
   onClose,
 }: {
   eventId: string;
   meId: string;
   participants: { id: string; name: string }[];
+  initial?: ExpenseModalInitial;
   onClose: () => void;
 }) {
   const router = useRouter();
-  const [desc, setDesc] = useState("");
-  const [amount, setAmount] = useState("");
-  const [payer, setPayer] = useState(meId);
-  const [shares, setShares] = useState<string[]>(participants.map((p) => p.id));
+  const isEditing = !!initial;
+  const [desc, setDesc] = useState(initial?.desc ?? "");
+  const [amount, setAmount] = useState(initial ? String(initial.amount) : "");
+  const [payer, setPayer] = useState(initial?.payerId ?? meId);
+  const [shares, setShares] = useState<string[]>(initial?.shareIds ?? participants.map((p) => p.id));
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -34,7 +45,7 @@ export function ExpenseModal({
   async function submit() {
     setBusy(true);
     setError(null);
-    const res = await saveExpense(eventId, desc, amt, payer, shares);
+    const res = isEditing ? await editExpense(initial.id, desc, amt, payer, shares) : await saveExpense(eventId, desc, amt, payer, shares);
     setBusy(false);
     if (!res.ok) return setError(res.error || "Algo salió mal");
     router.refresh();
@@ -42,7 +53,7 @@ export function ExpenseModal({
   }
 
   return (
-    <Sheet title="Cargar gasto" onClose={onClose}>
+    <Sheet title={isEditing ? "Editar gasto" : "Cargar gasto"} onClose={onClose}>
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div className="field">
           <label className="field-label">Descripción</label>
@@ -95,7 +106,7 @@ export function ExpenseModal({
         </div>
         {error && <div style={{ fontSize: "12.5px", color: "var(--color-accent-700)" }}>{error}</div>}
         <button type="button" className="btn btn-primary btn-block" disabled={busy} onClick={submit}>
-          Guardar gasto
+          {isEditing ? "Guardar cambios" : "Guardar gasto"}
         </button>
       </div>
     </Sheet>
