@@ -5,6 +5,7 @@ import { computeNotifications } from "@/lib/domain";
 import { dateLabel, initialsOf } from "@/lib/format";
 import { AppShellProvider } from "@/lib/client/AppShellContext";
 import { ThemeSync } from "@/lib/client/ThemeSync";
+import { EdgeSwipe } from "@/lib/client/EdgeSwipe";
 import { Header } from "@/components/Header";
 import { Drawer } from "@/components/Drawer";
 import { NotificationsPanel, type NotifWithHref } from "@/components/NotificationsPanel";
@@ -29,6 +30,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <AppShellProvider>
       <ThemeSync theme={state.prefs.theme} />
+      <EdgeSwipe />
       <div className="hub-app">
         <Header meInitials={initialsOf(me.name)} unreadCount={unreadCount} />
         <Drawer
