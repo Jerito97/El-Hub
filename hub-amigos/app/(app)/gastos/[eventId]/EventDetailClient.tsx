@@ -7,7 +7,7 @@ import { PayModal, type DebtRow, type OwedRow } from "@/components/PayModal";
 import { BalanceModal, type PaymentLog } from "@/components/BalanceModal";
 import { ExpenseModal, type ExpenseModalInitial } from "@/components/ExpenseModal";
 import { EventModal } from "@/components/EventModal";
-import { closeEvent, removeGuest, updateGuest } from "@/lib/actions/events";
+import { closeEvent, removeGuest } from "@/lib/actions/events";
 import { money } from "@/lib/format";
 import type { Settlement } from "@/lib/domain";
 
@@ -32,10 +32,8 @@ export interface GuestView {
   id: string;
   name: string;
   shares: number;
-  collectorId: string;
-  collectorName: string;
-  collectorAlias: string;
-  owed: number;
+  /** Who they actually owe, per the same debt-simplification as the rest of the event (usually one person). */
+  owedTo: { id: string; name: string; alias: string; amount: number }[];
 }
 
 export function EventDetailClient({
@@ -105,7 +103,12 @@ export function EventDetailClient({
   }
 
   async function copyGuestMessage(g: GuestView) {
-    const text = `Hola ${g.name}, debés ${money(g.owed)} a ${g.collectorName}. Su alias es ${g.collectorAlias || "(sin alias cargado)"}.`;
+    const text =
+      g.owedTo.length === 0
+        ? `Hola ${g.name}, estás al día en "${eventName}".`
+        : g.owedTo
+            .map((o) => `Hola ${g.name}, debés ${money(o.amount)} a ${o.name}. Su alias es ${o.alias || "(sin alias cargado)"}.`)
+            .join("\n");
     try {
       await navigator.clipboard.writeText(text);
       setCopiedGuestId(g.id);
@@ -113,11 +116,6 @@ export function EventDetailClient({
     } catch {
       // clipboard unavailable -- ignore
     }
-  }
-
-  async function changeCollector(guestId: string, collectorId: string) {
-    await updateGuest(guestId, { collectorId });
-    router.refresh();
   }
 
   async function doRemoveGuest(guestId: string) {
@@ -195,53 +193,45 @@ export function EventDetailClient({
       </div>
 
       {guests.length > 0 && (
-        <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ marginTop: 4 }}>
           {guests.map((g) => (
-            <div key={g.id} style={{ border: "1px solid var(--color-neutral-300)", padding: "12px 13px", display: "flex", flexDirection: "column", gap: 8 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                <span style={{ display: "flex", alignItems: "center", gap: 7, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 14.5 }}>
+            <div key={g.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 2px", borderBottom: "1px solid var(--color-neutral-300)" }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 7, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "14.5px" }}>
                   {g.name}
                   <span className="tag tag-muted">Invitado</span>
                   {g.shares > 1 && <span className="tag tag-solid">×{g.shares}</span>}
-                </span>
-                <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 14 }}>{money(g.owed)}</span>
+                </div>
+                <div style={{ fontSize: 12, color: "var(--color-neutral-700)", marginTop: 2 }}>
+                  {g.owedTo.length === 0 ? "Sin deuda pendiente" : g.owedTo.map((o) => `debe ${money(o.amount)} a ${o.name}`).join(" · ")}
+                </div>
               </div>
 
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                <span style={{ fontSize: 12, color: "var(--color-neutral-700)" }}>Cobrador</span>
-                {eventIsClosed ? (
-                  <span style={{ fontSize: 12.5 }}>{g.collectorName}</span>
+              <button type="button" title="Copiar mensaje" className="tap-icon" onClick={() => copyGuestMessage(g)}>
+                {copiedGuestId === g.id ? (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6 9 17l-5-5"></path>
+                  </svg>
                 ) : (
-                  <select
-                    className="input"
-                    style={{ width: "auto", padding: "6px 8px", fontSize: 12.5 }}
-                    value={g.collectorId}
-                    onChange={(e) => changeCollector(g.id, e.target.value)}
-                  >
-                    {realParticipants.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.id === meId ? `${p.name} (vos)` : p.name}
-                      </option>
-                    ))}
-                  </select>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="9" y="9" width="11" height="11"></rect>
+                    <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path>
+                  </svg>
                 )}
-              </div>
+              </button>
 
-              <div style={{ display: "flex", gap: 8 }}>
-                <button type="button" className="btn btn-outline" style={{ flex: 1, padding: "9px 10px", fontSize: 12.5 }} onClick={() => copyGuestMessage(g)}>
-                  {copiedGuestId === g.id ? "¡Copiado!" : "Copiar mensaje"}
-                </button>
-                {!eventIsClosed &&
-                  (removeConfirmId === g.id ? (
-                    <button type="button" className="btn" style={{ flex: "none", background: "var(--color-accent-600)", color: "#fff", padding: "9px 12px", fontSize: 12.5 }} disabled={busy} onClick={() => doRemoveGuest(g.id)}>
-                      ¿Seguro?
-                    </button>
-                  ) : (
-                    <button type="button" className="btn btn-outline-accent" style={{ flex: "none", padding: "9px 12px", fontSize: 12.5 }} onClick={() => setRemoveConfirmId(g.id)}>
-                      Quitar
-                    </button>
-                  ))}
-              </div>
+              {!eventIsClosed &&
+                (removeConfirmId === g.id ? (
+                  <button type="button" disabled={busy} onClick={() => doRemoveGuest(g.id)} style={{ flex: "none", background: "var(--color-accent-600)", color: "#fff", border: 0, padding: "7px 10px", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 11.5 }}>
+                    ¿Seguro?
+                  </button>
+                ) : (
+                  <button type="button" title="Quitar invitado" className="tap-icon" onClick={() => setRemoveConfirmId(g.id)}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M18 6 6 18M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                ))}
             </div>
           ))}
         </div>

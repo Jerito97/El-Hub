@@ -17,7 +17,6 @@ create table if not exists users (
   alias text not null default '',
   is_admin boolean not null default false,
   is_guest boolean not null default false,
-  collector_id uuid references users (id) on delete set null,
   created_at timestamptz not null default now(),
   constraint users_pin_hash_required check (is_guest or pin_hash is not null)
 );
