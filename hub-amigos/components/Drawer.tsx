@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAppShell } from "@/lib/client/AppShellContext";
 import { logoutAction } from "@/lib/actions/auth";
+import { avatarColor } from "@/lib/format";
 
 const NAV = [
   { href: "/home", label: "Inicio", match: (p: string) => p === "/home" },
@@ -14,27 +15,28 @@ const NAV = [
 
 const navStyle = (active: boolean): React.CSSProperties => ({
   display: "block",
-  width: "100%",
+  width: "auto",
+  margin: "0 12px 4px",
   textAlign: "left",
-  background: active ? "var(--color-text)" : "transparent",
-  color: active ? "var(--color-bg)" : "var(--color-text)",
+  background: active ? "var(--color-accent)" : "transparent",
+  color: active ? "#fff" : "var(--color-text)",
   border: 0,
-  borderBottom: "1px solid var(--color-neutral-300)",
-  padding: "16px 18px",
+  borderRadius: "var(--radius-md)",
+  padding: "13px 16px",
   cursor: "pointer",
   fontFamily: "var(--font-heading)",
-  fontWeight: 800,
-  fontSize: 14,
-  textTransform: "uppercase",
-  letterSpacing: ".06em",
+  fontWeight: 700,
+  fontSize: 14.5,
 });
 
 export function Drawer({
+  meId,
   meName,
   meInitials,
   meBirthdayLabel,
   isAdmin,
 }: {
+  meId: string;
   meName: string;
   meInitials: string;
   meBirthdayLabel: string;
@@ -45,12 +47,13 @@ export function Drawer({
   if (!drawerOpen) return null;
   const configActive = pathname.startsWith("/config");
   const adminActive = pathname.startsWith("/admin");
+  const me = avatarColor(meId);
 
   return (
     <div className="overlay" style={{ display: "flex" }} onClick={() => setDrawerOpen(false)}>
       <div className="side-drawer" onClick={(e) => e.stopPropagation()}>
-        <div style={{ padding: "20px 18px", borderBottom: "2px solid var(--color-divider)", display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 44, height: 44, flex: "none", background: "var(--color-accent)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 16 }}>
+        <div style={{ padding: "22px 18px", display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ width: 46, height: 46, borderRadius: "50%", flex: "none", background: me.bg, color: me.fg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 16 }}>
             {meInitials}
           </div>
           <div>
@@ -59,24 +62,26 @@ export function Drawer({
           </div>
         </div>
 
-        {NAV.map((item) => (
-          <Link key={item.href} href={item.href} onClick={() => setDrawerOpen(false)} style={navStyle(item.match(pathname))}>
-            {item.label}
+        <div style={{ marginTop: 6, display: "flex", flexDirection: "column" }}>
+          {NAV.map((item) => (
+            <Link key={item.href} href={item.href} onClick={() => setDrawerOpen(false)} style={navStyle(item.match(pathname))}>
+              {item.label}
+            </Link>
+          ))}
+          <Link href="/config" onClick={() => setDrawerOpen(false)} style={navStyle(configActive)}>
+            Configuración
           </Link>
-        ))}
-        <Link href="/config" onClick={() => setDrawerOpen(false)} style={navStyle(configActive)}>
-          Configuración
-        </Link>
-        {isAdmin && (
-          <Link href="/admin" onClick={() => setDrawerOpen(false)} style={navStyle(adminActive)}>
-            Admin
-          </Link>
-        )}
+          {isAdmin && (
+            <Link href="/admin" onClick={() => setDrawerOpen(false)} style={navStyle(adminActive)}>
+              Admin
+            </Link>
+          )}
+        </div>
 
-        <form action={logoutAction} style={{ marginTop: "auto" }}>
+        <form action={logoutAction} style={{ marginTop: "auto", padding: 12 }}>
           <button
             type="submit"
-            style={{ width: "100%", textAlign: "left", background: "transparent", border: 0, borderTop: "2px solid var(--color-divider)", padding: 18, cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 13, color: "var(--color-accent-700)", textTransform: "uppercase", letterSpacing: ".06em" }}
+            style={{ width: "100%", textAlign: "left", background: "transparent", border: 0, borderRadius: "var(--radius-md)", padding: "13px 16px", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 13.5, color: "var(--color-accent-700)" }}
           >
             Salir de la sesión
           </button>

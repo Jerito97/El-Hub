@@ -32,8 +32,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <ThemeSync theme={state.prefs.theme} />
       <EdgeSwipe />
       <div className="hub-app">
-        <Header meInitials={initialsOf(me.name)} unreadCount={unreadCount} />
+        <Header meId={me.id} meInitials={initialsOf(me.name)} unreadCount={unreadCount} />
         <Drawer
+          meId={me.id}
           meName={me.name}
           meInitials={initialsOf(me.name)}
           meBirthdayLabel={myBirthday ? dateLabel(myBirthday.day, myBirthday.month, myBirthday.year) : "sin cargar"}

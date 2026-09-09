@@ -2,7 +2,7 @@
 // notifications logic in the original Claude Design prototype
 // (project/Hub Amigos.dc.html). Safe to import from server or client code.
 
-import { daysUntil, dateLabel, initialsOf, money, pad } from "./format";
+import { avatarColor, daysUntil, dateLabel, initialsOf, money, pad } from "./format";
 import type { AppState, EventRow, PersonKind, PersonRow, UserRow } from "./types";
 
 export function uname(users: UserRow[], id: string | null | undefined) {
@@ -129,8 +129,8 @@ export function computePeople(people: PersonRow[], users: UserRow[], meId: strin
         canEdit: p.added_by_id === meId || p.user_id === meId,
         isPrivate: p.is_private,
         isAniv,
-        chipBg: isAniv ? "var(--color-text)" : "var(--color-accent-600)",
-        chipFg: isAniv ? "var(--color-bg)" : "#fff",
+        chipBg: isAniv ? "var(--color-text)" : avatarColor(p.id).bg,
+        chipFg: isAniv ? "var(--color-bg)" : avatarColor(p.id).fg,
         ageLabel: (isAniv ? "" : "cumple ") + (targetYear - p.year) + (isAniv ? (targetYear - p.year === 1 ? " año" : " años") : ""),
         year: p.year,
         month: p.month,

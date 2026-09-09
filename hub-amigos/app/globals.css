@@ -1,21 +1,22 @@
-/* LinkUp — Modernist design tokens, ported from the Claude Design bundle's
-   styles.css plus the dark-theme block in Hub Amigos.dc.html.
-   Flat, no radii, 2px ink borders, Archivo everywhere, small-caps type. */
+/* LinkUp — soft, rounded, colorful design tokens. Rounded cards with soft
+   shadows, pastel tinted tiles, per-person avatar colors, pill controls.
+   Baloo 2 for headings, Manrope for body. Red brand accent kept from the
+   previous system on purpose. */
 
 :root {
-  --color-bg: #f3f2f2;
+  --color-bg: #faf6f2;
   --color-text: #201e1d;
-  --color-divider: color-mix(in srgb, #201e1d 40%, transparent);
+  --color-divider: #f0e9e3;
 
-  --color-neutral-100: #f8f4f4;
-  --color-neutral-200: #eae7e7;
-  --color-neutral-300: #d7d3d3;
-  --color-neutral-400: #bab6b6;
-  --color-neutral-500: #9b9797;
-  --color-neutral-600: #7d7979;
-  --color-neutral-700: #605d5d;
-  --color-neutral-800: #444141;
-  --color-neutral-900: #2d2b2b;
+  --color-neutral-100: #f8f4f0;
+  --color-neutral-200: #f0ebe5;
+  --color-neutral-300: #e4dbd2;
+  --color-neutral-400: #cabfb5;
+  --color-neutral-500: #a89e95;
+  --color-neutral-600: #8a7d76;
+  --color-neutral-700: #6b6059;
+  --color-neutral-800: #453c37;
+  --color-neutral-900: #2d2723;
 
   --color-accent: #ec3013;
   --color-accent-100: #fff2ef;
@@ -28,9 +29,21 @@
   --color-accent-800: #7c1405;
   --color-accent-900: #4d170e;
 
-  --font-heading: var(--font-archivo), system-ui, sans-serif;
-  --font-body: var(--font-archivo), system-ui, sans-serif;
+  --color-peach-bg: #ffe0cd;
+  --color-peach-ink: #c1551f;
+  --color-lavender-bg: #e5e0fb;
+  --color-lavender-ink: #241f4a;
 
+  --font-heading: var(--font-baloo), system-ui, sans-serif;
+  --font-body: var(--font-manrope), system-ui, sans-serif;
+
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 6px 18px rgba(45, 39, 35, 0.07);
+  --shadow-float: 0 10px 24px rgba(45, 39, 35, 0.1);
   --shadow-lg: 0 12px 32px color-mix(in srgb, #2d2b2b 22%, transparent);
 }
 
@@ -70,19 +83,6 @@ body {
   font-family: var(--font-body);
   font-size: 15px;
   line-height: 1.5;
-}
-
-body,
-button,
-select,
-label {
-  font-variant-caps: small-caps;
-  font-feature-settings: "smcp" 1, "c2sc" 0;
-}
-input,
-textarea {
-  font-variant-caps: normal !important;
-  font-feature-settings: normal !important;
 }
 
 h1,
@@ -174,27 +174,29 @@ button {
   font-size: 15px;
   border: 0;
   padding: 16px 18px;
-  border-radius: 0;
+  border-radius: var(--radius-md);
   background: transparent;
   color: var(--color-text);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
 }
 .btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
 .btn-primary {
-  background: var(--color-accent-600);
+  background: var(--color-accent);
   color: #fff;
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--color-accent) 32%, transparent);
 }
 .btn-primary:hover:not(:disabled) {
   background: var(--color-accent-700);
 }
 .btn-secondary {
-  border: 2px solid var(--color-text);
-  background: transparent;
+  background: var(--color-neutral-200);
+  color: var(--color-text);
 }
 .btn-secondary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+  background: var(--color-neutral-300);
 }
 .btn-dark {
   background: var(--color-text);
@@ -205,17 +207,19 @@ button {
   color: var(--color-bg);
 }
 .btn-outline {
-  background: transparent;
-  border: 2px solid var(--color-text);
+  background: #fff;
+  border: 1.5px solid var(--color-neutral-300);
   color: var(--color-text);
+  box-shadow: var(--shadow-card);
 }
 .btn-outline:hover:not(:disabled) {
-  background: var(--color-neutral-200);
+  background: var(--color-neutral-100);
 }
 .btn-outline-accent {
-  background: transparent;
-  border: 2px solid var(--color-accent-600);
+  background: #fff;
+  border: 1.5px solid var(--color-accent-300);
   color: var(--color-accent-700);
+  box-shadow: var(--shadow-card);
 }
 .btn-outline-accent:hover:not(:disabled) {
   background: var(--color-accent-100);
@@ -224,12 +228,9 @@ button {
   width: 100%;
   text-align: center;
   justify-content: center;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
 .btn-upper {
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
 }
 .btn-ghost {
   background: transparent;
@@ -265,29 +266,32 @@ button {
 .field-label {
   font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 11px;
-  letter-spacing: 0.12em;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: var(--color-neutral-600);
 }
 .input {
   width: 100%;
   font-family: var(--font-body);
-  font-size: 16px;
-  padding: 13px 14px;
-  border: 2px solid var(--color-text);
-  background: var(--color-neutral-100);
+  font-size: 15.5px;
+  font-weight: 600;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: #fff;
   color: var(--color-text);
-  border-radius: 0;
+  box-shadow: var(--shadow-card);
 }
 .input:focus-visible {
   outline: 2px solid var(--color-accent);
-  outline-offset: 0;
+  outline-offset: 1px;
 }
 select.input {
   font-family: var(--font-heading);
   font-weight: 800;
   font-size: 15px;
-  padding: 12px 8px;
+  padding: 12px 12px;
 }
 
 .date-grid {
@@ -301,27 +305,35 @@ select.input {
 .seg2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  border: 2px solid var(--color-text);
+  background: #fff;
+  border-radius: var(--radius-pill);
+  padding: 5px;
+  gap: 4px;
+  box-shadow: var(--shadow-card);
 }
 .seg3 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  border-top: 2px solid var(--color-text);
+  background: #fff;
+  border-radius: var(--radius-pill);
+  padding: 5px;
+  gap: 4px;
+  box-shadow: var(--shadow-card);
 }
 .seg-btn {
   border: 0;
-  padding: 11px 12px;
+  padding: 10px 12px;
   cursor: pointer;
+  border-radius: var(--radius-pill);
   font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 12.5px;
-  letter-spacing: 0.04em;
+  font-size: 13px;
   background: transparent;
-  color: var(--color-neutral-700);
+  color: var(--color-neutral-600);
 }
 .seg-btn.active {
-  background: var(--color-text);
-  color: var(--color-bg);
+  background: var(--color-accent);
+  color: #fff;
 }
 
 /* ————— switch ————— */
@@ -331,33 +343,34 @@ select.input {
   height: 26px;
   flex: none;
   border: 0;
+  border-radius: var(--radius-pill);
   padding: 3px;
   cursor: pointer;
   display: flex;
   background: var(--color-neutral-400);
 }
 .switch.on {
-  background: var(--color-accent-600);
+  background: var(--color-accent);
 }
 .switch-knob {
   width: 20px;
   height: 20px;
+  border-radius: 50%;
   background: #fff;
 }
 .switch-outline {
-  border: 2px solid var(--color-text);
-  background: transparent;
+  background: var(--color-neutral-200);
 }
 .switch-outline.on {
-  background: var(--color-text);
+  background: var(--color-accent);
 }
 .switch-outline .switch-knob {
-  width: 18px;
-  height: 18px;
-  background: var(--color-text);
+  width: 20px;
+  height: 20px;
+  background: #fff;
 }
 .switch-outline.on .switch-knob {
-  background: var(--color-bg);
+  background: #fff;
 }
 
 /* ————— chips / avatars ————— */
@@ -367,7 +380,8 @@ select.input {
   align-items: center;
   justify-content: center;
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 700;
+  border-radius: 50%;
   flex: none;
 }
 .chip-lg {
@@ -392,17 +406,18 @@ select.input {
 }
 .tag {
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  border-radius: var(--radius-pill);
+  padding: 3px 8px;
 }
 .tag-muted {
   color: var(--color-neutral-600);
+  background: var(--color-neutral-200);
 }
 .tag-solid {
-  color: var(--color-bg);
-  background: var(--color-neutral-700);
-  padding: 2px 5px;
+  color: #fff;
+  background: var(--color-text);
 }
 
 /* ————— sheet / drawer / panel shells ————— */
@@ -423,7 +438,8 @@ select.input {
   margin: 0 auto;
   background: var(--color-bg);
   color: var(--color-text);
-  border-top: 2px solid var(--color-text);
+  border-radius: 26px 26px 0 0;
+  box-shadow: 0 -14px 32px rgba(45, 39, 35, 0.18);
   padding: 22px 20px calc(26px + env(safe-area-inset-bottom));
   animation: hubUp 0.2s ease-out;
   max-height: 88vh;
@@ -443,7 +459,8 @@ select.input {
   width: 280px;
   max-width: 82%;
   background: var(--color-bg);
-  border-right: 2px solid var(--color-text);
+  border-radius: 0 26px 26px 0;
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   animation: hubIn 0.18s ease-out;
@@ -457,7 +474,8 @@ select.input {
   width: 320px;
   max-width: 88%;
   background: var(--color-bg);
-  border-left: 2px solid var(--color-text);
+  border-radius: 26px 0 0 26px;
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   animation: hubInRight 0.18s ease-out;
@@ -478,7 +496,7 @@ hr.hub-hr {
 }
 
 .status-error {
-  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-md);
   background: var(--color-accent-100);
   padding: 14px 16px;
   display: flex;

@@ -61,12 +61,12 @@ export function FechasClient({ people, today }: { people: PersonView[]; today: {
       </div>
 
       <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 16 }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 7, fontSize: "11.5px", color: "var(--color-neutral-700)" }}>
-          <span style={{ width: 12, height: 12, background: "var(--color-accent-600)" }} />
+        <span style={{ display: "flex", alignItems: "center", gap: 7, fontSize: "11.5px", fontWeight: 600, color: "var(--color-neutral-700)" }}>
+          <span style={{ width: 12, height: 12, borderRadius: "50%", background: "var(--color-accent)" }} />
           Cumpleaños
         </span>
-        <span style={{ display: "flex", alignItems: "center", gap: 7, fontSize: "11.5px", color: "var(--color-neutral-700)" }}>
-          <span style={{ width: 16, height: 16, background: "var(--color-text)", color: "var(--color-bg)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 7, fontSize: "11.5px", fontWeight: 600, color: "var(--color-neutral-700)" }}>
+          <span style={{ width: 16, height: 16, borderRadius: "50%", background: "var(--color-text)", color: "var(--color-bg)", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round">
               <circle cx="9" cy="14" r="6" />
               <circle cx="15" cy="9" r="6" />
@@ -160,50 +160,51 @@ export function FechasClient({ people, today }: { people: PersonView[]; today: {
         </div>
       ) : (
         <div>
-          <div style={{ marginTop: 12, display: "flex", alignItems: "stretch", border: "2px solid var(--color-text)" }}>
-            <input className="input" style={{ border: 0 }} value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar por nombre" />
+          <div style={{ marginTop: 12, display: "flex", alignItems: "stretch", background: "#fff", borderRadius: "var(--radius-pill)", boxShadow: "var(--shadow-card)" }}>
+            <input className="input" style={{ boxShadow: "none", borderRadius: "var(--radius-pill)" }} value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar por nombre" />
             {search && (
-              <button type="button" onClick={() => setSearch("")} style={{ flex: "none", background: "transparent", border: 0, borderLeft: "2px solid var(--color-text)", padding: "0 13px", cursor: "pointer", fontSize: 15, color: "var(--color-neutral-700)" }}>
+              <button type="button" onClick={() => setSearch("")} style={{ flex: "none", background: "transparent", border: 0, padding: "0 16px", cursor: "pointer", fontSize: 15, color: "var(--color-neutral-600)" }}>
                 ✕
               </button>
             )}
           </div>
-          <div style={{ marginTop: 12, borderBottom: "2px solid var(--color-divider)" }} />
           {search.trim() && filtered.length === 0 && <div style={{ padding: "22px 2px", fontSize: 13, color: "var(--color-neutral-700)" }}>Nadie con ese nombre.</div>}
 
-          {filtered.map((p) => (
-            <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 13, padding: "15px 2px", borderBottom: "1px solid var(--color-neutral-300)" }}>
-              <Chip initials={p.initials} isAniv={p.isAniv} size="lg" bg={p.chipBg} fg={p.chipFg} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 17 }}>{p.name}</span>
-                  {p.isMe && <span className="tag tag-muted">vos</span>}
-                  {p.isPrivate && <span className="tag tag-solid">privado</span>}
-                </div>
-                <div style={{ fontSize: "12.5px", color: "var(--color-neutral-700)" }}>
-                  {p.dateLabel} · {p.ageLabel}
-                </div>
-              </div>
-              {p.canEdit && (
-                <button type="button" title="Editar" className="tap-icon" onClick={() => openEdit(p)}>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 20h9"></path>
-                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
-                  </svg>
-                </button>
-              )}
-              <div style={{ textAlign: "right", flex: "none" }}>
-                {p.isToday ? (
-                  <div style={{ background: "var(--color-accent-600)", color: "#fff", fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 12, letterSpacing: ".08em", padding: "6px 9px" }}>¡HOY!</div>
-                ) : (
-                  <div>
-                    <div style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 22, lineHeight: 1 }}>{p.days}</div>
-                    <div style={{ fontSize: "10.5px", letterSpacing: ".08em", textTransform: "uppercase", color: "var(--color-neutral-600)" }}>días</div>
+          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
+            {filtered.map((p) => (
+              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 13, background: "#fff", borderRadius: "var(--radius-md)", padding: "12px 14px", boxShadow: "var(--shadow-card)" }}>
+                <Chip initials={p.initials} isAniv={p.isAniv} size="lg" bg={p.chipBg} fg={p.chipFg} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 17 }}>{p.name}</span>
+                    {p.isMe && <span className="tag tag-muted">vos</span>}
+                    {p.isPrivate && <span className="tag tag-solid">privado</span>}
                   </div>
+                  <div style={{ fontSize: "12.5px", color: "var(--color-neutral-700)", marginTop: 1 }}>
+                    {p.dateLabel} · {p.ageLabel}
+                  </div>
+                </div>
+                {p.canEdit && (
+                  <button type="button" title="Editar" className="tap-icon" onClick={() => openEdit(p)}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 20h9"></path>
+                      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                    </svg>
+                  </button>
                 )}
+                <div style={{ textAlign: "center", flex: "none" }}>
+                  {p.isToday ? (
+                    <div style={{ background: "var(--color-accent)", color: "#fff", borderRadius: "var(--radius-pill)", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 11.5, padding: "7px 11px" }}>¡Hoy!</div>
+                  ) : (
+                    <div style={{ background: "var(--color-peach-bg)", borderRadius: "var(--radius-sm)", padding: "7px 12px" }}>
+                      <div style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 16, color: "var(--color-accent)", lineHeight: 1 }}>{p.days}</div>
+                      <div style={{ fontSize: 8.5, fontWeight: 700, letterSpacing: ".04em", textTransform: "uppercase", color: "var(--color-peach-ink)" }}>días</div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
