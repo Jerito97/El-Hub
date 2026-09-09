@@ -34,18 +34,16 @@ export default async function EventDetailPage({ params }: { params: Promise<{ ev
 
   const guests = state.users
     .filter((u) => u.is_guest && ev.participants.includes(u.id))
-    .map((g) => {
-      const collector = state.users.find((u) => u.id === g.collector_id);
-      return {
-        id: g.id,
-        name: g.name,
-        shares: ev.participantShares[g.id] ?? 1,
-        collectorId: g.collector_id || "",
-        collectorName: collector ? collector.name : "?",
-        collectorAlias: collector?.alias || "",
-        owed: Math.max(0, -(net[g.id] || 0)),
-      };
-    });
+    .map((g) => ({
+      id: g.id,
+      name: g.name,
+      shares: ev.participantShares[g.id] ?? 1,
+      // Who they actually have to pay -- straight from the same debt-simplification
+      // the rest of the app uses, no manual "collector" involved.
+      owedTo: settlements
+        .filter((s) => s.fromId === g.id)
+        .map((s) => ({ id: s.toId, name: s.to, alias: state.users.find((u) => u.id === s.toId)?.alias || "", amount: s.amount })),
+    }));
 
   return (
     <EventDetailClient

@@ -18,7 +18,6 @@ interface PendingGuest {
   key: string;
   name: string;
   shares: number;
-  collectorId: string;
 }
 
 export function EventModal({
@@ -57,7 +56,7 @@ export function EventModal({
   function addGuest() {
     const trimmed = newGuestName.trim();
     if (!trimmed) return;
-    setGuests((g) => g.concat({ key: `g${Date.now()}${g.length}`, name: trimmed, shares: 1, collectorId: meId }));
+    setGuests((g) => g.concat({ key: `g${Date.now()}${g.length}`, name: trimmed, shares: 1 }));
     setNewGuestName("");
     setAddingGuest(false);
   }
@@ -75,7 +74,7 @@ export function EventModal({
     setError(null);
     const selectedIds = [lockedId, ...participants];
     const participantsPayload = selectedIds.map((id) => ({ id, shares: shares[id] ?? 1 }));
-    const guestsPayload: GuestInput[] = guests.map((g) => ({ name: g.name, shares: g.shares, collectorId: g.collectorId }));
+    const guestsPayload: GuestInput[] = guests.map((g) => ({ name: g.name, shares: g.shares }));
 
     if (isEditing) {
       const res = await editEvent(initial.id, name, participantsPayload, guestsPayload);
@@ -95,7 +94,6 @@ export function EventModal({
 
   const filteredUsers = search.trim() ? users.filter((u) => u.name.toLowerCase().includes(search.trim().toLowerCase())) : users;
   const selectedUsers = users.filter((u) => u.id === lockedId || participants.includes(u.id));
-  const collectorOptions = selectedUsers;
 
   return (
     <Sheet title={isEditing ? "Editar evento" : "Nuevo evento"} onClose={onClose}>
@@ -150,35 +148,15 @@ export function EventModal({
           <div className="field-label">Invitados temporales</div>
           <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 10 }}>
             {guests.map((g) => (
-              <div key={g.key} style={{ border: "1px solid var(--color-neutral-300)", padding: "10px 11px", display: "flex", flexDirection: "column", gap: 8 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                  <span style={{ display: "flex", alignItems: "center", gap: 7, fontSize: "13.5px", fontWeight: 700 }}>
-                    {g.name}
-                    <span className="tag tag-muted">Invitado</span>
-                  </span>
-                  <button type="button" onClick={() => removeGuestLocal(g.key)} style={{ background: "transparent", border: 0, cursor: "pointer", fontSize: 15, color: "var(--color-neutral-700)" }}>
-                    ✕
-                  </button>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                  <span style={{ fontSize: 12, color: "var(--color-neutral-700)" }}>Cuotas</span>
-                  <Stepper value={g.shares} onChange={(v) => updateGuestLocal(g.key, { shares: v })} />
-                </div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                  <span style={{ fontSize: 12, color: "var(--color-neutral-700)" }}>Cobrador</span>
-                  <select
-                    className="input"
-                    style={{ width: "auto", padding: "6px 8px", fontSize: 12.5 }}
-                    value={g.collectorId}
-                    onChange={(e) => updateGuestLocal(g.key, { collectorId: e.target.value })}
-                  >
-                    {collectorOptions.map((u) => (
-                      <option key={u.id} value={u.id}>
-                        {u.id === meId ? `${u.name} (vos)` : u.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div key={g.key} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: "1px solid var(--color-neutral-300)" }}>
+                <span style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 7, fontSize: "13.5px", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {g.name}
+                  <span className="tag tag-muted">Invitado</span>
+                </span>
+                <Stepper value={g.shares} onChange={(v) => updateGuestLocal(g.key, { shares: v })} />
+                <button type="button" onClick={() => removeGuestLocal(g.key)} style={{ flex: "none", background: "transparent", border: 0, cursor: "pointer", fontSize: 15, color: "var(--color-neutral-700)" }}>
+                  ✕
+                </button>
               </div>
             ))}
 

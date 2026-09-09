@@ -16,19 +16,18 @@ export interface ParticipantInput {
 export interface GuestInput {
   name: string;
   shares: number;
-  collectorId: string;
 }
 
 function normShares(n: number) {
   return Number.isFinite(n) && n >= 1 ? Math.round(n) : 1;
 }
 
-/** Creates the temporary-guest user rows for a new/edited event, one at a time (so each row's id pairs unambiguously with its own shares/collector). */
+/** Creates the temporary-guest user rows for a new/edited event, one at a time (so each row's id pairs unambiguously with its own shares). */
 async function insertGuests(eventId: string, guests: GuestInput[]) {
   for (const g of guests) {
     const name = g.name.trim();
     if (!name) continue;
-    const { data: user, error } = await db.from("users").insert({ name, is_guest: true, alias: "", collector_id: g.collectorId }).select("id").single();
+    const { data: user, error } = await db.from("users").insert({ name, is_guest: true, alias: "" }).select("id").single();
     if (error || !user) continue;
     await db.from("event_participants").insert({ event_id: eventId, user_id: user.id, shares: normShares(g.shares) });
   }
@@ -94,23 +93,15 @@ export async function editEvent(
   return { ok: true };
 }
 
-/** Reassigns a guest's collector and/or changes their cuota. */
-export async function updateGuest(guestId: string, patch: { shares?: number; collectorId?: string }): Promise<{ ok: boolean; error?: string }> {
+/** Changes a guest's cuota. */
+export async function updateGuestShares(guestId: string, shares: number): Promise<{ ok: boolean; error?: string }> {
   const me = await getCurrentUser();
   if (!me) return { ok: false, error: "Sesión vencida" };
 
   const { data: guest } = await db.from("users").select("id,is_guest").eq("id", guestId).maybeSingle();
   if (!guest || !guest.is_guest) return { ok: false, error: "Ese invitado ya no existe." };
 
-  if (patch.collectorId) {
-    await db.from("users").update({ collector_id: patch.collectorId }).eq("id", guestId);
-  }
-  if (patch.shares) {
-    const { data: rows } = await db.from("event_participants").select("event_id").eq("user_id", guestId);
-    if (rows && rows.length > 0) {
-      await db.from("event_participants").update({ shares: normShares(patch.shares) }).eq("user_id", guestId);
-    }
-  }
+  await db.from("event_participants").update({ shares: normShares(shares) }).eq("user_id", guestId);
   revalidatePath("/", "layout");
   return { ok: true };
 }

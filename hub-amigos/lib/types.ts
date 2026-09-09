@@ -7,7 +7,6 @@ export interface UserRow {
   alias: string;
   is_admin: boolean;
   is_guest: boolean;
-  collector_id: string | null;
   created_at: string;
 }
 
