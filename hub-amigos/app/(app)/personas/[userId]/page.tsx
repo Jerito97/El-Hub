@@ -20,6 +20,7 @@ export default async function PersonaDetailPage({ params }: { params: Promise<{ 
 
   return (
     <PersonaDetailClient
+      userId={user.id}
       initials={initialsOf(user.name)}
       name={user.name}
       birthday={person ? dateLabel(person.day, person.month, person.year) : "sin cargar"}

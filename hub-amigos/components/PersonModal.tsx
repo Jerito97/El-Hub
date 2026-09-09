@@ -63,13 +63,7 @@ export function PersonModal({ initial, onClose, asAdmin = false }: { initial: Pe
           <div className="field-label">Tipo de fecha</div>
           <div className="seg2" style={{ marginTop: 8 }}>
             {(["cumple", "aniversario"] as PersonKind[]).map((k) => (
-              <button
-                key={k}
-                type="button"
-                className="seg-btn"
-                style={{ background: kind === k ? (k === "aniversario" ? "var(--color-text)" : "var(--color-accent-600)") : "transparent", color: kind === k ? "#fff" : "var(--color-neutral-700)" }}
-                onClick={() => setKind(k)}
-              >
+              <button key={k} type="button" className={`seg-btn ${kind === k ? "active" : ""}`} onClick={() => setKind(k)}>
                 {k === "aniversario" ? "Aniversario" : "Cumpleaños"}
               </button>
             ))}
@@ -118,7 +112,7 @@ export function PersonModal({ initial, onClose, asAdmin = false }: { initial: Pe
                 {kind === "aniversario" ? "Borrar aniversario" : "Borrar cumpleaños"}
               </button>
             ) : (
-              <div style={{ border: "2px solid var(--color-accent-600)", padding: "13px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ background: "var(--color-accent-100)", borderRadius: "var(--radius-md)", padding: "14px", display: "flex", flexDirection: "column", gap: 10 }}>
                 <div style={{ fontSize: "12.5px", color: "var(--color-accent-800)" }}>¿Seguro que lo borrás? No se puede recuperar.</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   <button type="button" className="btn btn-outline" onClick={() => setConfirmDelete(false)}>

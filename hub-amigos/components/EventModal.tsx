@@ -119,9 +119,13 @@ export function EventModal({
                   key={u.id}
                   type="button"
                   onClick={() => toggle(u.id)}
-                  style={{ display: "flex", alignItems: "center", gap: 8, background: on ? "var(--color-text)" : "transparent", color: on ? "var(--color-bg)" : "var(--color-text)", border: "2px solid var(--color-text)", padding: "9px 12px", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 13 }}
+                  style={{ display: "flex", alignItems: "center", gap: 8, background: on ? "var(--color-text)" : "#fff", color: on ? "#fff" : "var(--color-text)", border: 0, borderRadius: "var(--radius-pill)", boxShadow: on ? "none" : "var(--shadow-card)", padding: "9px 14px 9px 10px", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 13 }}
                 >
-                  <span style={{ width: 10, height: 10, background: on ? "var(--color-accent)" : "var(--color-neutral-400)" }} />
+                  <span style={{ width: 18, height: 18, borderRadius: "50%", flex: "none", background: on ? "var(--color-accent)" : "var(--color-neutral-300)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    {on && (
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+                    )}
+                  </span>
                   {u.id === meId ? `${u.name} (vos)` : u.name}
                 </button>
               );

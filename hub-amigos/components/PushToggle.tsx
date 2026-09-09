@@ -71,7 +71,7 @@ export function PushToggle({ vapidPublicKey }: { vapidPublicKey: string }) {
   if (!supported) return null;
 
   return (
-    <div style={{ padding: "14px 2px", borderBottom: "1px solid var(--color-neutral-300)", display: "flex", alignItems: "center", gap: 12 }}>
+    <div style={{ marginTop: 10, padding: "14px", background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", display: "flex", alignItems: "center", gap: 12 }}>
       <span style={{ flex: 1 }}>
         <span style={{ display: "block", fontSize: 14 }}>Notificaciones push en este dispositivo</span>
         <span style={{ display: "block", marginTop: 2, fontSize: "11.5px", color: "var(--color-neutral-600)" }}>

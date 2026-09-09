@@ -80,9 +80,9 @@ export function LoginClient() {
           Alguien ya te cargó como cumpleaños en el grupo. Enganchate a ese registro así no quedan dos {linkCandidate.name} dando vueltas.
         </p>
 
-        <div style={{ marginTop: 26, border: "2px solid var(--color-text)", background: "var(--color-neutral-100)" }}>
+        <div style={{ marginTop: 26, background: "#fff", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-card)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14, padding: 18 }}>
-            <div style={{ width: 52, height: 52, background: "var(--color-text)", color: "var(--color-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 19 }}>
+            <div style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--color-accent)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 19 }}>
               {initialsOf(linkCandidate.name)}
             </div>
             <div>
@@ -152,8 +152,8 @@ export function LoginClient() {
   return (
     <div className="hub-auth" style={{ padding: "36px 24px 24px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: 7 }} />
-        <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase" }}>LinkUp</span>
+        <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: 8 }} />
+        <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 16 }}>LinkUp</span>
       </div>
       <h1 style={{ fontSize: 52, lineHeight: 0.95, margin: "28px 0 0" }}>
         Entrá
@@ -175,7 +175,7 @@ export function LoginClient() {
               onChange={(e) => setPin(e.target.value.replace(/\D/g, "").slice(0, 6))}
               inputMode="numeric"
               placeholder="••••"
-              style={{ flex: 1, fontSize: 22, letterSpacing: ".5em", borderColor: error ? "var(--color-accent)" : "var(--color-text)" }}
+              style={{ flex: 1, fontSize: 22, letterSpacing: ".5em", boxShadow: error ? "0 0 0 2px var(--color-accent)" : "var(--shadow-card)" }}
             />
             <div style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 13, color: "var(--color-neutral-600)", minWidth: 34 }}>{pin.length}/6</div>
           </div>

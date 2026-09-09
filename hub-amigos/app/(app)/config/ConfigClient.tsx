@@ -39,34 +39,32 @@ export function ConfigClient({ prefs, profileInitial, vapidPublicKey }: { prefs:
     <div style={{ padding: "22px 18px 30px" }}>
       <h1 style={{ fontSize: 32 }}>Configuración</h1>
 
-      <div style={{ marginTop: 22, borderTop: "2px solid var(--color-divider)", paddingTop: 14 }}>
-        <div style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--color-neutral-600)" }}>Notificaciones</div>
-        {NOTIF_ROWS.map((row) => (
-          <button
-            key={row.key}
-            type="button"
-            onClick={() => toggleNotif(row.key)}
-            style={{ width: "100%", background: "transparent", border: 0, borderBottom: "1px solid var(--color-neutral-300)", padding: "14px 2px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12, textAlign: "left" }}
-          >
-            <span style={{ flex: 1, fontSize: 14 }}>{row.label}</span>
-            <Switch on={!!local[row.key]} onToggle={() => toggleNotif(row.key)} />
-          </button>
-        ))}
+      <div style={{ marginTop: 22 }}>
+        <div style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--color-neutral-600)", marginBottom: 8 }}>Notificaciones</div>
+        <div style={{ background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", overflow: "hidden" }}>
+          {NOTIF_ROWS.map((row, i) => (
+            <button
+              key={row.key}
+              type="button"
+              onClick={() => toggleNotif(row.key)}
+              style={{ width: "100%", background: "transparent", border: 0, borderBottom: i < NOTIF_ROWS.length - 1 ? "1px solid var(--color-neutral-200)" : 0, padding: "15px 14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12, textAlign: "left" }}
+            >
+              <span style={{ flex: 1, fontSize: 14 }}>{row.label}</span>
+              <Switch on={!!local[row.key]} onToggle={() => toggleNotif(row.key)} />
+            </button>
+          ))}
+        </div>
         {vapidPublicKey && <PushToggle vapidPublicKey={vapidPublicKey} />}
       </div>
 
-      <div style={{ marginTop: 22, borderTop: "2px solid var(--color-divider)", paddingTop: 14 }}>
+      <div style={{ marginTop: 22 }}>
         <div style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--color-neutral-600)" }}>Tema</div>
         <div style={{ marginTop: 9 }}>
           <SegmentedToggle options={[{ value: "claro", label: "Claro" }, { value: "oscuro", label: "Oscuro" }]} value={local.theme} onChange={(v) => pickTheme(v as "claro" | "oscuro")} />
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={() => setProfileOpen(true)}
-        style={{ marginTop: 24, width: "100%", background: "var(--color-text)", color: "var(--color-bg)", border: 0, padding: "15px 16px", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "13.5px", textAlign: "center", textTransform: "uppercase", letterSpacing: ".06em" }}
-      >
+      <button type="button" className="btn btn-dark btn-block" style={{ marginTop: 24, padding: "15px 16px" }} onClick={() => setProfileOpen(true)}>
         Mi perfil
       </button>
 

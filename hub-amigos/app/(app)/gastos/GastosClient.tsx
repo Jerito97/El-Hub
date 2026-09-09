@@ -6,7 +6,7 @@ import Link from "next/link";
 import { SegmentedToggle } from "@/components/ui/SegmentedToggle";
 import { EventModal } from "@/components/EventModal";
 import { settleWith } from "@/lib/actions/events";
-import { money } from "@/lib/format";
+import { money, avatarColor } from "@/lib/format";
 import type { ConsolidatedRow, EventListItem } from "@/lib/domain";
 
 interface UserLite {
@@ -83,16 +83,18 @@ export function GastosClient({
       </div>
 
       {view === "balance" ? (
-        <div style={{ marginTop: 18, borderTop: "2px solid var(--color-divider)" }}>
+        <div style={{ marginTop: 18, display: "flex", flexDirection: "column", gap: 8 }}>
           {consolidated.length === 0 && <div style={{ padding: "24px 2px", fontSize: 13, color: "var(--color-neutral-700)" }}>No tenés cuentas pendientes con nadie.</div>}
-          {consolidated.map((c) => (
-            <div key={c.name} style={{ borderBottom: "1px solid var(--color-neutral-300)" }}>
+          {consolidated.map((c) => {
+            const ac = avatarColor(c.otherId);
+            return (
+            <div key={c.name} style={{ background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", overflow: "hidden" }}>
               <button
                 type="button"
                 onClick={() => setExpanded(expanded === c.name ? null : c.name)}
-                style={{ width: "100%", textAlign: "left", background: "transparent", border: 0, padding: "14px 2px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }}
+                style={{ width: "100%", textAlign: "left", background: "transparent", border: 0, padding: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }}
               >
-                <span style={{ width: 38, height: 38, flex: "none", background: "var(--color-accent-600)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 13 }}>{c.initials}</span>
+                <span style={{ width: 38, height: 38, flex: "none", borderRadius: "50%", background: ac.bg, color: ac.fg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 13 }}>{c.initials}</span>
                 <span style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 7, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 17 }}>
                   {c.name}
                   {c.isGuest && <span className="tag tag-muted">Invitado</span>}
@@ -131,8 +133,8 @@ export function GastosClient({
                         <button
                           type="button"
                           disabled={busyKey === settleKey}
-                          className="btn"
-                          style={{ flex: "none", background: "var(--color-text)", color: "var(--color-bg)", minHeight: 44, padding: "0 12px", fontSize: "10.5px", textTransform: "uppercase", letterSpacing: ".05em" }}
+                          className="btn btn-dark"
+                          style={{ flex: "none", borderRadius: "var(--radius-pill)", minHeight: 40, padding: "0 13px", fontSize: "10.5px", textTransform: "uppercase", letterSpacing: ".05em" }}
                           onClick={() => settle(r.eventId, r.dir === "debo" ? meId : c.otherId, r.dir === "debo" ? c.otherId : meId, r.amount, settleKey)}
                         >
                           Pagado
@@ -143,42 +145,44 @@ export function GastosClient({
                 </div>
               )}
             </div>
-          ))}
+          );})}
         </div>
       ) : (
         <div>
-          <div style={{ marginTop: 12, display: "flex", alignItems: "stretch", border: "2px solid var(--color-text)" }}>
-            <input className="input" style={{ border: 0 }} value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar evento" />
+          <div style={{ marginTop: 12, display: "flex", alignItems: "stretch", background: "#fff", borderRadius: "var(--radius-pill)", boxShadow: "var(--shadow-card)" }}>
+            <input className="input" style={{ boxShadow: "none", background: "transparent" }} value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar evento" />
             {search && (
-              <button type="button" onClick={() => setSearch("")} style={{ flex: "none", background: "transparent", border: 0, borderLeft: "2px solid var(--color-text)", padding: "0 13px", cursor: "pointer", fontSize: 15, color: "var(--color-neutral-700)" }}>
+              <button type="button" onClick={() => setSearch("")} style={{ flex: "none", background: "transparent", border: 0, padding: "0 16px", cursor: "pointer", fontSize: 15, color: "var(--color-neutral-700)" }}>
                 ✕
               </button>
             )}
           </div>
 
           {showHistory && (
-            <div style={{ marginTop: 14, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--color-neutral-600)" }}>Eventos cerrados</div>
+            <div style={{ marginTop: 16, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--color-neutral-600)" }}>Eventos cerrados</div>
           )}
 
-          <div style={{ marginTop: 14, borderTop: "2px solid var(--color-divider)" }}>
+          <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
             {list.map((e) => (
               <Link
                 key={e.id}
                 href={`/gastos/${e.id}`}
-                style={{ display: "flex", gap: 12, alignItems: "flex-start", borderBottom: "1px solid var(--color-neutral-300)", padding: "16px 2px" }}
+                style={{ display: "flex", gap: 12, alignItems: "center", background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", padding: "14px" }}
               >
-                <span style={{ width: 4, alignSelf: "stretch", background: "var(--color-accent)", flex: "none" }} />
                 <span style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 5 }}>
                   <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 18, lineHeight: 1.15 }}>{e.name}</span>
                   <span style={{ fontSize: "12.5px", color: "var(--color-neutral-700)" }}>
                     {e.dateLabel} · {e.participantsLabel}
                   </span>
                   <span style={{ display: "flex", gap: 4 }}>
-                    {e.avatarInitials.map((ini, i) => (
-                      <span key={i} style={{ width: 24, height: 24, background: "var(--color-text)", color: "var(--color-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 10 }}>
-                        {ini}
-                      </span>
-                    ))}
+                    {e.avatarInitials.map((ini, i) => {
+                      const ac = avatarColor(ini + i);
+                      return (
+                        <span key={i} style={{ width: 22, height: 22, borderRadius: "50%", background: ac.bg, color: ac.fg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 9.5 }}>
+                          {ini}
+                        </span>
+                      );
+                    })}
                   </span>
                 </span>
                 <span style={{ textAlign: "right", flex: "none", display: "flex", flexDirection: "column", gap: 3 }}>
