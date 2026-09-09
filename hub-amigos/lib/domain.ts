@@ -131,7 +131,7 @@ export function computePeople(people: PersonRow[], users: UserRow[], meId: strin
         isAniv,
         chipBg: isAniv ? "var(--color-text)" : "var(--color-accent-600)",
         chipFg: isAniv ? "var(--color-bg)" : "#fff",
-        ageLabel: (isAniv ? "" : "cumple ") + (targetYear - p.year) + (isAniv ? " años" : ""),
+        ageLabel: (isAniv ? "" : "cumple ") + (targetYear - p.year) + (isAniv ? (targetYear - p.year === 1 ? " año" : " años") : ""),
         year: p.year,
         month: p.month,
         day: p.day,
