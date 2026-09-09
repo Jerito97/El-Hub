@@ -5,6 +5,7 @@ export interface UserRow {
   name: string;
   pin_hash: string;
   alias: string;
+  is_admin: boolean;
   created_at: string;
 }
 

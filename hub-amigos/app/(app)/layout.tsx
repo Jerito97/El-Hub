@@ -31,7 +31,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <ThemeSync theme={state.prefs.theme} />
       <div className="hub-app">
         <Header meInitials={initialsOf(me.name)} unreadCount={unreadCount} />
-        <Drawer meName={me.name} meInitials={initialsOf(me.name)} meBirthdayLabel={myBirthday ? dateLabel(myBirthday.day, myBirthday.month, myBirthday.year) : "sin cargar"} />
+        <Drawer
+          meName={me.name}
+          meInitials={initialsOf(me.name)}
+          meBirthdayLabel={myBirthday ? dateLabel(myBirthday.day, myBirthday.month, myBirthday.year) : "sin cargar"}
+          isAdmin={me.is_admin}
+        />
         <NotificationsPanel notifs={notifs} />
         <div className="hub-scroll" style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
           {children}
