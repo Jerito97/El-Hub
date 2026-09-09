@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { getFullState } from "@/lib/data";
 import { computeNotifications } from "@/lib/domain";
-import { dateLabel, initialsOf } from "@/lib/format";
+import { dateLabel, initialsOf, nowInAppTz } from "@/lib/format";
 import { AppShellProvider } from "@/lib/client/AppShellContext";
 import { ThemeSync } from "@/lib/client/ThemeSync";
 import { EdgeSwipe } from "@/lib/client/EdgeSwipe";
@@ -23,7 +23,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (!me) redirect("/login");
 
   const state = await getFullState(me.id);
-  const notifs: NotifWithHref[] = computeNotifications(state, new Date()).map((n) => ({ ...n, href: hrefFor(n) }));
+  const notifs: NotifWithHref[] = computeNotifications(state, nowInAppTz()).map((n) => ({ ...n, href: hrefFor(n) }));
   const unreadCount = notifs.filter((n) => n.unread).length;
   const myBirthday = state.people.find((p) => p.user_id === me.id);
 
