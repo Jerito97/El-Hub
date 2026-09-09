@@ -4,12 +4,13 @@ import { useEffect, useRef } from "react";
 import { useAppShell } from "@/lib/client/AppShellContext";
 
 const EDGE_ZONE = 24; // px from the screen edge where a swipe can start
-const THRESHOLD = 60; // px of horizontal movement needed to trigger
+const CLAIM_AT = 10; // px of horizontal movement before we claim the gesture (blocks Safari's own edge-swipe-back/forward)
+const THRESHOLD = 60; // px of horizontal movement needed to actually open the panel
 
 /** Swipe in from the left edge to open the menu, from the right edge to open notifications. */
 export function EdgeSwipe() {
   const { drawerOpen, setDrawerOpen, notifsOpen, setNotifsOpen } = useAppShell();
-  const start = useRef<{ x: number; y: number; edge: "left" | "right" } | null>(null);
+  const start = useRef<{ x: number; y: number; edge: "left" | "right"; claimed: boolean } | null>(null);
   const stateRef = useRef({ drawerOpen, notifsOpen });
   stateRef.current = { drawerOpen, notifsOpen };
 
@@ -21,8 +22,8 @@ export function EdgeSwipe() {
       }
       const t = e.touches[0];
       const w = window.innerWidth;
-      if (t.clientX <= EDGE_ZONE) start.current = { x: t.clientX, y: t.clientY, edge: "left" };
-      else if (t.clientX >= w - EDGE_ZONE) start.current = { x: t.clientX, y: t.clientY, edge: "right" };
+      if (t.clientX <= EDGE_ZONE) start.current = { x: t.clientX, y: t.clientY, edge: "left", claimed: false };
+      else if (t.clientX >= w - EDGE_ZONE) start.current = { x: t.clientX, y: t.clientY, edge: "right", claimed: false };
       else start.current = null;
     }
 
@@ -31,8 +32,16 @@ export function EdgeSwipe() {
       const t = e.touches[0];
       const dx = t.clientX - start.current.x;
       const dy = t.clientY - start.current.y;
-      if (Math.abs(dy) > Math.abs(dx)) return; // vertical scroll, not our gesture
 
+      if (!start.current.claimed) {
+        if (Math.abs(dy) > Math.abs(dx)) return; // vertical scroll, not our gesture — let it through
+        const isOurDirection = (start.current.edge === "left" && dx > 0) || (start.current.edge === "right" && dx < 0);
+        if (!isOurDirection || Math.abs(dx) < CLAIM_AT) return;
+        // This is our gesture: stop Safari's own edge-swipe-back/forward from also firing.
+        start.current.claimed = true;
+      }
+
+      e.preventDefault();
       if (start.current.edge === "left" && dx > THRESHOLD) {
         setDrawerOpen(true);
         start.current = null;
@@ -47,7 +56,7 @@ export function EdgeSwipe() {
     }
 
     document.addEventListener("touchstart", onTouchStart, { passive: true });
-    document.addEventListener("touchmove", onTouchMove, { passive: true });
+    document.addEventListener("touchmove", onTouchMove, { passive: false });
     document.addEventListener("touchend", onTouchEnd, { passive: true });
     document.addEventListener("touchcancel", onTouchEnd, { passive: true });
     return () => {
