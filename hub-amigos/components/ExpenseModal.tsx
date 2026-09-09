@@ -18,12 +18,14 @@ export function ExpenseModal({
   eventId,
   meId,
   participants,
+  participantShares,
   initial,
   onClose,
 }: {
   eventId: string;
   meId: string;
-  participants: { id: string; name: string }[];
+  participants: { id: string; name: string; isGuest: boolean }[];
+  participantShares: Record<string, number>;
   initial?: ExpenseModalInitial;
   onClose: () => void;
 }) {
@@ -41,6 +43,8 @@ export function ExpenseModal({
   }
 
   const amt = parseFloat(amount.replace(/[^\d.]/g, "")) || 0;
+  const realPayers = participants.filter((p) => !p.isGuest);
+  const totalCuotas = shares.reduce((sum, id) => sum + (participantShares[id] ?? 1), 0);
 
   async function submit() {
     setBusy(true);
@@ -66,7 +70,7 @@ export function ExpenseModal({
         <div>
           <div className="field-label">¿Quién pagó?</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 9 }}>
-            {participants.map((p) => {
+            {realPayers.map((p) => {
               const on = payer === p.id;
               return (
                 <button
@@ -96,12 +100,13 @@ export function ExpenseModal({
                 >
                   <span style={{ width: 10, height: 10, background: on ? "var(--color-accent)" : "var(--color-neutral-400)" }} />
                   {p.name}
+                  {p.isGuest && <span className="tag tag-muted">Invitado</span>}
                 </button>
               );
             })}
           </div>
           <div style={{ marginTop: 10, fontSize: "12.5px", color: "var(--color-neutral-700)" }}>
-            {shares.length && amt ? `${money(amt / shares.length)} cada uno · ${shares.length} personas` : "Elegí al menos una persona y un monto."}
+            {shares.length && amt ? `${money(amt / totalCuotas)} por cuota · ${totalCuotas} cuotas entre ${shares.length} personas` : "Elegí al menos una persona y un monto."}
           </div>
         </div>
         {error && <div style={{ fontSize: "12.5px", color: "var(--color-accent-700)" }}>{error}</div>}

@@ -13,12 +13,17 @@ create table if not exists users (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   name_key text generated always as (lower(trim(name))) stored,
-  pin_hash text not null,
+  pin_hash text,
   alias text not null default '',
   is_admin boolean not null default false,
-  created_at timestamptz not null default now()
+  is_guest boolean not null default false,
+  collector_id uuid references users (id) on delete set null,
+  created_at timestamptz not null default now(),
+  constraint users_pin_hash_required check (is_guest or pin_hash is not null)
 );
-create unique index if not exists users_name_key_uidx on users (name_key);
+-- Real accounts still need a globally unique name; temporary guests (is_guest)
+-- are scoped to one event and may share a name with anyone.
+create unique index if not exists users_name_key_uidx on users (name_key) where not is_guest;
 
 create table if not exists prefs (
   user_id uuid primary key references users (id) on delete cascade,
@@ -55,6 +60,7 @@ create table if not exists events (
 create table if not exists event_participants (
   event_id uuid not null references events (id) on delete cascade,
   user_id uuid not null references users (id) on delete cascade,
+  shares int not null default 1 check (shares >= 1),
   primary key (event_id, user_id)
 );
 

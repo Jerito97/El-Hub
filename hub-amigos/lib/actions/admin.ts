@@ -75,6 +75,10 @@ export async function adminCloseEvent(eventId: string): Promise<{ ok: boolean; e
 
   const { error } = await db.from("events").update({ closed: true }).eq("id", eventId);
   if (error) return { ok: false, error: "No se pudo cerrar el evento." };
+
+  const guestIds = state.users.filter((u) => u.is_guest && ev.participants.includes(u.id)).map((u) => u.id);
+  if (guestIds.length > 0) await db.from("users").delete().in("id", guestIds);
+
   revalidatePath("/", "layout");
   return { ok: true };
 }
@@ -89,8 +93,17 @@ export async function adminReopenEvent(eventId: string): Promise<{ ok: boolean; 
 
 export async function adminDeleteEvent(eventId: string): Promise<{ ok: boolean; error?: string }> {
   await requireAdmin();
+
+  const { data: participantRows } = await db.from("event_participants").select("user_id").eq("event_id", eventId);
+  const participantIds = (participantRows || []).map((p) => p.user_id);
+  const { data: guestRows } = participantIds.length ? await db.from("users").select("id").in("id", participantIds).eq("is_guest", true) : { data: [] };
+
   const { error } = await db.from("events").delete().eq("id", eventId);
   if (error) return { ok: false, error: "No se pudo eliminar el evento." };
+
+  const guestIds = (guestRows || []).map((u) => u.id);
+  if (guestIds.length > 0) await db.from("users").delete().in("id", guestIds);
+
   revalidatePath("/", "layout");
   return { ok: true };
 }

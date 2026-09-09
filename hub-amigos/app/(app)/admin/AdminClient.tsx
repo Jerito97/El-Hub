@@ -31,7 +31,7 @@ export function AdminClient({ meId, users, people, events }: { meId: string; use
         />
       </div>
 
-      {tab === "usuarios" && <UsersTab meId={meId} users={users} />}
+      {tab === "usuarios" && <UsersTab meId={meId} users={users.filter((u) => !u.is_guest)} />}
       {tab === "fechas" && <FechasTab people={people} users={users} />}
       {tab === "eventos" && <EventosTab events={events} users={users} />}
     </div>

@@ -93,7 +93,10 @@ export function GastosClient({
                 style={{ width: "100%", textAlign: "left", background: "transparent", border: 0, padding: "14px 2px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }}
               >
                 <span style={{ width: 38, height: 38, flex: "none", background: "var(--color-accent-600)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 13 }}>{c.initials}</span>
-                <span style={{ flex: 1, minWidth: 0, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 17 }}>{c.name}</span>
+                <span style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 7, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 17 }}>
+                  {c.name}
+                  {c.isGuest && <span className="tag tag-muted">Invitado</span>}
+                </span>
                 <span style={{ textAlign: "right", display: "flex", flexDirection: "column", gap: 2 }}>
                   <span style={{ fontSize: "10.5px", letterSpacing: ".09em", textTransform: "uppercase", color: "var(--color-neutral-600)" }}>{c.stateLabel}</span>
                   <span style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 17, color: c.amountColor }}>{c.amountLabel}</span>

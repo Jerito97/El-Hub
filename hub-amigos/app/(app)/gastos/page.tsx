@@ -15,7 +15,7 @@ export default async function GastosPage({ searchParams }: { searchParams: Promi
   return (
     <GastosClient
       meId={me.id}
-      users={state.users.map((u) => ({ id: u.id, name: u.name, alias: u.alias }))}
+      users={state.users.filter((u) => !u.is_guest).map((u) => ({ id: u.id, name: u.name, alias: u.alias }))}
       openEvents={eventListView(open, state.users, me.id)}
       closedEvents={eventListView(closed, state.users, me.id)}
       consolidated={consolidated}

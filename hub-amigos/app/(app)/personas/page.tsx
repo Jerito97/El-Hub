@@ -12,7 +12,7 @@ export default async function PersonasPage() {
       <h1 style={{ fontSize: 32 }}>Personas</h1>
       <div style={{ marginTop: 6, fontSize: 13, color: "var(--color-neutral-700)" }}>Usuarios registrados en LinkUp</div>
       <div style={{ marginTop: 16, borderTop: "2px solid var(--color-divider)" }}>
-        {state.users.map((u) => {
+        {state.users.filter((u) => !u.is_guest).map((u) => {
           const person = state.people.find((p) => p.user_id === u.id);
           const meta = (person ? dateLabel(person.day, person.month, person.year) : "sin cumpleaños cargado") + (u.alias ? ` · ${u.alias}` : "");
           return (

@@ -3,9 +3,11 @@ export type PersonKind = "cumple" | "aniversario";
 export interface UserRow {
   id: string;
   name: string;
-  pin_hash: string;
+  pin_hash: string | null;
   alias: string;
   is_admin: boolean;
+  is_guest: boolean;
+  collector_id: string | null;
   created_at: string;
 }
 
@@ -56,6 +58,8 @@ export interface EventRow {
   closed: boolean;
   created_at: string;
   participants: string[];
+  /** Cuotas per participant id (real or guest); missing id defaults to 1. */
+  participantShares: Record<string, number>;
   expenses: ExpenseRow[];
   payments: PaymentRow[];
 }

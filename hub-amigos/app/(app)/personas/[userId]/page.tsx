@@ -10,7 +10,7 @@ export default async function PersonaDetailPage({ params }: { params: Promise<{ 
   const me = (await getCurrentUser())!;
   const state = await getFullState(me.id);
   const user = state.users.find((u) => u.id === userId);
-  if (!user) notFound();
+  if (!user || user.is_guest) notFound();
 
   const person = state.people.find((p) => p.user_id === user.id);
   const open = myOpenEvents(state.events, me.id);
