@@ -1,11 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo } from "next/font/google";
+import { Baloo_2, Manrope } from "next/font/google";
 import "./globals.css";
 
-const archivo = Archivo({
+const baloo = Baloo_2({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-  variable: "--font-archivo",
+  weight: ["600", "700", "800"],
+  variable: "--font-baloo",
+  display: "swap",
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-manrope",
   display: "swap",
 });
 
@@ -29,7 +36,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f3f2f2",
+  themeColor: "#faf6f2",
 };
 
 // Applied before paint so a saved "oscuro" preference never flashes light first.
@@ -42,7 +49,7 @@ try {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={archivo.variable}>
+    <html lang="es" className={`${baloo.variable} ${manrope.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
       </head>

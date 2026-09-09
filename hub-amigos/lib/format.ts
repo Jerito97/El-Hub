@@ -13,6 +13,22 @@ export const initialsOf = (name: string) =>
 
 export const dateLabel = (day: number, month: number, year: number) => `${pad(day)}/${pad(month)}/${year}`;
 
+const AVATAR_PALETTE: { bg: string; fg: string }[] = [
+  { bg: "#ec3013", fg: "#ffffff" }, // brand red
+  { bg: "#201e1d", fg: "#ffffff" }, // ink
+  { bg: "#f4a672", fg: "#4a2c0f" }, // peach
+  { bg: "#8b6fd9", fg: "#ffffff" }, // purple
+  { bg: "#3fa77a", fg: "#ffffff" }, // green
+  { bg: "#4f8ff7", fg: "#ffffff" }, // blue
+];
+
+/** Deterministic per-id avatar color, so the same person always gets the same color everywhere. */
+export function avatarColor(id: string): { bg: string; fg: string } {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) | 0;
+  return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length];
+}
+
 const APP_TZ = "America/Argentina/Buenos_Aires";
 
 /**
