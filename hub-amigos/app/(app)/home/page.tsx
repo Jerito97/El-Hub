@@ -2,13 +2,13 @@ import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
 import { getFullState } from "@/lib/data";
 import { computePeople } from "@/lib/domain";
-import { todayLabel } from "@/lib/format";
+import { nowInAppTz, todayLabel } from "@/lib/format";
 import { HomeClient } from "./HomeClient";
 
 export default async function HomePage() {
   const me = (await getCurrentUser())!;
   const state = await getFullState(me.id);
-  const today = new Date();
+  const today = nowInAppTz();
   const people = computePeople(state.people, state.users, me.id, today);
   const todayBirthdays = people.filter((p) => p.isToday);
 

@@ -13,6 +13,29 @@ export const initialsOf = (name: string) =>
 
 export const dateLabel = (day: number, month: number, year: number) => `${pad(day)}/${pad(month)}/${year}`;
 
+const APP_TZ = "America/Argentina/Buenos_Aires";
+
+/**
+ * "Now" as the group's local (Argentina) wall-clock time, read via its
+ * getFullYear/getMonth/getDate/getDay/etc. Needed because this runs
+ * server-side (Vercel functions default to UTC), so a plain `new Date()`
+ * can already be "tomorrow" for anyone here once it's past 21:00 local time.
+ */
+export function nowInAppTz(): Date {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: APP_TZ,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date());
+  const get = (type: string) => Number(parts.find((p) => p.type === type)!.value);
+  return new Date(get("year"), get("month") - 1, get("day"), get("hour"), get("minute"), get("second"));
+}
+
 /** Days from `today` (local midnight) until the next occurrence of month/day. */
 export function daysUntil(month: number, day: number, today: Date): number {
   const y = today.getFullYear();
