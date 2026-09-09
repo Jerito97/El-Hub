@@ -49,7 +49,7 @@ export function TabBar() {
 
   return (
     <div style={{ flex: "none", padding: "0 16px calc(14px + env(safe-area-inset-bottom))" }}>
-      <div style={{ background: "#fff", borderRadius: "var(--radius-lg)", padding: 8, display: "flex", alignItems: "center", gap: 4, boxShadow: "var(--shadow-float)" }}>
+      <div style={{ background: "var(--color-surface)", borderRadius: "var(--radius-lg)", padding: 8, display: "flex", alignItems: "center", gap: 4, boxShadow: "var(--shadow-float)" }}>
         {TABS.map((t) => {
           const active = t.match(pathname);
           return (

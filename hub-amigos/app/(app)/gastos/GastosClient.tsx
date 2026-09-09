@@ -88,7 +88,7 @@ export function GastosClient({
           {consolidated.map((c) => {
             const ac = avatarColor(c.otherId);
             return (
-            <div key={c.name} style={{ background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", overflow: "hidden" }}>
+            <div key={c.name} style={{ background: "var(--color-surface)", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", overflow: "hidden" }}>
               <button
                 type="button"
                 onClick={() => setExpanded(expanded === c.name ? null : c.name)}
@@ -149,7 +149,7 @@ export function GastosClient({
         </div>
       ) : (
         <div>
-          <div style={{ marginTop: 12, display: "flex", alignItems: "stretch", background: "#fff", borderRadius: "var(--radius-pill)", boxShadow: "var(--shadow-card)" }}>
+          <div style={{ marginTop: 12, display: "flex", alignItems: "stretch", background: "var(--color-surface)", borderRadius: "var(--radius-pill)", boxShadow: "var(--shadow-card)" }}>
             <input className="input" style={{ boxShadow: "none", background: "transparent" }} value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar evento" />
             {search && (
               <button type="button" onClick={() => setSearch("")} style={{ flex: "none", background: "transparent", border: 0, padding: "0 16px", cursor: "pointer", fontSize: 15, color: "var(--color-neutral-700)" }}>
@@ -167,7 +167,7 @@ export function GastosClient({
               <Link
                 key={e.id}
                 href={`/gastos/${e.id}`}
-                style={{ display: "flex", gap: 12, alignItems: "center", background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", padding: "14px" }}
+                style={{ display: "flex", gap: 12, alignItems: "center", background: "var(--color-surface)", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", padding: "14px" }}
               >
                 <span style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 5 }}>
                   <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 18, lineHeight: 1.15 }}>{e.name}</span>

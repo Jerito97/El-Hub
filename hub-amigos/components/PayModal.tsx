@@ -95,7 +95,7 @@ export function PayModal({
             {myDebts.map((d) => {
               const c = avatarColor(d.toId);
               return (
-                <div key={d.toId} style={{ padding: "14px", background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", display: "flex", flexDirection: "column", gap: 10 }}>
+                <div key={d.toId} style={{ padding: "14px", background: "var(--color-surface)", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", display: "flex", flexDirection: "column", gap: 10 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                     <div style={{ width: 38, height: 38, flex: "none", borderRadius: "50%", background: c.bg, color: c.fg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 13 }}>{d.initials}</div>
                     <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 7, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "16.5px" }}>
@@ -131,7 +131,7 @@ export function PayModal({
             {owedToMe.map((o) => {
               const c = avatarColor(o.fromId);
               return (
-                <div key={o.fromId} style={{ padding: "12px 14px", background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", display: "flex", alignItems: "center", gap: 12 }}>
+                <div key={o.fromId} style={{ padding: "12px 14px", background: "var(--color-surface)", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)", display: "flex", alignItems: "center", gap: 12 }}>
                   <div style={{ width: 34, height: 34, flex: "none", borderRadius: "50%", background: c.bg, color: c.fg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 12 }}>{o.initials}</div>
                   <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 7, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 15 }}>
                     {o.from}

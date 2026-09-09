@@ -34,6 +34,9 @@
   --color-lavender-bg: #e5e0fb;
   --color-lavender-ink: #241f4a;
 
+  /* Elevated surface (cards, rows, inputs, sheets' controls) sitting on --color-bg. */
+  --color-surface: #ffffff;
+
   --font-heading: var(--font-baloo), system-ui, sans-serif;
   --font-body: var(--font-manrope), system-ui, sans-serif;
 
@@ -63,6 +66,7 @@
   --color-accent-100: #3a2320;
   --color-accent-700: #ff8f78;
   --color-accent-800: #ffb3a0;
+  --color-surface: #242220;
   /* --color-accent / --color-accent-600 stay constant across themes on purpose:
      buttons keep the same red fill in light and dark, only text/surface tints shift. */
 }
@@ -207,7 +211,7 @@ button {
   color: var(--color-bg);
 }
 .btn-outline {
-  background: #fff;
+  background: var(--color-surface);
   border: 1.5px solid var(--color-neutral-300);
   color: var(--color-text);
   box-shadow: var(--shadow-card);
@@ -216,7 +220,7 @@ button {
   background: var(--color-neutral-100);
 }
 .btn-outline-accent {
-  background: #fff;
+  background: var(--color-surface);
   border: 1.5px solid var(--color-accent-300);
   color: var(--color-accent-700);
   box-shadow: var(--shadow-card);
@@ -279,7 +283,7 @@ button {
   padding: 14px 16px;
   border: 0;
   border-radius: var(--radius-md);
-  background: #fff;
+  background: var(--color-surface);
   color: var(--color-text);
   box-shadow: var(--shadow-card);
 }
@@ -305,7 +309,7 @@ select.input {
 .seg2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background: #fff;
+  background: var(--color-surface);
   border-radius: var(--radius-pill);
   padding: 5px;
   gap: 4px;
@@ -314,7 +318,7 @@ select.input {
 .seg3 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  background: #fff;
+  background: var(--color-surface);
   border-radius: var(--radius-pill);
   padding: 5px;
   gap: 4px;

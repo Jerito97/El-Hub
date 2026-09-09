@@ -186,7 +186,7 @@ export function EventDetailClient({
         {realParticipants.map((p) => {
           const c = avatarColor(p.id);
           return (
-            <span key={p.id} style={{ display: "flex", alignItems: "center", gap: 7, background: "#fff", boxShadow: "var(--shadow-card)", borderRadius: "var(--radius-pill)", padding: "6px 12px 6px 6px", fontSize: 12.5, fontWeight: 700 }}>
+            <span key={p.id} style={{ display: "flex", alignItems: "center", gap: 7, background: "var(--color-surface)", boxShadow: "var(--shadow-card)", borderRadius: "var(--radius-pill)", padding: "6px 12px 6px 6px", fontSize: 12.5, fontWeight: 700 }}>
               <span style={{ width: 22, height: 22, borderRadius: "50%", flex: "none", background: c.bg, color: c.fg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 10 }}>
                 {p.name.slice(0, 1).toUpperCase()}
               </span>
@@ -201,7 +201,7 @@ export function EventDetailClient({
       {guests.length > 0 && (
         <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 8 }}>
           {guests.map((g) => (
-            <div key={g.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)" }}>
+            <div key={g.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", background: "var(--color-surface)", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)" }}>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 7, fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "14.5px" }}>
                   {g.name}
@@ -252,7 +252,7 @@ export function EventDetailClient({
         {eventExpenses.map((x) => {
           const c = avatarColor(x.payerId);
           return (
-            <div key={x.id} style={{ display: "flex", gap: 12, alignItems: "center", padding: "12px 14px", background: "#fff", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)" }}>
+            <div key={x.id} style={{ display: "flex", gap: 12, alignItems: "center", padding: "12px 14px", background: "var(--color-surface)", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-card)" }}>
               <div style={{ width: 38, height: 38, flex: "none", borderRadius: "50%", background: c.bg, color: c.fg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 12 }}>{x.payerInitials}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "15.5px" }}>{x.desc}</div>
