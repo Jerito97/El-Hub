@@ -23,6 +23,34 @@ export async function saveEvent(name: string, participantIds: string[]): Promise
   return { ok: true, eventId: event.id };
 }
 
+/** Renames the event and syncs its participant list (the creator can never be removed). */
+export async function editEvent(eventId: string, name: string, participantIds: string[]): Promise<{ ok: boolean; error?: string }> {
+  const me = await getCurrentUser();
+  if (!me) return { ok: false, error: "Sesión vencida" };
+  const trimmed = name.trim();
+  if (!trimmed) return { ok: false, error: "Ponele un nombre al evento" };
+
+  const { data: ev } = await db.from("events").select("created_by").eq("id", eventId).maybeSingle();
+  if (!ev) return { ok: false, error: "Ese evento ya no existe." };
+
+  const participants = Array.from(new Set([ev.created_by as string, ...participantIds]));
+
+  const { error } = await db.from("events").update({ name: trimmed }).eq("id", eventId);
+  if (error) return { ok: false, error: "No se pudo guardar el evento." };
+
+  const { data: current } = await db.from("event_participants").select("user_id").eq("event_id", eventId);
+  const currentIds = new Set((current || []).map((p) => p.user_id));
+  const nextIds = new Set(participants);
+  const toAdd = participants.filter((id) => !currentIds.has(id));
+  const toRemove = Array.from(currentIds).filter((id) => !nextIds.has(id));
+
+  if (toAdd.length) await db.from("event_participants").insert(toAdd.map((user_id) => ({ event_id: eventId, user_id })));
+  if (toRemove.length) await db.from("event_participants").delete().eq("event_id", eventId).in("user_id", toRemove);
+
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
 export async function saveExpense(
   eventId: string,
   desc: string,
@@ -58,6 +86,27 @@ export async function saveExpense(
     }
   }
 
+  return { ok: true };
+}
+
+export async function editExpense(
+  expenseId: string,
+  desc: string,
+  amount: number,
+  payerId: string,
+  shareIds: string[]
+): Promise<{ ok: boolean; error?: string }> {
+  const me = await getCurrentUser();
+  if (!me) return { ok: false, error: "Sesión vencida" };
+  const trimmed = desc.trim();
+  if (!trimmed || !amount || amount <= 0 || !shareIds.length) return { ok: false, error: "Completá descripción, monto y participantes." };
+
+  const { error } = await db.from("expenses").update({ description: trimmed, amount, payer_id: payerId || me.id }).eq("id", expenseId);
+  if (error) return { ok: false, error: "No se pudo guardar el gasto." };
+
+  await db.from("expense_shares").delete().eq("expense_id", expenseId);
+  await db.from("expense_shares").insert(shareIds.map((user_id) => ({ expense_id: expenseId, user_id })));
+  revalidatePath("/", "layout");
   return { ok: true };
 }
 

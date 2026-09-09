@@ -40,12 +40,17 @@ export default async function EventDetailPage({ params }: { params: Promise<{ ev
       settlements={settlements}
       payments={ev.payments.map((p) => ({ id: p.id, from: uname(state.users, p.from_id), to: uname(state.users, p.to_id), amount: p.amount }))}
       participants={ev.participants.map((id) => ({ id, name: uname(state.users, id) }))}
+      allUsers={state.users.map((u) => ({ id: u.id, name: u.name }))}
+      eventCreatorId={ev.created_by}
       eventTotal={eventTotal}
       eventExpenses={ev.expenses.map((x) => ({
+        id: x.id,
         desc: x.description,
         amount: x.amount,
+        payerId: x.payer_id,
         payer: uname(state.users, x.payer_id),
         payerInitials: initialsOf(uname(state.users, x.payer_id)),
+        shareIds: x.shares,
         sharesLabel: x.shares.length === ev.participants.length ? `entre los ${x.shares.length}` : `entre ${x.shares.map((s) => uname(state.users, s)).join(", ")}`,
       }))}
       canCloseEvent={ev.created_by === me.id && settlements.length === 0 && !ev.closed}
