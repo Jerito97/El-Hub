@@ -27,7 +27,7 @@ export function Header({ meInitials, unreadCount }: { meInitials: string; unread
       </button>
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-        <div style={{ width: 14, height: 14, background: "var(--color-accent)" }} />
+        <img src="/icon-192.png" alt="" width={18} height={18} style={{ borderRadius: 4 }} />
         <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "11.5px", letterSpacing: ".16em", textTransform: "uppercase" }}>LinkUp</span>
       </div>
 
