@@ -14,7 +14,7 @@ export const initialsOf = (name: string) =>
 export const dateLabel = (day: number, month: number, year: number) => `${pad(day)}/${pad(month)}/${year}`;
 
 const AVATAR_PALETTE: { bg: string; fg: string }[] = [
-  { bg: "#ec3013", fg: "#ffffff" }, // brand red
+  { bg: "#bf2e18", fg: "#ffffff" }, // brand red
   { bg: "#201e1d", fg: "#ffffff" }, // ink
   { bg: "#f4a672", fg: "#4a2c0f" }, // peach
   { bg: "#8b6fd9", fg: "#ffffff" }, // purple

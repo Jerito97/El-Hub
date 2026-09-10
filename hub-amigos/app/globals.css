@@ -18,14 +18,14 @@
   --color-neutral-800: #453c37;
   --color-neutral-900: #2d2723;
 
-  --color-accent: #ec3013;
+  --color-accent: #bf2e18;
   --color-accent-100: #fff2ef;
   --color-accent-200: #ffe0d9;
   --color-accent-300: #ffc4b8;
   --color-accent-400: #ff9783;
   --color-accent-500: #ff563c;
-  --color-accent-600: #dd2b0f;
-  --color-accent-700: #ae1800;
+  --color-accent-600: #b82a14;
+  --color-accent-700: #821400;
   --color-accent-800: #7c1405;
   --color-accent-900: #4d170e;
 
@@ -420,7 +420,7 @@ select.input {
   background: var(--color-neutral-200);
 }
 .tag-solid {
-  color: #fff;
+  color: var(--color-bg);
   background: var(--color-text);
 }
 
