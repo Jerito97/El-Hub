@@ -1,5 +1,8 @@
 "use client";
 
+// Top bar shown on every app screen: menu button (opens Drawer), wordmark,
+// and the notifications bell (opens NotificationsPanel) with an unread badge.
+
 import { useAppShell } from "@/lib/client/AppShellContext";
 import { avatarColor } from "@/lib/format";
 

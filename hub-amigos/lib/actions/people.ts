@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/supabase";
 import { getCurrentUser } from "@/lib/auth";
+import { validateDate } from "@/lib/format";
 import type { PersonKind } from "@/lib/types";
 
 export interface PersonInput {
@@ -15,17 +16,11 @@ export interface PersonInput {
   remind: boolean;
 }
 
-function validDate(day: number, month: number, year: number) {
-  if (!day || !month || !year) return "Completá nombre y fecha";
-  if (day > new Date(year, month, 0).getDate()) return "Esa fecha no existe";
-  return null;
-}
-
 export async function savePerson(input: PersonInput): Promise<{ ok: boolean; error?: string }> {
   const me = await getCurrentUser();
   if (!me) return { ok: false, error: "Sesión vencida" };
   const name = input.name.trim();
-  const err = !name ? "Completá nombre y fecha" : validDate(input.day, input.month, input.year);
+  const err = !name ? "Completá nombre y fecha" : validateDate(input.day, input.month, input.year, "Completá nombre y fecha");
   if (err) return { ok: false, error: err };
 
   const { error } = await db.from("people").insert({
@@ -47,7 +42,7 @@ export async function savePersonEdit(personId: string, input: PersonInput): Prom
   const me = await getCurrentUser();
   if (!me) return { ok: false, error: "Sesión vencida" };
   const name = input.name.trim();
-  const err = !name ? "Completá nombre y fecha" : validDate(input.day, input.month, input.year);
+  const err = !name ? "Completá nombre y fecha" : validateDate(input.day, input.month, input.year, "Completá nombre y fecha");
   if (err) return { ok: false, error: err };
 
   const { data: existing } = await db.from("people").select("added_by_id,user_id").eq("id", personId).maybeSingle();

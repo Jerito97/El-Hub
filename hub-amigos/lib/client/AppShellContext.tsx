@@ -2,6 +2,10 @@
 
 import { createContext, useContext, useState } from "react";
 
+// Open/closed state for the side drawer and notifications panel, shared
+// between Header/TabBar (which toggle them) and EdgeSwipe (which also
+// toggles them, via a swipe gesture) without prop-drilling through layout.
+
 interface Ctx {
   drawerOpen: boolean;
   setDrawerOpen: (v: boolean) => void;

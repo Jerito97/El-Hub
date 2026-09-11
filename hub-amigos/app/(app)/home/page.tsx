@@ -5,6 +5,9 @@ import { computePeople } from "@/lib/domain";
 import { nowInAppTz, todayLabel } from "@/lib/format";
 import { HomeClient } from "./HomeClient";
 
+// Landing screen: greeting, a "hoy cumple" banner when relevant, the two
+// pastel shortcut tiles to Fechas/Gastos, then HomeClient's filtered list.
+
 export default async function HomePage() {
   const me = (await getCurrentUser())!;
   const state = await getFullState(me.id);

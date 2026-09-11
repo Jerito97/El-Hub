@@ -1,5 +1,9 @@
 "use client";
 
+// Left-side navigation drawer: profile summary + links to every top-level
+// section, plus Admin when applicable and the logout button. Opened from
+// Header's menu button or by swiping in from the left edge (EdgeSwipe).
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAppShell } from "@/lib/client/AppShellContext";

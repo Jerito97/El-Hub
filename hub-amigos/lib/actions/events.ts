@@ -120,6 +120,7 @@ export async function removeGuest(guestId: string): Promise<{ ok: boolean; error
   return { ok: true };
 }
 
+/** Guests can participate in and owe money on an expense, but can never be the one who paid it. */
 async function isGuest(userId: string): Promise<boolean> {
   const { data } = await db.from("users").select("is_guest").eq("id", userId).maybeSingle();
   return !!data?.is_guest;
@@ -200,6 +201,9 @@ export async function closeEvent(eventId: string): Promise<{ ok: boolean; error?
   const { error } = await db.from("events").update({ closed: true }).eq("id", eventId);
   if (error) return { ok: false, error: "No se pudo cerrar el evento." };
 
+  // Temporary guests only exist for this event's balance, so once it's
+  // settled and closed there's nothing left for them to do -- delete the
+  // rows entirely (cascades to their event_participants/expense_shares).
   const guestIds = state.users.filter((u) => u.is_guest && ev.participants.includes(u.id)).map((u) => u.id);
   if (guestIds.length > 0) await db.from("users").delete().in("id", guestIds);
 

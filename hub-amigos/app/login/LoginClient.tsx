@@ -1,5 +1,11 @@
 "use client";
 
+// Three-step login/signup flow:
+//  "login" -- type name + PIN. An existing name signs you straight in.
+//  "link"  -- a new name matches a birthday someone else already added
+//             (no linked account yet); confirm it's you to attach it.
+//  "setup" -- brand-new user: pick a PIN, birthday, optional alias.
+
 import { useState } from "react";
 import { confirmLink, finishSetup, submitLogin } from "@/lib/actions/auth";
 import { DateSelect } from "@/components/ui/DateSelect";

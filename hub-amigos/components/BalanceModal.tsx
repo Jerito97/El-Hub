@@ -1,5 +1,9 @@
 "use client";
 
+// Read-only view of an event's full settle-up state: the simplified debt
+// list from settleFor() (see lib/domain) plus the payment history, each
+// undoable. Opened from EventDetailClient's "Ver balance final".
+
 import { useRouter } from "next/navigation";
 import { Sheet } from "@/components/ui/Sheet";
 import { undoPaid } from "@/lib/actions/events";

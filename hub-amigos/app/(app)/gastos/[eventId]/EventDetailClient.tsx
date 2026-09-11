@@ -1,5 +1,10 @@
 "use client";
 
+// One event's detail page: participants (real + temporary guests), expense
+// list, and the pay/balance/edit modals. Guests get a "Copiar mensaje"
+// button that builds their own WhatsApp-style debt summary from `owedTo`
+// (computed server-side via settleFor -- see app/(app)/gastos/[eventId]/page.tsx).
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";

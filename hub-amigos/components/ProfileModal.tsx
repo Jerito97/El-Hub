@@ -1,5 +1,9 @@
 "use client";
 
+// "Mi perfil" sheet (opened from Config): edit your own name/birthday/alias
+// in place, plus logout. Each field has its own inline edit/save state
+// rather than one shared form, since they save independently.
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sheet } from "@/components/ui/Sheet";

@@ -1,5 +1,9 @@
 "use client";
 
+// "Pay your part" sheet for the current user specifically: what I owe (with
+// each creditor's alias, one tap to copy) and what's owed to me, each with
+// a one-tap settle button. The event-wide view is BalanceModal.
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sheet } from "@/components/ui/Sheet";

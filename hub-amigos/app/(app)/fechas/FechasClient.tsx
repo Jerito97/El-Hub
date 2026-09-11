@@ -1,5 +1,9 @@
 "use client";
 
+// "Fechas" tab: searchable list of birthdays/anniversaries (computePeople in
+// lib/domain already sorted it by days-until) with a week/month filter, plus
+// a small calendar-dot legend for the current month.
+
 import { useMemo, useState } from "react";
 import { SegmentedToggle } from "@/components/ui/SegmentedToggle";
 import { Chip } from "@/components/ui/Chip";

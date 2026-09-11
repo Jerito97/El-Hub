@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/supabase";
 import { getCurrentUser, normName } from "@/lib/auth";
+import { validateDate } from "@/lib/format";
 
 export async function saveName(name: string): Promise<{ ok: boolean; error?: string }> {
   const me = await getCurrentUser();
@@ -20,16 +21,10 @@ export async function saveName(name: string): Promise<{ ok: boolean; error?: str
   return { ok: true };
 }
 
-function validDate(day: number, month: number, year: number) {
-  if (!day || !month || !year) return "Elegí día, mes y año";
-  if (day > new Date(year, month, 0).getDate()) return "Esa fecha no existe";
-  return null;
-}
-
 export async function saveBirthday(day: number, month: number, year: number): Promise<{ ok: boolean; error?: string }> {
   const me = await getCurrentUser();
   if (!me) return { ok: false, error: "Sesión vencida" };
-  const err = validDate(day, month, year);
+  const err = validateDate(day, month, year);
   if (err) return { ok: false, error: err };
 
   const { data: existing } = await db.from("people").select("id").eq("user_id", me.id).maybeSingle();

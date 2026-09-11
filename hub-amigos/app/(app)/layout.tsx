@@ -11,6 +11,7 @@ import { Drawer } from "@/components/Drawer";
 import { NotificationsPanel, type NotifWithHref } from "@/components/NotificationsPanel";
 import { TabBar } from "@/components/TabBar";
 
+/** Where tapping a notification should navigate. Event notifs encode their event id as "e_<id>" (see computeNotifications in lib/domain), so slice(2) recovers it. */
 function hrefFor(notif: { id: string; kind: string }): string {
   if (notif.kind === "cumple" || notif.kind === "aniversario") return "/fechas";
   if (notif.kind === "gasto") return "/gastos?view=balance";

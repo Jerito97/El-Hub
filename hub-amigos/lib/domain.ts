@@ -2,9 +2,10 @@
 // notifications logic in the original Claude Design prototype
 // (project/Hub Amigos.dc.html). Safe to import from server or client code.
 
-import { avatarColor, daysUntil, dateLabel, initialsOf, money, pad } from "./format";
+import { avatarColor, daysUntil, dateLabel, initialsOf, money, MONTHS_SHORT, pad } from "./format";
 import type { AppState, EventRow, PersonKind, PersonRow, UserRow } from "./types";
 
+/** Looks up a display name by id, falling back to "?" for a deleted/unknown user. */
 export function uname(users: UserRow[], id: string | null | undefined) {
   return users.find((u) => u.id === id)?.name ?? "?";
 }
@@ -40,6 +41,7 @@ export interface Settlement {
   amount: number;
 }
 
+/** True when `id` belongs to a temporary event guest rather than a real account. */
 function isGuestId(users: UserRow[], id: string) {
   return !!users.find((u) => u.id === id)?.is_guest;
 }
@@ -56,6 +58,9 @@ export function settleFor(ev: EventRow, users: UserRow[]): Settlement[] {
     .map((id) => ({ id, v: net[id] }))
     .sort((a, b) => b.v - a.v);
   const out: Settlement[] = [];
+  // Greedily pair the biggest debtor with the biggest creditor, transfer the
+  // smaller of the two amounts, then advance past whichever side hit zero.
+  // Not the mathematically minimal set of transactions, but simple and stable.
   let i = 0,
     j = 0;
   while (i < debt.length && j < cred.length) {
@@ -77,6 +82,7 @@ export function settleFor(ev: EventRow, users: UserRow[]): Settlement[] {
   return out;
 }
 
+/** Display-ready row for the "Fechas" list -- computed fields (days-until, labels, chip colors) already resolved. */
 export interface PersonView {
   id: string;
   name: string;
@@ -102,6 +108,7 @@ export interface PersonView {
   remind: boolean;
 }
 
+/** Strips the time-of-day off `today`, so date-only comparisons (e.g. "is it this year or next?") aren't thrown off by the current hour. */
 function todayMidnight(today: Date) {
   return new Date(today.getFullYear(), today.getMonth(), today.getDate());
 }
@@ -144,6 +151,7 @@ export function computePeople(people: PersonRow[], users: UserRow[], meId: strin
     .sort((a, b) => a.days - b.days);
 }
 
+/** One row of the "Balance" tab: net position with a single other person, aggregated across all of my open events. */
 export interface ConsolidatedRow {
   name: string;
   otherId: string;
@@ -197,6 +205,7 @@ export function myClosedEvents(events: EventRow[], meId: string) {
   return events.filter((e) => e.participants.includes(meId) && e.closed);
 }
 
+/** One row of the notifications panel. `id` is a stable key (e.g. "b_<personId>") used to track read/unread across requests. */
 export interface NotifItem {
   id: string;
   icon: string;
@@ -260,6 +269,7 @@ export function computeNotifications(state: AppState, today: Date): NotifItem[] 
   return out;
 }
 
+/** Display-ready row for the "Gastos" event list, with my own balance for that event already resolved. */
 export interface EventListItem {
   id: string;
   name: string;
@@ -281,7 +291,7 @@ export function eventListView(events: EventRow[], users: UserRow[], meId: string
     return {
       id: e.id,
       name: e.name,
-      dateLabel: `${created.getDate()} ${["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"][created.getMonth()]}`,
+      dateLabel: `${created.getDate()} ${MONTHS_SHORT[created.getMonth()]}`,
       participantsLabel: `${e.participants.length} personas`,
       avatarInitials: e.participants.slice(0, 4).map((p) => initialsOf(uname(users, p))),
       balanceKind: net > 1 ? "te deben" : net < -1 ? "debés" : "al día",
