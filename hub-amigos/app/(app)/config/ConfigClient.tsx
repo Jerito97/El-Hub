@@ -1,5 +1,9 @@
 "use client";
 
+// Notification-type toggles + device push opt-in, theme picker, and the
+// entry point to the profile sheet. `local` mirrors `prefs` in state so a
+// toggle flips instantly, before the server round-trip confirms it.
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/Switch";

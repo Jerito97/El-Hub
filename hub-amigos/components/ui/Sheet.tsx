@@ -1,5 +1,6 @@
 "use client";
 
+/** Bottom sheet shell every modal in the app is built on: overlay + drag handle + title + close button. `dark` renders the near-black variant used by BalanceModal. */
 export function Sheet({
   title,
   dark,

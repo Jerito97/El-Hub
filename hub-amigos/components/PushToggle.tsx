@@ -1,5 +1,10 @@
 "use client";
 
+// Device-level opt-in for Web Push, shown in Config below the notif-type
+// switches. Those switches pick *what* to be notified about; this is the
+// separate browser permission needed to actually deliver it when the app
+// isn't open (see lib/push.ts for the sending side).
+
 import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/Switch";
 import { subscribeToPush, unsubscribeFromPush } from "@/lib/actions/push";

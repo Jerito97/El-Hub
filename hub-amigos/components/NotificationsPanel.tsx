@@ -1,5 +1,10 @@
 "use client";
 
+// Right-side panel listing computeNotifications() results (see lib/domain).
+// Dismissing a notif marks it read on the server *and* hides it locally
+// right away via `dismissedIds`, so it disappears instantly instead of
+// waiting on the next full-page data refresh.
+
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppShell } from "@/lib/client/AppShellContext";

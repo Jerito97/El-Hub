@@ -1,5 +1,9 @@
 "use client";
 
+// "Gastos" tab: Eventos (searchable list of open/closed events) and Balance
+// (net position per person, consolidated across all my open events --
+// see computeConsolidated in lib/domain -- with an inline settle button).
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";

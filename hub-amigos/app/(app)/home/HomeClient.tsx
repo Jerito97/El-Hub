@@ -1,5 +1,8 @@
 "use client";
 
+// Lower half of the Home screen: the same people-list data as Fechas
+// (already sorted by days-until), filtered to "Esta semana" / "Este mes".
+
 import { useState } from "react";
 import { SegmentedToggle } from "@/components/ui/SegmentedToggle";
 import { Chip } from "@/components/ui/Chip";

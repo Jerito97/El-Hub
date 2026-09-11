@@ -1,5 +1,9 @@
 "use client";
 
+// Create/edit sheet for a single expense within an event: description,
+// amount, who paid (guests can't pay, see lib/actions/events isGuest), and
+// who it's split between -- weighted by each person's cuota.
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sheet } from "@/components/ui/Sheet";

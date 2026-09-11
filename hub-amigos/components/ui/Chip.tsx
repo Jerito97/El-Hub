@@ -1,3 +1,4 @@
+/** Two overlapping rings -- stands in for initials on an anniversary chip. */
 export function AnniversaryIcon({ size = 16 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
@@ -7,6 +8,7 @@ export function AnniversaryIcon({ size = 16 }: { size?: number }) {
   );
 }
 
+/** Round avatar-style chip used on the Fechas/Home lists: initials, or the anniversary rings when isAniv. */
 export function Chip({
   initials,
   isAniv,

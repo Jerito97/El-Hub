@@ -1,5 +1,9 @@
 "use client";
 
+// Create/edit sheet for an event: name, real participants with their
+// cuotas, and temporary guests. The creator is always a locked-in
+// participant and can't be untoggled (see `lockedId`).
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sheet } from "@/components/ui/Sheet";

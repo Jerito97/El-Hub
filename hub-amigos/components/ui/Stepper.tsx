@@ -1,5 +1,6 @@
 "use client";
 
+/** −/+ number picker used for cuotas (per-person expense shares) in EventModal. Defaults match the 1-9 cuota range. */
 export function Stepper({ value, onChange, min = 1, max = 9 }: { value: number; onChange: (v: number) => void; min?: number; max?: number }) {
   return (
     <div style={{ display: "flex", alignItems: "center", background: "var(--color-neutral-100)", borderRadius: "var(--radius-pill)", padding: 3 }}>

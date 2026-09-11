@@ -1,5 +1,8 @@
 "use client";
 
+// Floating bottom tab bar for the three main sections. Hidden on screens
+// that don't need it (see HIDDEN_ON) rather than shown greyed-out.
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 

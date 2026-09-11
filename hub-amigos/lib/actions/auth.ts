@@ -3,7 +3,8 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/supabase";
-import { clearSessionCookie, createSessionCookie, hashPin, normName, verifyPin } from "@/lib/auth";
+import { clearSessionCookie, createSessionCookie, hashPin, isValidPin, normName, verifyPin } from "@/lib/auth";
+import { dateLabel, validateDate } from "@/lib/format";
 
 export interface LoginResult {
   ok: boolean;
@@ -18,7 +19,7 @@ export async function submitLogin(name: string, pin: string): Promise<LoginResul
   const trimmedName = name.trim();
   const trimmedPin = pin.trim();
   if (!trimmedName) return { ok: false, error: "Falta tu nombre", hint: "Escribí el nombre con el que te conocen en el grupo." };
-  if (!/^\d{4,6}$/.test(trimmedPin)) return { ok: false, error: "PIN inválido", hint: "Tiene que ser de 4 a 6 números." };
+  if (!isValidPin(trimmedPin)) return { ok: false, error: "PIN inválido", hint: "Tiene que ser de 4 a 6 números." };
 
   const { data: existing, error: existingErr } = await db
     .from("users")
@@ -61,7 +62,7 @@ export async function submitLogin(name: string, pin: string): Promise<LoginResul
       linkCandidate: {
         id: candidate.id,
         name: candidate.name,
-        dateLabel: `${String(candidate.day).padStart(2, "0")}/${String(candidate.month).padStart(2, "0")}/${candidate.year}`,
+        dateLabel: dateLabel(candidate.day, candidate.month, candidate.year),
         daysLabel: "",
       },
     };
@@ -79,15 +80,9 @@ export interface SetupInput {
   alias: string;
 }
 
-function validDate(day: number, month: number, year: number) {
-  if (!day || !month || !year) return "Elegí día, mes y año";
-  if (day > new Date(year, month, 0).getDate()) return "Esa fecha no existe";
-  return null;
-}
-
 /** New-user onboarding: creates the user, their prefs row, and their own birthday entry. */
 export async function finishSetup(input: SetupInput): Promise<LoginResult> {
-  const err = validDate(input.day, input.month, input.year);
+  const err = validateDate(input.day, input.month, input.year);
   if (err) return { ok: false, error: err };
 
   const name = input.name.trim();
@@ -123,7 +118,7 @@ export async function finishSetup(input: SetupInput): Promise<LoginResult> {
 
 /** User says "yes that's me" on the link-suggestion screen: attaches their new account to the pre-loaded birthday. */
 export async function confirmLink(personId: string, pin: string): Promise<LoginResult> {
-  if (!/^\d{4,6}$/.test(pin.trim())) return { ok: false, error: "PIN inválido", hint: "Tiene que ser de 4 a 6 números." };
+  if (!isValidPin(pin.trim())) return { ok: false, error: "PIN inválido", hint: "Tiene que ser de 4 a 6 números." };
 
   const { data: person } = await db.from("people").select("*").eq("id", personId).is("user_id", null).maybeSingle();
   if (!person) return { ok: false, error: "Ese registro ya no está disponible." };

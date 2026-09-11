@@ -1,5 +1,10 @@
 "use client";
 
+// Admin-only panel (server-gated in app/(app)/admin/page.tsx and again in
+// every lib/actions/admin.ts action via requireAdmin) with three tabs:
+// Usuarios (reset PIN / delete), Fechas (edit/delete anyone's entries) and
+// Eventos (close/reopen/delete, delete individual expenses).
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SegmentedToggle } from "@/components/ui/SegmentedToggle";

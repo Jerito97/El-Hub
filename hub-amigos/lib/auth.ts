@@ -12,6 +12,7 @@ const secret = () => {
   return new TextEncoder().encode(s);
 };
 
+/** Signs a long-lived (180 day) JWT holding the user id and sets it as an httpOnly cookie. Called after a successful login/signup. */
 export async function createSessionCookie(userId: string) {
   const token = await new SignJWT({ uid: userId })
     .setProtectedHeader({ alg: "HS256" })
@@ -33,6 +34,7 @@ export async function clearSessionCookie() {
   jar.delete(COOKIE_NAME);
 }
 
+/** Verifies the session cookie's signature/expiry and pulls the user id out of it, without hitting the DB. */
 async function getSessionUserId(): Promise<string | null> {
   const jar = await cookies();
   const token = jar.get(COOKIE_NAME)?.value;
@@ -45,6 +47,7 @@ async function getSessionUserId(): Promise<string | null> {
   }
 }
 
+/** The logged-in user for this request, or null if there's no valid session. The one DB round-trip auth needs. */
 export async function getCurrentUser(): Promise<UserRow | null> {
   const uid = await getSessionUserId();
   if (!uid) return null;
@@ -52,7 +55,11 @@ export async function getCurrentUser(): Promise<UserRow | null> {
   return (data as UserRow) ?? null;
 }
 
+/** Normalizes a typed name for case/whitespace-insensitive lookup (login, the unique name index, "link this account" matching). */
 export const normName = (s: string) => s.trim().toLowerCase();
+
+/** 4-6 digit PIN, as entered on login/setup/reset. */
+export const isValidPin = (pin: string) => /^\d{4,6}$/.test(pin);
 
 export async function hashPin(pin: string) {
   return bcrypt.hash(pin, 10);

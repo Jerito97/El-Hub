@@ -1,5 +1,9 @@
 "use client";
 
+// Add/edit sheet for a single birthday or anniversary entry. Also used from
+// AdminClient (asAdmin=true), which edits/deletes regardless of who added
+// the entry -- see lib/actions/admin's adminSavePersonEdit/adminDeletePerson.
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sheet } from "@/components/ui/Sheet";

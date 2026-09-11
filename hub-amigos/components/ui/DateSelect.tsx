@@ -1,5 +1,9 @@
 "use client";
 
+// Three plain <select>s rather than a native <input type="date">, since the
+// picker needs to look like the rest of the pill-styled form controls and
+// let day 31 sit next to any month (server-side validateDate in lib/format
+// catches the resulting invalid combos, e.g. Feb 31).
 const dayOptions = Array.from({ length: 31 }, (_, i) => i + 1);
 const monthOptions = Array.from({ length: 12 }, (_, i) => i + 1);
 

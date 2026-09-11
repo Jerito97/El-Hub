@@ -76,3 +76,15 @@ export function todayLabel(date: Date): string {
   const month = MONTHS_LONG[date.getMonth()].toLowerCase();
   return `${weekday} ${date.getDate()} de ${month}`;
 }
+
+/**
+ * Checks a day/month/year picked via three separate <select>s: all three
+ * present, and the day actually exists in that month/year (handles
+ * different month lengths and leap years). Returns a user-facing error
+ * message, or null when the date is valid.
+ */
+export function validateDate(day: number, month: number, year: number, missingMsg = "Elegí día, mes y año"): string | null {
+  if (!day || !month || !year) return missingMsg;
+  if (day > new Date(year, month, 0).getDate()) return "Esa fecha no existe";
+  return null;
+}

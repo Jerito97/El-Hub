@@ -1,5 +1,10 @@
 "use client";
 
+// Read-only profile page for one other real user: their birthday, alias
+// (copyable), and net balance with me across our shared open events.
+// All values are precomputed server-side in page.tsx -- this component
+// only owns the "copied!" toast state for the alias button.
+
 import { useState } from "react";
 import Link from "next/link";
 import { avatarColor } from "@/lib/format";
